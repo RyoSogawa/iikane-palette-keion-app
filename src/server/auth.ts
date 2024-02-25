@@ -3,8 +3,10 @@ import { getServerSession, type DefaultSession, type NextAuthOptions } from 'nex
 import { type Adapter } from 'next-auth/adapters';
 import DiscordProvider from 'next-auth/providers/discord';
 
+import { IIKANE_GUILD_ID } from '@/constants/discord';
 import { env } from '@/env';
 import { db } from '@/server/db';
+import { isJoiningGuild } from '@/utils/discord';
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -34,19 +36,33 @@ declare module 'next-auth' {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: ({ session, user }) => {
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+        },
+      };
+    },
+    /**
+     * いいかねのサーバーに参加していない場合はログインできないようにする
+     */
+    signIn: async ({ account }) => {
+      if (account?.access_token == null) return false;
+      return isJoiningGuild(account.access_token, IIKANE_GUILD_ID);
+    },
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: 'identify email guilds',
+        },
+      },
     }),
     /**
      * ...add more providers here.

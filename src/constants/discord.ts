@@ -1,0 +1,1 @@
+export const IIKANE_GUILD_ID = '856807848125399060';
