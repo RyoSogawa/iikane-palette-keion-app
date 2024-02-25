@@ -93,19 +93,6 @@ double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
 enable_confirmations = false
 
-# Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
-# `discord`, `facebook`, `github`, `gitlab`, `google`, `twitch`, `twitter`, `slack`, `spotify`.
-[auth.external.google]
-enabled = true
-client_id = "env(GOOGLE_CLIENT_ID)"
-#additional_client_ids = "env(GOOGLE_ADDITIONAL_CLIENT_IDS)"
-secret = "env(GOOGLE_CLIENT_SECRET)"
-# Overrides the default auth redirectUrl.
-redirect_uri = "http://localhost:54321/auth/v1/callback"
-# Overrides the default auth provider URL. Used to support self-hosted gitlab, single-tenant Azure,
-# or any other third-party OIDC providers.
-url = ""
-
 [analytics]
 enabled = false
 port = 54327
