@@ -1,8 +1,11 @@
 import '@mantine/core/styles.css';
+import React from 'react';
+
 import { ColorSchemeScript } from '@mantine/core';
 import { Inter } from 'next/font/google';
 
-import Providers from '@/app/Providers';
+import AppShell from '@/components/application/AppShell';
+import Providers from '@/components/functional/Providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,7 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`font-sans ${inter.variable}`}>
         <Providers>
-          {children}
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>
