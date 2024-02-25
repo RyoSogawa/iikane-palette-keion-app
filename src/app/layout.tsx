@@ -1,6 +1,8 @@
+import '@mantine/core/styles.css';
+import { ColorSchemeScript } from '@mantine/core';
 import { Inter } from 'next/font/google';
 
-import { TRPCReactProvider } from '@/trpc/react';
+import Providers from '@/app/Providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -15,9 +17,14 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="ja">
+      <head>
+        <ColorSchemeScript />
+      </head>
       <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

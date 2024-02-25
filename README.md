@@ -4,8 +4,11 @@
 ## Environment
 - Node.js v20.6.0
 - pnpm
-- t3-App
+- Next.js
+- tRPC
+- Prisma
 - Supabase
+- Mantine-UI
 
 ## Getting Started
 ### 1. install supabase cli
