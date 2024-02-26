@@ -2,33 +2,31 @@
 
 import React from 'react';
 
-import { Burger, AppShell as MantineAppShell } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { AppShell as MantineAppShell, Container, Flex, Space, Title } from '@mantine/core';
+import Link from 'next/link';
+
+import AccountMenuButton from '@/components/model/AccountMenuButton';
 
 export type AppShellProps = {
   children: React.ReactNode;
 };
 
 const AppShell: React.FC<AppShellProps> = ({ children }) => {
-  const [opened, { toggle }] = useDisclosure();
-
   return (
-    <MantineAppShell
-      header={{ height: 60 }}
-      navbar={{
-        width: 300,
-        breakpoint: 'sm',
-        collapsed: { mobile: !opened },
-      }}
-      padding="md"
-    >
+    <MantineAppShell header={{ height: 60 }} padding="md">
       <MantineAppShell.Header>
-        <Burger opened={opened} hiddenFrom="sm" size="sm" onClick={toggle} />
-        <div>Logo</div>
+        <Container px={20} h="100%">
+          <Flex align="center" h="100%">
+            <Link href="/">
+              <Title order={1} size="1rem">
+                いいかねパレット軽音部
+              </Title>
+            </Link>
+            <Space flex={1} />
+            <AccountMenuButton />
+          </Flex>
+        </Container>
       </MantineAppShell.Header>
-
-      <MantineAppShell.Navbar p="md">Navbar</MantineAppShell.Navbar>
-
       <MantineAppShell.Main>{children}</MantineAppShell.Main>
     </MantineAppShell>
   );

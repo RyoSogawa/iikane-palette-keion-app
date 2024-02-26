@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
 
 import { createTheme, MantineProvider } from '@mantine/core';
+import { SessionProvider } from 'next-auth/react';
 
 import { TRPCReactProvider } from '@/trpc/react';
 
@@ -15,9 +18,11 @@ export type ProvidersProps = {
 const Providers: React.FC<ProvidersProps> = ({ children }) => {
   return (
     <TRPCReactProvider>
-      <MantineProvider theme={theme} defaultColorScheme="dark">
-        {children}
-      </MantineProvider>
+      <SessionProvider>
+        <MantineProvider theme={theme} defaultColorScheme="dark">
+          {children}
+        </MantineProvider>
+      </SessionProvider>
     </TRPCReactProvider>
   );
 };
