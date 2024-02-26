@@ -3,7 +3,7 @@ import { getServerSession, type DefaultSession, type NextAuthOptions } from 'nex
 import { type Adapter } from 'next-auth/adapters';
 import DiscordProvider from 'next-auth/providers/discord';
 
-import { IIKANE_GUILD_ID } from '@/constants/discord';
+import { IIKANE_GUILD_ID } from '@/constants/external-service';
 import { env } from '@/env';
 import { db } from '@/server/db';
 import { isJoiningGuild } from '@/utils/discord';
