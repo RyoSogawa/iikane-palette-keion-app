@@ -1,11 +1,9 @@
 import { Container, Title } from '@mantine/core';
-import { unstable_noStore as noStore } from 'next/cache';
 
 import UserCardList from '@/components/model/UserCardList';
 import { api } from '@/trpc/server';
 
 export default async function Home() {
-  noStore();
   const users = await api.user.getAll.query();
 
   return (

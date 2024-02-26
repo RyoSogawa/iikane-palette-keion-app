@@ -8,7 +8,7 @@ import { SessionProvider } from 'next-auth/react';
 import { TRPCReactProvider } from '@/trpc/react';
 
 const theme = createTheme({
-  primaryColor: 'grape',
+  primaryColor: 'gray',
 });
 
 export type ProvidersProps = {
