@@ -18,7 +18,7 @@ export default async function MemberSinglePage({ params }: Props) {
   });
 
   if (!user) {
-    throw new Error('User not found');
+    throw new Error('メンバーが見つかりませんでした');
   }
 
   const session = await getServerAuthSession();
