@@ -33,6 +33,10 @@ export const userRouter = createTRPCRouter({
           select: {
             id: true,
             part: true,
+            order: true,
+            detail: true,
+            remark: true,
+            experience: true,
           },
         },
         introduction: true,
