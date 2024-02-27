@@ -13,15 +13,16 @@ type Props = {
 };
 
 export default async function MemberSinglePage({ params }: Props) {
-  const user = await api.user.findById.query({
-    id: params.id,
-  });
+  const [user, session] = await Promise.all([
+    api.user.findById.query({
+      id: params.id,
+    }),
+    getServerAuthSession(),
+  ]);
 
   if (!user) {
     throw new Error('メンバーが見つかりませんでした');
   }
-
-  const session = await getServerAuthSession();
 
   return (
     <Container component="main" py={16}>
