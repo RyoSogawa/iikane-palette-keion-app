@@ -14,7 +14,13 @@ const UserCardList: React.FC<UserCardListProps> = ({ users, ...props }) => {
   return (
     <Grid {...props}>
       {users.map((user) => (
-        <Grid.Col key={user.id} span={4}>
+        <Grid.Col
+          key={user.id}
+          span={{
+            base: 6,
+            md: 4,
+          }}
+        >
           <UserCard user={user} />
         </Grid.Col>
       ))}
