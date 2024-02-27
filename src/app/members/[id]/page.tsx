@@ -31,7 +31,7 @@ export default async function MemberSinglePage({ params }: Props) {
         </Button>
         <Space flex={1} />
         {session?.user.id === user.id && (
-          <Button component={Link} href={`/member/${user.id}/edit`} variant="outline">
+          <Button component={Link} href={`/members/${user.id}/edit`} variant="outline">
             編集
           </Button>
         )}
