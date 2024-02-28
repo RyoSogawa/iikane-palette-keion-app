@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Button, Stack } from '@mantine/core';
+import { Button, Paper, Stack, Title } from '@mantine/core';
 
 import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
 import ControlledRichEditor from '@/components/ui/ControlledRichEditor';
@@ -17,11 +17,14 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Stack>
-        <ControlledTextInput label="お名前" control={control} name="name" required />
-        <ControlledTextInput label="ニックネーム" control={control} name="nickname" />
-        <ControlledRichEditor label="自己紹介" control={control} name="introduction" />
-      </Stack>
+      <Paper p="lg" radius="md" withBorder>
+        <Stack>
+          <Title order={2}>基本情報</Title>
+          <ControlledTextInput label="お名前" control={control} name="name" required />
+          <ControlledTextInput label="ニックネーム" control={control} name="nickname" />
+          <ControlledRichEditor label="自己紹介" control={control} name="introduction" />
+        </Stack>
+      </Paper>
       <Button type="submit" variant="outline" mt={32} size="lg">
         保存する
       </Button>
