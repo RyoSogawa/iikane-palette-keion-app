@@ -1,4 +1,6 @@
 import '@mantine/core/styles.css';
+import '@mantine/tiptap/styles.css';
+
 import React from 'react';
 
 import { ColorSchemeScript } from '@mantine/core';

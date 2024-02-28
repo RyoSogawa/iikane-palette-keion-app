@@ -1,6 +1,5 @@
 'use client';
 
-import '@mantine/tiptap/styles.css';
 import React from 'react';
 
 import { Input, type InputWrapperProps } from '@mantine/core';
