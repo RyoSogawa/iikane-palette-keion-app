@@ -13,7 +13,7 @@ export type UserFormProps = {
 };
 
 const UserForm: React.FC<UserFormProps> = ({ user }) => {
-  const { handleSubmit, control } = useUserForm(user);
+  const { handleSubmit, control, isLoading } = useUserForm(user);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -25,7 +25,7 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
           <ControlledRichEditor label="自己紹介" control={control} name="introduction" />
         </Stack>
       </Paper>
-      <Button type="submit" variant="outline" mt={32} size="lg">
+      <Button type="submit" variant="outline" mt={32} size="lg" loading={isLoading}>
         保存する
       </Button>
     </form>
