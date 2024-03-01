@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Avatar, Button, Container, Flex, Space, Title, Text } from '@mantine/core';
+import { Avatar, Button, Container, Flex, Space, Title, Text, Box } from '@mantine/core';
 import Link from 'next/link';
 
 import { getServerAuthSession } from '@/server/auth';
@@ -45,6 +45,14 @@ export default async function MemberSinglePage({ params }: Props) {
         <Text ta="center" c="dimmed" fz="sm" mt={8}>
           {user.nickname}
         </Text>
+      )}
+      {user.introduction && (
+        <Box
+          mt={8}
+          dangerouslySetInnerHTML={{
+            __html: user.introduction,
+          }}
+        />
       )}
     </Container>
   );
