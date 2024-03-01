@@ -1,10 +1,12 @@
 import type React from 'react';
 import { useCallback } from 'react';
 
+import { showNotification } from '@mantine/notifications';
 import { type UserPart, type User } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
+import { NotificationOptions } from '@/constants/notification';
 import { api } from '@/trpc/react';
 
 export type UserFormValues = Pick<User, 'id' | 'name' | 'nickname' | 'introduction'> & {
@@ -24,11 +26,15 @@ export const useUserForm = (defaultValues: UserFormValues) => {
       await submit((data) => {
         mutate(data, {
           onSuccess: () => {
-            console.log('success');
+            showNotification({
+              ...NotificationOptions.success,
+              message: 'プロフィールを更新しました',
+            });
             router.push(`/members/${data.id}`);
           },
           onError: (err) => {
             console.error(err);
+            showNotification(NotificationOptions.error);
           },
         });
       })(e);
