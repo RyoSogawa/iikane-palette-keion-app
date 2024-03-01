@@ -44,3 +44,6 @@ yarn-error.log*
 # ide
 .idea
 .vscode
+
+# generated
+/src/types/generated
