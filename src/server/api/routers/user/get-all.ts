@@ -9,7 +9,7 @@ export const getAll = publicProcedure.query(({ ctx }) => {
       UserPart: {
         select: {
           id: true,
-          part: true,
+          partIcon: true,
         },
       },
       introduction: true,
