@@ -27,12 +27,12 @@ export default async function MemberSinglePage({ params }: Props) {
   return (
     <Container component="main" py={16}>
       <Flex align="center">
-        <Button component={Link} href="/" variant="outline">
+        <Button component={Link} href="/" variant="subtle" color="gray">
           ← 部員一覧へ
         </Button>
         <Space flex={1} />
         {session?.user.id === user.id && (
-          <Button component={Link} href={`/members/${user.id}/edit`} variant="outline">
+          <Button component={Link} href={`/members/${user.id}/edit`} variant="outline" color="gray">
             編集
           </Button>
         )}

@@ -25,7 +25,7 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
           <ControlledRichEditor label="自己紹介" control={control} name="introduction" />
         </Stack>
       </Paper>
-      <Button type="submit" variant="outline" mt={32} size="lg" loading={isLoading}>
+      <Button type="submit" variant="filled" mt={32} loading={isLoading}>
         保存する
       </Button>
     </form>

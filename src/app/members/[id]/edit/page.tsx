@@ -32,7 +32,7 @@ export default async function MemberEditPage({ params }: Props) {
   return (
     <Container component="main" py={16}>
       <Flex align="center">
-        <Button component={Link} href={`/members/${params.id}`} variant="outline">
+        <Button component={Link} href={`/members/${params.id}`} variant="subtle" color="gray">
           ← 戻る
         </Button>
       </Flex>
