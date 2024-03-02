@@ -70,8 +70,7 @@ model VerificationToken {
 enum PartIcon {
   VOCAL
   RAP
-  ELECTRIC_GUITAR
-  ACOUSTIC_GUITAR
+  GUITAR
   BASS
   DRUM
   KEYBOARD
