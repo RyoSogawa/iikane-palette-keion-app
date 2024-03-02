@@ -19,11 +19,16 @@ export const updateProfile = protectedProcedure
       throw new Error('Invalid user id');
     }
 
-    return ctx.db.user.update({
+    return ctx.db.user.upsert({
       where: {
         id: ctx.session.user.id,
       },
-      data: {
+      create: {
+        name: input.name,
+        nickname: input.nickname,
+        introduction: input.introduction,
+      },
+      update: {
         name: input.name,
         nickname: input.nickname,
         introduction: input.introduction,
