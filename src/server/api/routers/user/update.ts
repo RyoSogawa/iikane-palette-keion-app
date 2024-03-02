@@ -11,7 +11,7 @@ const userUpdateProfileInputSchema = z.intersection(
     introduction: true,
   }),
   z.object({
-    UserPart: z.array(
+    UserParts: z.array(
       UserPartSchema.pick({
         partIcon: true,
         order: true,
@@ -54,7 +54,7 @@ export const updateProfile = protectedProcedure
       });
 
       await tx.userPart.createMany({
-        data: input.UserPart.map((part) => ({
+        data: input.UserParts.map((part) => ({
           ...part,
           userId: user.id,
         })),

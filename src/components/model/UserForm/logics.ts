@@ -10,7 +10,7 @@ import { NotificationOptions } from '@/constants/notification';
 import { api } from '@/trpc/react';
 
 export type UserFormValues = Pick<User, 'id' | 'name' | 'nickname' | 'introduction'> & {
-  UserPart: Array<Pick<UserPart, 'id' | 'partIcon' | 'order' | 'remark'>>;
+  UserParts: Array<Pick<UserPart, 'id' | 'partIcon' | 'order' | 'remark'>>;
 };
 
 export const useUserForm = (defaultValues: UserFormValues) => {

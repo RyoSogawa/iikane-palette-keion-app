@@ -56,7 +56,7 @@ model User {
   sessions      Session[]
   nickname      String?
   introduction  String?
-  UserPart      UserPart[]
+  UserParts     UserPart[]
 }
 
 model VerificationToken {
@@ -78,7 +78,7 @@ enum PartIcon {
   WIND
   STRINGS
   PERCUSSION
-  OTHER
+  OTHERS
 }
 
 model UserPart {
