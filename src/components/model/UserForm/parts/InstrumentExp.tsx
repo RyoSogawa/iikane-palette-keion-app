@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
-import { Box, Button, Group, type SelectProps, Stack } from '@mantine/core';
+import { Box, Button, Group, type SelectProps, Space, Stack } from '@mantine/core';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
 import { type Control, useFieldArray } from 'react-hook-form';
 
 import { type UserFormValues } from '@/components/model/UserForm/logics';
@@ -56,12 +57,14 @@ const InstrumentExp: React.FC<InstrumentExpProps> = ({ control }) => {
             flex="1"
           />
           <Button variant="subtle" color="red" onClick={handleClickRemove(index)}>
-            -
+            <IconTrash aria-label="削除" size={18} />
           </Button>
         </Group>
       ))}
       <Box>
         <Button variant="outline" color="gray" onClick={handleClickAppend}>
+          <IconPlus size={16} />
+          <Space w={4} />
           追加
         </Button>
       </Box>

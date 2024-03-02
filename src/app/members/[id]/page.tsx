@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Avatar, Button, Container, Flex, Space, Title, Text, Box } from '@mantine/core';
+import { IconArrowLeft, IconEdit } from '@tabler/icons-react';
 import Link from 'next/link';
 
 import { getServerAuthSession } from '@/server/auth';
@@ -28,11 +29,15 @@ export default async function MemberSinglePage({ params }: Props) {
     <Container component="main" py={16}>
       <Flex align="center">
         <Button component={Link} href="/" variant="subtle" color="gray">
-          ← 部員一覧へ
+          <IconArrowLeft size={16} />
+          <Space w={4} />
+          部員一覧へ
         </Button>
         <Space flex={1} />
         {session?.user.id === user.id && (
           <Button component={Link} href={`/members/${user.id}/edit`} variant="outline" color="gray">
+            <IconEdit size={16} />
+            <Space w={4} />
             編集
           </Button>
         )}

@@ -2,7 +2,8 @@
 
 import React from 'react';
 
-import { Button, Paper, Stack, Title } from '@mantine/core';
+import { Button, Paper, Space, Stack, Title } from '@mantine/core';
+import { IconCheck } from '@tabler/icons-react';
 
 import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
 import InstrumentExp from '@/components/model/UserForm/parts/InstrumentExp';
@@ -33,7 +34,9 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
         </Stack>
       </Paper>
       <Button type="submit" variant="filled" mt={32} loading={isLoading}>
-        保存する
+        <IconCheck size={18} />
+        <Space w={8} />
+        保存
       </Button>
     </form>
   );

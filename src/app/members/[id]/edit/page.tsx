@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Button, Container, Flex, Title } from '@mantine/core';
+import { Button, Container, Flex, Space, Title } from '@mantine/core';
+import { IconArrowLeft } from '@tabler/icons-react';
 import Link from 'next/link';
 
 import UserForm from '@/components/model/UserForm';
@@ -33,7 +34,9 @@ export default async function MemberEditPage({ params }: Props) {
     <Container component="main" py={16}>
       <Flex align="center">
         <Button component={Link} href={`/members/${params.id}`} variant="subtle" color="gray">
-          ← 戻る
+          <IconArrowLeft size={16} />
+          <Space w={4} />
+          戻る
         </Button>
       </Flex>
       <Title order={1} mt={32} mb={16}>
