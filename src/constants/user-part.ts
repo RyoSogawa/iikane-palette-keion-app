@@ -5,10 +5,6 @@ export const UserPartMap = {
     icon: '🎤',
     name: 'ボーカル',
   },
-  RAP: {
-    icon: '🎤',
-    name: 'ラップ',
-  },
   GUITAR: {
     icon: '🎸',
     name: 'ギター',
