@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Button, Group, type SelectProps } from '@mantine/core';
 import { IconGripVertical, IconTrash } from '@tabler/icons-react';
 import { type Control } from 'react-hook-form';
@@ -15,19 +17,36 @@ const partIcons: SelectProps['data'] = Object.entries(UserPartMap).map(([value, 
 }));
 
 export type InstrumentExpItemProps = {
+  id: string;
   control: Control<UserFormValues>;
   index: number;
   onRemove: (index: number) => void;
 };
 
-const InstrumentExpItem: React.FC<InstrumentExpItemProps> = ({ control, index, onRemove }) => {
+const InstrumentExpItem: React.FC<InstrumentExpItemProps> = ({ id, control, index, onRemove }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id,
+  });
+
   const handleClickRemove = useCallback(() => {
     onRemove(index);
   }, [onRemove, index]);
 
   return (
-    <Group>
-      <IconGripVertical aria-label="ドラッグアンドドロップで並び替える" size={22} />
+    <Group
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+      {...attributes}
+    >
+      <IconGripVertical
+        aria-label="ドラッグアンドドロップで並び替える"
+        size={22}
+        cursor="grab"
+        {...listeners}
+      />
       <ControlledSelect
         control={control}
         name={`UserParts.${index}.partIcon`}
