@@ -1,8 +1,10 @@
+'use client';
+
 import React, { useCallback } from 'react';
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button, Group, type SelectProps } from '@mantine/core';
+import { ActionIcon, Divider, Flex, Group, type SelectProps } from '@mantine/core';
 import { IconGripVertical, IconTrash } from '@tabler/icons-react';
 import { type Control } from 'react-hook-form';
 
@@ -33,36 +35,41 @@ const InstrumentExpItem: React.FC<InstrumentExpItemProps> = ({ id, control, inde
   }, [onRemove, index]);
 
   return (
-    <Group
-      ref={setNodeRef}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition,
-      }}
-      {...attributes}
-    >
-      <IconGripVertical
-        aria-label="ドラッグアンドドロップで並び替える"
-        size={22}
-        cursor="grab"
-        {...listeners}
-      />
-      <ControlledSelect
-        control={control}
-        name={`UserParts.${index}.partIcon`}
-        data={partIcons}
-        w={130}
-      />
-      <ControlledTextInput
-        control={control}
-        name={`UserParts.${index}.remark`}
-        placeholder="パート詳細や経験年数等について教えてね"
-        flex="1"
-      />
-      <Button variant="subtle" color="red" size="xs" onClick={handleClickRemove}>
-        <IconTrash aria-label="削除" size={18} />
-      </Button>
-    </Group>
+    <>
+      <Group
+        ref={setNodeRef}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition,
+        }}
+        {...attributes}
+      >
+        <IconGripVertical
+          aria-label="ドラッグアンドドロップで並び替える"
+          size={22}
+          cursor="grab"
+          {...listeners}
+        />
+        <Flex direction={{ base: 'column', sm: 'row' }} gap="md" flex={1}>
+          <ControlledSelect
+            control={control}
+            name={`UserParts.${index}.partIcon`}
+            data={partIcons}
+            w={{ base: '100%', sm: 130 }}
+          />
+          <ControlledTextInput
+            control={control}
+            name={`UserParts.${index}.remark`}
+            placeholder="パート詳細や経験年数等について教えてね"
+            flex="1"
+          />
+        </Flex>
+        <ActionIcon aria-label="削除" variant="subtle" color="red" onClick={handleClickRemove}>
+          <IconTrash size={18} />
+        </ActionIcon>
+      </Group>
+      <Divider />
+    </>
   );
 };
 

@@ -44,7 +44,7 @@ const ControlledRichEditor = <T extends FieldValues>({
   return (
     <Input.Wrapper {...props} error={error?.message}>
       <RichTextEditor editor={editor}>
-        <RichTextEditor.Content ref={ref} />
+        <RichTextEditor.Content ref={ref} mih={100} />
       </RichTextEditor>
     </Input.Wrapper>
   );

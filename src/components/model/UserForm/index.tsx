@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Button, Paper, Space, Stack, Title } from '@mantine/core';
+import { Button, Flex, Paper, Space, Stack, Title } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
 import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
@@ -22,8 +22,10 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
       <Paper p="lg" radius="md" withBorder>
         <Stack>
           <Title order={2}>基本情報</Title>
-          <ControlledTextInput label="お名前" control={control} name="name" required />
-          <ControlledTextInput label="ニックネーム" control={control} name="nickname" />
+          <Flex direction={{ base: 'column', sm: 'row' }} gap="md">
+            <ControlledTextInput label="お名前" control={control} name="name" required />
+            <ControlledTextInput label="ニックネーム" control={control} name="nickname" />
+          </Flex>
           <ControlledRichEditor label="自己紹介" control={control} name="introduction" />
         </Stack>
       </Paper>
