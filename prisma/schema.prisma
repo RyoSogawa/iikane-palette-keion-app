@@ -55,6 +55,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   nickname      String?
+  residence     String?
   introduction  String?
   UserParts     UserPart[]
 }

@@ -51,6 +51,7 @@ export default async function MemberSinglePage({ params }: Props) {
           {user.nickname}
         </Text>
       )}
+      {user.residence && <Text mt={8}>{user.residence}</Text>}
       {user.introduction && (
         <Box
           mt={8}

@@ -8,6 +8,7 @@ const userUpdateProfileInputSchema = z.intersection(
     id: true,
     name: true,
     nickname: true,
+    residence: true,
     introduction: true,
   }),
   z.object({
@@ -38,11 +39,13 @@ export const updateProfile = protectedProcedure
         create: {
           name: input.name,
           nickname: input.nickname,
+          residence: input.residence,
           introduction: input.introduction,
         },
         update: {
           name: input.name,
           nickname: input.nickname,
+          residence: input.residence,
           introduction: input.introduction,
         },
       });
