@@ -36,6 +36,46 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
           <InstrumentExp control={control} />
         </Stack>
       </Paper>
+      <Paper p="lg" radius="md" mt={32} withBorder>
+        <Stack>
+          <Title order={2}>リンク</Title>
+          <ControlledTextInput
+            label="X/Twitter"
+            control={control}
+            name="twitterLink"
+            placeholder="https://twitter.com/..."
+            type="url"
+          />
+          <ControlledTextInput
+            label="Instagram"
+            control={control}
+            name="instagramLink"
+            placeholder="https://www.instagram.com/..."
+            type="url"
+          />
+          <ControlledTextInput
+            label="音楽等"
+            control={control}
+            name="musicLink"
+            placeholder="https://..."
+            type="url"
+          />
+          <ControlledTextInput
+            label="ポッドキャスト"
+            control={control}
+            name="podcastLink"
+            placeholder="https://..."
+            type="url"
+          />
+          <ControlledTextInput
+            label="Webサイト"
+            control={control}
+            name="websiteLink"
+            placeholder="https://..."
+            type="url"
+          />
+        </Stack>
+      </Paper>
       <Button type="submit" variant="filled" mt={32} loading={isLoading}>
         <IconCheck size={18} />
         <Space w={8} />

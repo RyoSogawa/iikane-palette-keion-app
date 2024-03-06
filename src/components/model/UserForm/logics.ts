@@ -10,7 +10,16 @@ import { NotificationOptions } from '@/constants/notification';
 
 export type UserFormValues = Pick<
   User,
-  'id' | 'name' | 'nickname' | 'residence' | 'introduction'
+  | 'id'
+  | 'name'
+  | 'nickname'
+  | 'residence'
+  | 'introduction'
+  | 'instagramLink'
+  | 'twitterLink'
+  | 'websiteLink'
+  | 'musicLink'
+  | 'podcastLink'
 > & {
   UserParts: Array<Pick<UserPart, 'id' | 'partIcon' | 'order' | 'remark'>>;
 };
