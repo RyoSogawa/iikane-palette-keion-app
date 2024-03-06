@@ -16,11 +16,11 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
       residence: true,
       introduction: true,
       image: true,
-      website: true,
+      websiteLink: true,
       musicLink: true,
       podcastLink: true,
-      instagramUsername: true,
-      twitterUsername: true,
+      instagramLink: true,
+      twitterLink: true,
       UserParts: {
         select: {
           id: true,

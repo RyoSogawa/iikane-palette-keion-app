@@ -10,11 +10,11 @@ const userUpdateProfileInputSchema = z.intersection(
     nickname: true,
     residence: true,
     introduction: true,
-    instagramUsername: true,
-    twitterUsername: true,
+    instagramLink: true,
+    twitterLink: true,
     musicLink: true,
     podcastLink: true,
-    website: true,
+    websiteLink: true,
   }),
   z.object({
     UserParts: z.array(
@@ -46,11 +46,11 @@ export const updateProfile = protectedProcedure
           nickname: input.nickname,
           residence: input.residence,
           introduction: input.introduction,
-          instagramUsername: input.instagramUsername,
-          twitterUsername: input.twitterUsername,
+          instagramLink: input.instagramLink,
+          twitterLink: input.twitterLink,
           musicLink: input.musicLink,
           podcastLink: input.podcastLink,
-          website: input.website,
+          websiteLink: input.websiteLink,
         },
       });
 
