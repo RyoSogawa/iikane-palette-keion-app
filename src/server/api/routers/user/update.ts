@@ -10,6 +10,11 @@ const userUpdateProfileInputSchema = z.intersection(
     nickname: true,
     residence: true,
     introduction: true,
+    instagramUsername: true,
+    twitterUsername: true,
+    musicLink: true,
+    podcastLink: true,
+    website: true,
   }),
   z.object({
     UserParts: z.array(
@@ -32,21 +37,20 @@ export const updateProfile = protectedProcedure
     }
 
     return ctx.db.$transaction(async (tx) => {
-      const user = await tx.user.upsert({
+      const user = await tx.user.update({
         where: {
           id: ctx.session.user.id,
         },
-        create: {
+        data: {
           name: input.name,
           nickname: input.nickname,
           residence: input.residence,
           introduction: input.introduction,
-        },
-        update: {
-          name: input.name,
-          nickname: input.nickname,
-          residence: input.residence,
-          introduction: input.introduction,
+          instagramUsername: input.instagramUsername,
+          twitterUsername: input.twitterUsername,
+          musicLink: input.musicLink,
+          podcastLink: input.podcastLink,
+          website: input.website,
         },
       });
 

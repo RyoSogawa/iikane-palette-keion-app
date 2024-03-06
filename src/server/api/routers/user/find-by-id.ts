@@ -14,6 +14,13 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
       name: true,
       nickname: true,
       residence: true,
+      introduction: true,
+      image: true,
+      website: true,
+      musicLink: true,
+      podcastLink: true,
+      instagramUsername: true,
+      twitterUsername: true,
       UserParts: {
         select: {
           id: true,
@@ -22,8 +29,6 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
           remark: true,
         },
       },
-      introduction: true,
-      image: true,
     },
   });
 });
