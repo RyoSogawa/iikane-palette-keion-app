@@ -27,7 +27,6 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
             <ControlledTextInput label="ニックネーム" control={control} name="nickname" flex={1} />
           </Flex>
           <ControlledTextInput label="お住まいの地域" control={control} name="residence" />
-          <ControlledRichEditor label="自己紹介" control={control} name="introduction" />
         </Stack>
       </Paper>
       <Paper p="lg" radius="md" mt={32} withBorder>
@@ -76,6 +75,13 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
           />
         </Stack>
       </Paper>
+      <ControlledRichEditor
+        label="自己紹介等"
+        mt={32}
+        labelProps={{ fz: 'lg', fw: 700 }}
+        control={control}
+        name="introduction"
+      />
       <Button type="submit" variant="filled" mt={32} loading={isLoading}>
         <IconCheck size={18} />
         <Space w={8} />
