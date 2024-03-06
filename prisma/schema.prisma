@@ -47,17 +47,23 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  nickname      String?
-  residence     String?
-  introduction  String?
-  UserParts     UserPart[]
+  id                String     @id @default(cuid())
+  createdAt         DateTime   @default(now())
+  name              String?
+  email             String?    @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  nickname          String?
+  residence         String?
+  introduction      String?
+  UserParts         UserPart[]
+  twitterUsername   String?
+  instagramUsername String?
+  musicLink         String?
+  podcastLink       String?
+  website           String?
 }
 
 model VerificationToken {
