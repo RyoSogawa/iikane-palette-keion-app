@@ -55,15 +55,15 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  nickname      String?
-  residence     String?
-  introduction  String?
+  nickname      String     @default("")
+  residence     String     @default("")
+  introduction  String     @default("")
   UserParts     UserPart[]
-  twitterLink   String?
-  instagramLink String?
-  musicLink     String?
-  podcastLink   String?
-  websiteLink   String?
+  twitterLink   String     @default("")
+  instagramLink String     @default("")
+  musicLink     String     @default("")
+  podcastLink   String     @default("")
+  websiteLink   String     @default("")
 }
 
 model VerificationToken {
@@ -92,5 +92,5 @@ model UserPart {
   userId   String
   partIcon PartIcon
   order    Int
-  remark   String?
+  remark   String   @default("")
 }
