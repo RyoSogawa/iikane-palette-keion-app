@@ -39,20 +39,6 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
         <Stack>
           <Title order={2}>リンク</Title>
           <ControlledTextInput
-            label="X/Twitter"
-            control={control}
-            name="twitterLink"
-            placeholder="https://twitter.com/..."
-            type="url"
-          />
-          <ControlledTextInput
-            label="Instagram"
-            control={control}
-            name="instagramLink"
-            placeholder="https://www.instagram.com/..."
-            type="url"
-          />
-          <ControlledTextInput
             label="音楽等"
             control={control}
             name="musicLink"
@@ -64,6 +50,20 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
             control={control}
             name="podcastLink"
             placeholder="https://..."
+            type="url"
+          />
+          <ControlledTextInput
+            label="X/Twitter"
+            control={control}
+            name="twitterLink"
+            placeholder="https://twitter.com/..."
+            type="url"
+          />
+          <ControlledTextInput
+            label="Instagram"
+            control={control}
+            name="instagramLink"
+            placeholder="https://www.instagram.com/..."
             type="url"
           />
           <ControlledTextInput
