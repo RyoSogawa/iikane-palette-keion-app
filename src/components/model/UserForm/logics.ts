@@ -2,7 +2,7 @@ import type React from 'react';
 import { useCallback } from 'react';
 
 import { showNotification } from '@mantine/notifications';
-import { type UserPart, type User } from '@prisma/client';
+import { type User } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 
 import { updateUserProfile } from '@/components/model/UserForm/server-actions';
@@ -20,9 +20,7 @@ export type UserFormValues = Pick<
   | 'websiteLink'
   | 'musicLink'
   | 'podcastLink'
-> & {
-  UserParts: Array<Pick<UserPart, 'id' | 'partIcon' | 'order' | 'remark'>>;
-};
+>;
 
 export const useUserForm = (defaultValues: UserFormValues) => {
   const {

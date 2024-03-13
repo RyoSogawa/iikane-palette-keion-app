@@ -6,7 +6,6 @@ import { Button, Flex, Paper, Space, Stack, Title } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
 import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
-import InstrumentExp from '@/components/model/UserForm/parts/InstrumentExp';
 import ControlledRichEditor from '@/components/ui/ControlledRichEditor';
 import ControlledTextInput from '@/components/ui/ControlledTextInput';
 
@@ -27,12 +26,6 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
             <ControlledTextInput label="ニックネーム" control={control} name="nickname" flex={1} />
           </Flex>
           <ControlledTextInput label="お住まいの地域" control={control} name="residence" />
-        </Stack>
-      </Paper>
-      <Paper p="lg" radius="md" mt={32} withBorder>
-        <Stack>
-          <Title order={2}>担当パート</Title>
-          <InstrumentExp control={control} />
         </Stack>
       </Paper>
       <Paper p="lg" radius="md" mt={32} withBorder>

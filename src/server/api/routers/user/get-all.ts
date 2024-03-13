@@ -6,12 +6,6 @@ export const getAll = publicProcedure.query(({ ctx }) => {
       id: true,
       name: true,
       nickname: true,
-      UserParts: {
-        select: {
-          id: true,
-          partIcon: true,
-        },
-      },
       introduction: true,
       image: true,
     },

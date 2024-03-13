@@ -21,14 +21,6 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
       podcastLink: true,
       instagramLink: true,
       twitterLink: true,
-      UserParts: {
-        select: {
-          id: true,
-          partIcon: true,
-          order: true,
-          remark: true,
-        },
-      },
     },
   });
 });
