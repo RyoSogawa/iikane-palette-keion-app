@@ -47,22 +47,23 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  createdAt     DateTime  @default(now())
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
   name          String?
-  email         String?   @unique
+  email         String?         @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  nickname      String    @default("")
-  residence     String    @default("")
-  introduction  String    @default("")
-  twitterLink   String    @default("")
-  instagramLink String    @default("")
-  musicLink     String    @default("")
-  podcastLink   String    @default("")
-  websiteLink   String    @default("")
+  nickname      String          @default("")
+  residence     String          @default("")
+  introduction  String          @default("")
+  twitterLink   String          @default("")
+  instagramLink String          @default("")
+  musicLink     String          @default("")
+  podcastLink   String          @default("")
+  websiteLink   String          @default("")
+  tags          UserOnUserTag[]
 }
 
 model VerificationToken {
@@ -71,4 +72,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model UserTag {
+  id        String          @id @default(cuid())
+  createdAt DateTime        @default(now())
+  name      String
+  users     UserOnUserTag[]
+}
+
+model UserOnUserTag {
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userTagId String
+  userTag   UserTag @relation(fields: [userTagId], references: [id], onDelete: Cascade)
+
+  @@id([userId, userTagId])
 }
