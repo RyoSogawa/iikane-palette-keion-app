@@ -47,23 +47,22 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  createdAt     DateTime   @default(now())
+  id            String    @id @default(cuid())
+  createdAt     DateTime  @default(now())
   name          String?
-  email         String?    @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  nickname      String     @default("")
-  residence     String     @default("")
-  introduction  String     @default("")
-  UserParts     UserPart[]
-  twitterLink   String     @default("")
-  instagramLink String     @default("")
-  musicLink     String     @default("")
-  podcastLink   String     @default("")
-  websiteLink   String     @default("")
+  nickname      String    @default("")
+  residence     String    @default("")
+  introduction  String    @default("")
+  twitterLink   String    @default("")
+  instagramLink String    @default("")
+  musicLink     String    @default("")
+  podcastLink   String    @default("")
+  websiteLink   String    @default("")
 }
 
 model VerificationToken {
@@ -72,25 +71,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-enum PartIcon {
-  VOCAL
-  GUITAR
-  BASS
-  DRUM
-  KEYBOARD
-  WIND
-  STRINGS
-  PERCUSSION
-  OTHERS
-}
-
-model UserPart {
-  id       String   @id @default(cuid())
-  user     User     @relation(fields: [userId], references: [id])
-  userId   String
-  partIcon PartIcon
-  order    Int
-  remark   String   @default("")
 }
