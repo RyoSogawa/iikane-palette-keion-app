@@ -22,7 +22,7 @@ const AccountMenuButton: React.FC = () => {
   }
 
   return (
-    <Menu>
+    <Menu position="bottom-end">
       <Menu.Target>
         <UnstyledButton aria-label="アカウントメニュー">
           <Avatar src={session.user.image} alt={session.user.name ?? 'アバター'} />
