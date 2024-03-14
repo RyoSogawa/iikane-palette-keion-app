@@ -1,14 +1,30 @@
 import React from 'react';
 
-import { Avatar, Box, Button, Container, Divider, Flex, Space, Text, Title } from '@mantine/core';
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Group,
+  Space,
+  Text,
+  Title,
+} from '@mantine/core';
 import { type User } from '@prisma/client';
 import { IconEdit, IconMapPin } from '@tabler/icons-react';
 import Link from 'next/link';
 
 import SnsLinks from '@/components/model/UserProfile/parts/SnsLinks';
+import { type UserTag } from '@/types/generated/zod';
 
 export type UserProfileProps = {
-  user: Omit<User, 'createdAt' | 'email' | 'emailVerified'>;
+  user: Omit<User, 'createdAt' | 'email' | 'emailVerified'> & {
+    tags: Array<{
+      userTag: Pick<UserTag, 'name'>;
+    }>;
+  };
   showsEditButton?: boolean;
 };
 
@@ -46,6 +62,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, showsEditButton }) => {
           </Flex>
         )}
       </Box>
+      <Group wrap="wrap" gap="sm" mt="md">
+        {user.tags?.map(({ userTag }) => (
+          <Text key={userTag.name} fz="xs">
+            #{userTag.name}
+          </Text>
+        ))}
+      </Group>
       <SnsLinks user={user} mt="md" />
       <Divider mt={16} />
       {user.introduction && (
