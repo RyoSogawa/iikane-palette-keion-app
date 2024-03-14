@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { AppShell as MantineAppShell, Container, Flex, Space, Title } from '@mantine/core';
+import { AppShell as MantineAppShell, Box, Container, Flex, Space, Title } from '@mantine/core';
 import Link from 'next/link';
 
 import AccountMenuButton from '@/components/model/AccountMenuButton';
@@ -17,11 +17,11 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
       <MantineAppShell.Header>
         <Container px={20} h="100%">
           <Flex align="center" h="100%">
-            <Link href="/">
+            <Box component={Link} href="/" td="none">
               <Title order={1} size="1rem" c="bright">
                 いいかねパレット軽音部
               </Title>
-            </Link>
+            </Box>
             <Space flex={1} />
             <AccountMenuButton />
           </Flex>
