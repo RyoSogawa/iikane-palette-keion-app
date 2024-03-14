@@ -21,6 +21,16 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
       podcastLink: true,
       instagramLink: true,
       twitterLink: true,
+      tags: {
+        select: {
+          userTag: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 });

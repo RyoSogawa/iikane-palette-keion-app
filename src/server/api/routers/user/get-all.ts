@@ -8,6 +8,16 @@ export const getAll = publicProcedure.query(({ ctx }) => {
       nickname: true,
       introduction: true,
       image: true,
+      tags: {
+        select: {
+          userTag: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 });
