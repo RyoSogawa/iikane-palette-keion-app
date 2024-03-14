@@ -51,7 +51,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, showsEditButton }) => {
           {user.name}
         </Title>
         {user.nickname && (
-          <Text c="dimmed" fz="xs" mt="xs">
+          <Text c="dimmed" fz="xs">
             {user.nickname}
           </Text>
         )}

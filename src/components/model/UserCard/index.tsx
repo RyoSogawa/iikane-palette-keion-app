@@ -16,7 +16,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
       <Group>
         <Avatar src={user.image} alt={user.name ?? 'アバター'} />
         <Box flex={1}>
-          <Text size="sm" fw={500} c="white" truncate="end">
+          <Text size="sm" fw={500} c="bright" truncate="end">
             {user.name}
           </Text>
           {user.nickname && (

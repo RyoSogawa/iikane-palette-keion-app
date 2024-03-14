@@ -18,7 +18,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
         <Container px={20} h="100%">
           <Flex align="center" h="100%">
             <Link href="/">
-              <Title order={1} size="1rem">
+              <Title order={1} size="1rem" c="bright">
                 いいかねパレット軽音部
               </Title>
             </Link>
