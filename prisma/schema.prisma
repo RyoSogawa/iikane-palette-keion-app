@@ -79,6 +79,8 @@ model UserTag {
   createdAt DateTime        @default(now())
   name      String
   users     UserOnUserTag[]
+
+  @@unique([name])
 }
 
 model UserOnUserTag {
