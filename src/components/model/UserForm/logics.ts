@@ -20,7 +20,9 @@ export type UserFormValues = Pick<
   | 'websiteLink'
   | 'musicLink'
   | 'podcastLink'
->;
+> & {
+  tags: string[];
+};
 
 export const useUserForm = (defaultValues: UserFormValues) => {
   const {

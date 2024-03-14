@@ -15,10 +15,11 @@ type Props = {
 };
 
 export default async function MemberEditPage({ params }: Props) {
-  const [user, session] = await Promise.all([
+  const [user, tags, session] = await Promise.all([
     api.user.findById.query({
       id: params.id,
     }),
+    api.userTag.getAll.query(),
     getServerAuthSession(),
   ]);
 
@@ -29,6 +30,11 @@ export default async function MemberEditPage({ params }: Props) {
   if (session?.user.id !== user.id) {
     throw new Error('アクセス権がありません');
   }
+
+  const userFormValues = {
+    ...user,
+    tags: user.tags.map((tag) => tag.userTag.name),
+  };
 
   return (
     <Container component="main" py={16}>
@@ -42,7 +48,7 @@ export default async function MemberEditPage({ params }: Props) {
       <Title order={1} mt={32} mb={16}>
         プロフィール編集
       </Title>
-      <UserForm user={user} />
+      <UserForm user={userFormValues} tags={tags} />
     </Container>
   );
 }

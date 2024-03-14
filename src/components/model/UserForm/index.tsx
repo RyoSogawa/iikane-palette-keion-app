@@ -6,14 +6,18 @@ import { Button, Flex, Paper, Space, Stack, Title } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
 import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
+import ControlledUserTagsInput, {
+  type ControlledUserTagsInputProps,
+} from '@/components/model/UserForm/parts/ControlledUserTagsInput';
 import ControlledRichEditor from '@/components/ui/ControlledRichEditor';
 import ControlledTextInput from '@/components/ui/ControlledTextInput';
 
 export type UserFormProps = {
   user: UserFormValues;
+  tags: ControlledUserTagsInputProps<UserFormValues>['tags'];
 };
 
-const UserForm: React.FC<UserFormProps> = ({ user }) => {
+const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
   const { handleSubmit, control, isLoading } = useUserForm(user);
 
   return (
@@ -26,6 +30,7 @@ const UserForm: React.FC<UserFormProps> = ({ user }) => {
             <ControlledTextInput label="ニックネーム" control={control} name="nickname" flex={1} />
           </Flex>
           <ControlledTextInput label="お住まいの地域" control={control} name="residence" />
+          <ControlledUserTagsInput tags={tags} control={control} name="tags" />
         </Stack>
       </Paper>
       <Paper p="lg" radius="md" mt={32} withBorder>
