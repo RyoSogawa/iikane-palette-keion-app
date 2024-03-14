@@ -17,7 +17,8 @@ const UserCardList: React.FC<UserCardListProps> = ({ users, ...props }) => {
         <Grid.Col
           key={user.id}
           span={{
-            base: 6,
+            base: 12,
+            sm: 6,
             md: 4,
           }}
         >

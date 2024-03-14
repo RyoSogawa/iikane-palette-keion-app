@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Avatar, Paper, Text, Title } from '@mantine/core';
+import { Avatar, Box, Group, Paper, Text } from '@mantine/core';
+import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 
 import type { User } from '@prisma/client';
@@ -11,27 +12,21 @@ export type UserCardProps = {
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (
-    <Paper component={Link} href={`/members/${user.id}`} p="lg" radius="md" withBorder>
-      <Avatar
-        src={user.image}
-        alt={user.name ?? 'アバター'}
-        mx="auto"
-        // Mantineのバグっぽい？
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        size={{
-          base: 60,
-          md: 120,
-        }}
-      />
-      <Title order={2} ta="center" fz="lg" c="white" fw={500} mt="md">
-        {user.name}
-      </Title>
-      {user.nickname && (
-        <Text ta="center" c="dimmed" fz="sm" mt={8}>
-          {user.nickname}
-        </Text>
-      )}
+    <Paper component={Link} href={`/members/${user.id}`} p="md" radius="md" bg="dark">
+      <Group>
+        <Avatar src={user.image} alt={user.name ?? 'アバター'} />
+        <Box flex={1}>
+          <Text size="sm" fw={500} c="white" truncate="end">
+            {user.name}
+          </Text>
+          {user.nickname && (
+            <Text c="dimmed" size="xs" truncate="end">
+              {user.nickname}
+            </Text>
+          )}
+        </Box>
+        <IconChevronRight stroke={1.5} size={18} color="gray" />
+      </Group>
     </Paper>
   );
 };
