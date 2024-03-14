@@ -6,15 +6,9 @@ import '../styles/global.css';
 import React from 'react';
 
 import { ColorSchemeScript } from '@mantine/core';
-import { Inter } from 'next/font/google';
 
 import AppShell from '@/components/application/AppShell';
 import Providers from '@/components/functional/Providers';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
 
 export const metadata = {
   title: 'いいかねパレット軽音部',
@@ -28,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <ColorSchemeScript />
       </head>
-      <body className={`font-sans ${inter.variable}`}>
+      <body>
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>
