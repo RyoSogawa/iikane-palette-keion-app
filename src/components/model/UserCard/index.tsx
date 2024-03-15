@@ -1,8 +1,12 @@
+'use client';
+
 import React from 'react';
 
 import { Avatar, Box, Group, Paper, Text, type PaperProps } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
+
+import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 
 import type { UserTag } from '@/types/generated/zod';
 import type { User } from '@prisma/client';
@@ -13,13 +17,18 @@ export type UserCardProps = Pick<PaperProps, 'bg' | 'withBorder'> & {
       userTag: Pick<UserTag, 'name'>;
     }>;
   };
+  isCurrentUser?: boolean;
 };
 
-const UserCard: React.FC<UserCardProps> = ({ user, ...props }) => {
+const UserCard: React.FC<UserCardProps> = ({ user, isCurrentUser, ...props }) => {
   return (
     <Paper component={Link} href={`/members/${user.id}`} p="md" h="100%" {...props}>
       <Group h="100%">
-        <Avatar src={user.image} alt={user.name ?? 'アバター'} />
+        {isCurrentUser ? (
+          <CurrentUserAvatar src={user.image} alt={user.name ?? ''} />
+        ) : (
+          <Avatar src={user.image} alt={user.name ?? ''} />
+        )}
         <Box flex={1}>
           <Text size="sm" fw={500} c="bright" truncate="end">
             {user.name}

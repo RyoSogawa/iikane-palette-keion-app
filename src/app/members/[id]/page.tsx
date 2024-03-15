@@ -22,5 +22,5 @@ export default async function MemberSinglePage({ params }: Props) {
     throw new Error('メンバーが見つかりませんでした');
   }
 
-  return <UserProfile user={user} showsEditButton={session?.user.id === user.id} />;
+  return <UserProfile user={user} isCurrentUser={session?.user.id === user.id} />;
 }
