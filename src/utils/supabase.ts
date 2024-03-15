@@ -1,13 +1,12 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { createBrowserClient } from '@supabase/ssr';
 
-import type { Database } from '@/types/supabase';
 import type { cookies } from 'next/headers';
 
 export const createSupabaseServerClient = (cookieStore: ReturnType<typeof cookies>) => {
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         get(name: string) {
@@ -37,7 +36,7 @@ export const createSupabaseServerClient = (cookieStore: ReturnType<typeof cookie
 };
 
 export const createSupabaseBrowserClient = () =>
-  createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   );

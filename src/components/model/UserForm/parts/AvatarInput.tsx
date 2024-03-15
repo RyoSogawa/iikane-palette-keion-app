@@ -24,7 +24,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
   const updateAvatarUpdatedAt = useAvatarUpdatedAt((store) => store.update);
 
   const handleChange = useCallback(
-    async (file: File) => {
+    async (file: File | null) => {
       setIsUploading(true);
       try {
         if (!file) {
@@ -47,8 +47,11 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         if (uploadError) {
           throw uploadError;
         }
+        if (!data) {
+          throw new Error('Failed to upload image.');
+        }
 
-        const imagePath = `${STORAGE_PATH}/${data.fullPath}`;
+        const imagePath = `${STORAGE_PATH}/profiles/${data.path}`;
 
         await updateUserAvatar({
           id: user.id,

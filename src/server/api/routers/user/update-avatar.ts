@@ -5,7 +5,6 @@ import { protectedProcedure } from '@/server/api/trpc';
 const userUpdateAvatarInputSchema = z.object({
   id: z.string(),
   image: z.string(),
-  file: z.custom<File>(),
 });
 
 export type UserUpdateAvatarInput = z.infer<typeof userUpdateAvatarInputSchema>;

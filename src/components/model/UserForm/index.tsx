@@ -6,7 +6,7 @@ import { Button, Flex, Paper, Space, Stack, Title } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 
 import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
-import AvatarInput from '@/components/model/UserForm/parts/AvatarInput';
+import AvatarInput, { type AvatarInputProps } from '@/components/model/UserForm/parts/AvatarInput';
 import ControlledUserTagsInput, {
   type ControlledUserTagsInputProps,
 } from '@/components/model/UserForm/parts/ControlledUserTagsInput';
@@ -14,7 +14,7 @@ import ControlledRichEditor from '@/components/ui/ControlledRichEditor';
 import ControlledTextInput from '@/components/ui/ControlledTextInput';
 
 export type UserFormProps = {
-  user: UserFormValues;
+  user: UserFormValues & AvatarInputProps['user'];
   tags: ControlledUserTagsInputProps<UserFormValues>['tags'];
 };
 
