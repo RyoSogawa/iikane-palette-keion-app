@@ -2,10 +2,13 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { FileButton, UnstyledButton } from '@mantine/core';
+import { FileButton, Flex, UnstyledButton } from '@mantine/core';
+import { showNotification } from '@mantine/notifications';
+import { IconCamera } from '@tabler/icons-react';
 
 import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import { updateUserAvatar } from '@/components/model/UserForm/server-actions';
+import { NotificationOptions } from '@/constants/notification';
 import { useAvatarUpdatedAt } from '@/store/avatar-updated-at';
 import { type User } from '@/types/generated/zod';
 import { createSupabaseBrowserClient } from '@/utils/supabase';
@@ -53,8 +56,13 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
 
         setSrc(imagePath);
         updateAvatarUpdatedAt();
+
+        showNotification({
+          ...NotificationOptions.success,
+          message: 'アバターを更新しました 📸',
+        });
       } catch (error) {
-        alert('Error uploading avatar!');
+        showNotification(NotificationOptions.error);
         console.error(error);
       } finally {
         setIsUploading(false);
@@ -66,8 +74,20 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
   return (
     <FileButton accept="image/*" disabled={isUploading} onChange={handleChange}>
       {(buttonProps) => (
-        <UnstyledButton aria-label="アバターを変更する" {...buttonProps}>
+        <UnstyledButton aria-label="アバターを変更する" {...buttonProps} pos="relative">
           <CurrentUserAvatar src={src} alt="" size={80} />
+          <Flex
+            pos="absolute"
+            inset={0}
+            align="center"
+            justify="center"
+            style={{
+              background: 'rgba(0,0,0,0.3)',
+              borderRadius: '50%',
+            }}
+          >
+            <IconCamera color="white" />
+          </Flex>
         </UnstyledButton>
       )}
     </FileButton>
