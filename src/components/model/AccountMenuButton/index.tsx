@@ -6,6 +6,8 @@ import { Avatar, Menu, Skeleton, UnstyledButton } from '@mantine/core';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
+import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
+
 const AccountMenuButton: React.FC = () => {
   const { data: session, status } = useSession();
 
@@ -25,7 +27,7 @@ const AccountMenuButton: React.FC = () => {
     <Menu position="bottom-end">
       <Menu.Target>
         <UnstyledButton aria-label="アカウントメニュー">
-          <Avatar src={session.user.image} alt={session.user.name ?? 'アバター'} />
+          <CurrentUserAvatar src={session.user.image} alt={session.user.name ?? 'アバター'} />
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>

@@ -2,9 +2,11 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { Avatar, FileButton, UnstyledButton } from '@mantine/core';
+import { FileButton, UnstyledButton } from '@mantine/core';
 
+import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import { updateUserAvatar } from '@/components/model/UserForm/server-actions';
+import { useAvatarUpdatedAt } from '@/store/avatar-updated-at';
 import { type User } from '@/types/generated/zod';
 import { createSupabaseBrowserClient } from '@/utils/supabase';
 
@@ -15,6 +17,7 @@ export type AvatarInputProps = {
 const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
   const [src, setSrc] = useState(user.image);
   const [isUploading, setIsUploading] = useState(false);
+  const updateAvatarUpdatedAt = useAvatarUpdatedAt((store) => store.update);
 
   const handleChange = useCallback(
     async (file: File) => {
@@ -49,6 +52,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         });
 
         setSrc(imagePath);
+        updateAvatarUpdatedAt();
       } catch (error) {
         alert('Error uploading avatar!');
         console.error(error);
@@ -56,14 +60,14 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         setIsUploading(false);
       }
     },
-    [user.id],
+    [updateAvatarUpdatedAt, user.id],
   );
 
   return (
     <FileButton accept="image/*" disabled={isUploading} onChange={handleChange}>
       {(buttonProps) => (
         <UnstyledButton aria-label="アバターを変更する" {...buttonProps}>
-          <Avatar src={src} alt="" size={80} />
+          <CurrentUserAvatar src={src} alt="" size={80} />
         </UnstyledButton>
       )}
     </FileButton>
