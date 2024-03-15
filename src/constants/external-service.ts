@@ -1,4 +1,4 @@
-export const IIKANE_GUILD_ID = '856807848125399060';
+export const IIKANE_GUILD_ID = process.env.NEXT_PUBLIC_IIKANE_GUILD_ID;
 
 export const LINK = {
   DISCORD: `https://discord.com/channels/${IIKANE_GUILD_ID}/`,
