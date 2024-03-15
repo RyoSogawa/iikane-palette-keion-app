@@ -9,6 +9,7 @@ import { IconCamera } from '@tabler/icons-react';
 import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import { updateUserAvatar } from '@/components/model/UserForm/server-actions';
 import { NotificationOptions } from '@/constants/notification';
+import { STORAGE_PATH } from '@/constants/supabase';
 import { useAvatarUpdatedAt } from '@/store/avatar-updated-at';
 import { type User } from '@/types/generated/zod';
 import { createSupabaseBrowserClient } from '@/utils/supabase';
@@ -38,7 +39,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
 
         const supabase = createSupabaseBrowserClient();
         const { data, error: uploadError } = await supabase.storage
-          .from('avatars')
+          .from('profiles')
           .upload(filename, file, {
             upsert: true,
           });
@@ -47,7 +48,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
           throw uploadError;
         }
 
-        const imagePath = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+        const imagePath = `${STORAGE_PATH}/${data.fullPath}`;
 
         await updateUserAvatar({
           id: user.id,
