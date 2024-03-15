@@ -12,6 +12,7 @@ const CurrentUserAvatar: React.FC<CurrentUserAvatarProps> = ({ src, ...props }) 
   const avatarUpdatedAt = useAvatarUpdatedAt((store) => store.avatarUpdatedAt);
 
   const srcWithUpdatedAt = useMemo(() => {
+    if (!src) return undefined;
     const url = new URL(src);
     url.searchParams.set('updatedAt', avatarUpdatedAt);
     return url.toString();
