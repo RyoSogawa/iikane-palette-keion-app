@@ -7,7 +7,7 @@ export default async function Home() {
   const users = await api.user.getAll.query();
 
   return (
-    <Container component="main" py={16}>
+    <Container py={16}>
       <Title order={2}>部員名簿</Title>
       <UserCardList users={users} mt={32} />
     </Container>
