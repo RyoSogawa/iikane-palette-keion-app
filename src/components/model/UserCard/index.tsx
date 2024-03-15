@@ -17,8 +17,8 @@ export type UserCardProps = Pick<PaperProps, 'bg' | 'withBorder'> & {
 
 const UserCard: React.FC<UserCardProps> = ({ user, ...props }) => {
   return (
-    <Paper component={Link} href={`/members/${user.id}`} p="md" {...props}>
-      <Group>
+    <Paper component={Link} href={`/members/${user.id}`} p="md" h="100%" {...props}>
+      <Group h="100%">
         <Avatar src={user.image} alt={user.name ?? 'アバター'} />
         <Box flex={1}>
           <Text size="sm" fw={500} c="bright" truncate="end">

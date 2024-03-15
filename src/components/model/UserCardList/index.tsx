@@ -13,7 +13,7 @@ export type UserCardListProps = GridProps & {
 const UserCardList: React.FC<UserCardListProps> = ({ users, ...props }) => {
   const { colorScheme } = useMantineColorScheme();
   return (
-    <Grid {...props}>
+    <Grid {...props} align="stretch">
       {users.map((user) => (
         <Grid.Col
           key={user.id}
