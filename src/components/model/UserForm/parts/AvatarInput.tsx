@@ -14,9 +14,11 @@ export type AvatarInputProps = {
 
 const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
   const [src, setSrc] = useState(user.image);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleChange = useCallback(
     async (file: File) => {
+      setIsUploading(true);
       try {
         if (!file) {
           throw new Error('You must select an image to upload.');
@@ -51,14 +53,14 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         alert('Error uploading avatar!');
         console.error(error);
       } finally {
-        // setUploading(false);
+        setIsUploading(false);
       }
     },
     [user.id],
   );
 
   return (
-    <FileButton accept="image/*" onChange={handleChange}>
+    <FileButton accept="image/*" disabled={isUploading} onChange={handleChange}>
       {(buttonProps) => (
         <UnstyledButton aria-label="アバターを変更する" {...buttonProps}>
           <Avatar src={src} alt="" size={80} />
