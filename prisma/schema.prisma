@@ -95,8 +95,7 @@ model UserOnUserTag {
 }
 
 enum OnboardingStep {
-  CREATE_ACCOUNT
-  UPDATE_PROFILE
+  VIEW_MY_PROFILE
 }
 
 model Onboarding {
