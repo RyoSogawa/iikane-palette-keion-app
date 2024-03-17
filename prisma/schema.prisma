@@ -65,6 +65,7 @@ model User {
   podcastLink   String          @default("")
   websiteLink   String          @default("")
   tags          UserOnUserTag[]
+  Onboarding    Onboarding[]
 }
 
 model VerificationToken {
@@ -91,4 +92,19 @@ model UserOnUserTag {
   userTag   UserTag @relation(fields: [userTagId], references: [id], onDelete: Cascade)
 
   @@id([userId, userTagId])
+}
+
+enum OnboardingStep {
+  CREATE_ACCOUNT
+  UPDATE_PROFILE
+}
+
+model Onboarding {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now())
+  userId    String
+  step      OnboardingStep
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, step])
 }
