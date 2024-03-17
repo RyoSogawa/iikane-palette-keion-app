@@ -35,6 +35,11 @@ declare module 'next-auth' {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  theme: {
+    colorScheme: 'dark',
+    // brandColor: "", // Hex color code
+    // logo: "", // Absolute URL to image
+  },
   callbacks: {
     session: ({ session, user }) => {
       return {
