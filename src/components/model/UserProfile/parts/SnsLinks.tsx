@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Group, type GroupProps } from '@mantine/core';
+import { Flex, type FlexProps } from '@mantine/core';
 import { type User } from '@prisma/client';
 import {
   IconBrandApplePodcast,
@@ -12,13 +12,13 @@ import {
 
 import SnsLink from '@/components/model/UserProfile/parts/SnsLink';
 
-export type SnsLinkProps = GroupProps & {
+export type SnsLinkProps = FlexProps & {
   user: Pick<User, 'instagramLink' | 'musicLink' | 'twitterLink' | 'websiteLink' | 'podcastLink'>;
 };
 
 const SnsLinks: React.FC<SnsLinkProps> = ({ user, ...props }) => {
   return (
-    <Group {...props}>
+    <Flex gap="sm" {...props}>
       {user.musicLink && (
         <SnsLink href={user.musicLink} aria-label="music link">
           <IconMusic />
@@ -44,7 +44,7 @@ const SnsLinks: React.FC<SnsLinkProps> = ({ user, ...props }) => {
           <IconWorldWww />
         </SnsLink>
       )}
-    </Group>
+    </Flex>
   );
 };
 

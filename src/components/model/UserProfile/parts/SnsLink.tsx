@@ -18,6 +18,7 @@ const SnsLink: React.FC<SnsLinkProps> = ({ children, href, 'aria-label': ariaLab
       target="_blank"
       rel="noreferrer"
       aria-label={ariaLabel}
+      radius="lg"
     >
       {children}
     </ActionIcon>
