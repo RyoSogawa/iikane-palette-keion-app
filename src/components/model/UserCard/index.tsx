@@ -27,7 +27,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, isCurrentUser, ...props }) =>
         {isCurrentUser ? (
           <CurrentUserAvatar src={user.image} alt={user.name ?? ''} />
         ) : (
-          <Avatar src={user.image} alt={user.name ?? ''} />
+          <Avatar src={user.image} alt={user.name ?? ''} imageProps={{ loading: 'lazy' }} />
         )}
         <Box flex={1}>
           <Text size="sm" fw={500} c="bright" truncate="end">

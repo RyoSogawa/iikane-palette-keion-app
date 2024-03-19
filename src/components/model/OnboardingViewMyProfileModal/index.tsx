@@ -33,7 +33,14 @@ const OnboardingViewMyProfileModal: React.FC = () => {
   if (status !== 'authenticated' || !session?.user) return null;
   return (
     <Modal opened={opened} title="ようこそ！🎉" onClose={close}>
-      <Avatar src={session.user.image} alt="" mx="auto" size={100} mt={24} />
+      <Avatar
+        src={session.user.image}
+        alt=""
+        mx="auto"
+        size={100}
+        mt={24}
+        imageProps={{ loading: 'lazy' }}
+      />
       <Text mt={24} ta="center">
         <Text display="inline-block" mr={4} span>
           <Text fw="bold" span>

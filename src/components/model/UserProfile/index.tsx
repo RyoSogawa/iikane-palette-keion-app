@@ -48,6 +48,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
           alt={user.name ?? 'アバター'}
           size={80}
           mx={{ base: 'unset', sm: 'auto' }}
+          imageProps={{ loading: 'lazy' }}
         />
       )}
       <Box mt="md">

@@ -18,7 +18,7 @@ const CurrentUserAvatar: React.FC<CurrentUserAvatarProps> = ({ src, ...props }) 
     return url.toString();
   }, [src, avatarUpdatedAt]);
 
-  return <Avatar src={srcWithUpdatedAt} {...props} />;
+  return <Avatar src={srcWithUpdatedAt} imageProps={{ loading: 'lazy' }} {...props} />;
 };
 
 export default CurrentUserAvatar;
