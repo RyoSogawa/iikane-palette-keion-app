@@ -2,10 +2,22 @@
 
 import React from 'react';
 
-import { AppShell as MantineAppShell, Box, Container, Flex, Space, Title } from '@mantine/core';
+import {
+  AppShell as MantineAppShell,
+  Box,
+  Text,
+  Container,
+  Flex,
+  Space,
+  Title,
+  Divider,
+} from '@mantine/core';
 import Link from 'next/link';
 
 import AccountMenuButton from '@/components/model/AccountMenuButton';
+import { LINK } from '@/constants/external-service';
+
+import s from './style.module.css';
 
 export type AppShellProps = {
   children: React.ReactNode;
@@ -27,7 +39,24 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
           </Flex>
         </Container>
       </MantineAppShell.Header>
-      <MantineAppShell.Main>{children}</MantineAppShell.Main>
+      <div className={s.wrapper}>
+        <MantineAppShell.Main className={s.main}>{children}</MantineAppShell.Main>
+        <Divider />
+        <Box component="footer" p="xs">
+          <Container>
+            <Flex align="center" gap="sm">
+              <Text fz="xs">&copy; ぱおん</Text>
+              <Space flex={1} />
+              <Link href={LINK.SUZURI} target="_blank" rel="noreferrer">
+                SUZURI
+              </Link>
+              <Link href={LINK.GITHUB} target="_blank" rel="noreferrer">
+                GitHub
+              </Link>
+            </Flex>
+          </Container>
+        </Box>
+      </div>
     </MantineAppShell>
   );
 };
