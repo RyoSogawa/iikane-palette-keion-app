@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { Avatar, Button, Group, Modal, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -10,6 +10,7 @@ import { useSession } from 'next-auth/react';
 import { api } from '@/trpc/react';
 
 const OnboardingViewMyProfileModal: React.FC = () => {
+  const hasOpened = useRef(false);
   const [opened, { open, close }] = useDisclosure();
   const { data: session, status } = useSession();
   const { data } = api.onboarding.findByCurrentUser.useQuery({
@@ -18,13 +19,14 @@ const OnboardingViewMyProfileModal: React.FC = () => {
   const { mutate } = api.onboarding.create.useMutation();
 
   useEffect(() => {
+    if (hasOpened.current) return;
     if (status === 'unauthenticated') return;
-    if (!data?.createdAt) {
+    if (data && !data?.createdAt) {
       open();
-      // TODO
-      // mutate({
-      //   step: 'VIEW_MY_PROFILE',
-      // });
+      mutate({
+        step: 'VIEW_MY_PROFILE',
+      });
+      hasOpened.current = true;
     }
   }, [data, mutate, open, status]);
 
