@@ -1,3 +1,4 @@
+import { fakerJA } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
 
 import { type UserTag } from '@/types/generated/zod';
@@ -7,7 +8,7 @@ export default async function seedUserTag() {
   const data: UserTag[] = Array(25)
     .fill(0)
     .map((_, i) => ({
-      id: i.toString(),
+      id: fakerJA.string.uuid(),
       name: `タグ${i}`,
       createdAt: new Date(),
     }));

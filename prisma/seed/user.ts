@@ -1,3 +1,4 @@
+import { fakerJA } from '@faker-js/faker';
 import { PrismaClient, type User } from '@prisma/client';
 
 export default async function seedUser() {
@@ -5,14 +6,14 @@ export default async function seedUser() {
   const data: User[] = Array(100)
     .fill(0)
     .map((_, i) => ({
-      id: i.toString(),
-      name: `テストユーザー${i}`,
+      id: fakerJA.string.uuid(),
+      name: fakerJA.person.fullName(),
       email: `email${i}@example.com`,
       createdAt: new Date(),
-      nickname: `ニックネーム${i}`,
-      residence: `住所${i}`,
-      introduction: `自己紹介${i}`,
-      image: `https://placeholder.com`,
+      nickname: fakerJA.person.middleName(),
+      residence: fakerJA.location.city(),
+      introduction: '',
+      image: fakerJA.image.avatar(),
       websiteLink: `https://example.com/website${i}`,
       twitterLink: `https://example.com/twitter${i}`,
       instagramLink: `https://example.com/instagram${i}`,
