@@ -1,0 +1,33 @@
+name: Prisma Migrate
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'prisma/**'
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: true
+
+      - run: rm -rf node_modules/.prisma
+
+      - name: Deploy Migrations
+        run: prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
