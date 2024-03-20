@@ -35,9 +35,10 @@ const ControlledUserTagsInput = <T extends FieldValues>({
   return (
     <TagsInput
       data={tagNames}
-      label="タグ"
+      label="タグ(10個まで)"
       maxTags={10}
       error={error?.message}
+      placeholder="Enterキーで追加"
       {...props}
       {...field}
     />
