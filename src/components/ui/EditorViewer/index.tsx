@@ -15,7 +15,7 @@ export type EditorViewerProps = Omit<RichTextEditorProps, 'editor' | 'children'>
 const EditorViewer: React.FC<EditorViewerProps> = ({ value, className, ...props }) => {
   const editor = useEditor({
     extensions: [StarterKit, LinkExtension],
-    content: JSON.parse(value) as Content,
+    content: value ? (JSON.parse(value) as Content) : undefined,
     editable: false,
   });
 

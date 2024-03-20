@@ -33,7 +33,7 @@ const ControlledRichEditor = <T extends FieldValues>({
 
   const editor = useEditor({
     extensions: [StarterKit, LinkExtension],
-    content: JSON.parse(value) as Content,
+    content: value ? (JSON.parse(value) as Content) : undefined,
     editable: !disabled,
     onBlur,
     onUpdate: (arg) => {
