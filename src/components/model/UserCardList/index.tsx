@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Grid, type GridProps, useMantineColorScheme } from '@mantine/core';
+import { Grid, type GridProps } from '@mantine/core';
 
 import UserCard, { type UserCardProps } from '@/components/model/UserCard';
 
@@ -12,7 +12,6 @@ export type UserCardListProps = GridProps & {
 };
 
 const UserCardList: React.FC<UserCardListProps> = ({ users, currentUserId, ...props }) => {
-  const { colorScheme } = useMantineColorScheme();
   return (
     <Grid {...props} align="stretch">
       {users.map((user) => (
@@ -24,12 +23,7 @@ const UserCardList: React.FC<UserCardListProps> = ({ users, currentUserId, ...pr
             md: 4,
           }}
         >
-          <UserCard
-            user={user}
-            isCurrentUser={user.id === currentUserId}
-            bg={colorScheme === 'dark' ? 'dark' : 'white'}
-            withBorder={colorScheme === 'light'}
-          />
+          <UserCard user={user} isCurrentUser={user.id === currentUserId} />
         </Grid.Col>
       ))}
     </Grid>

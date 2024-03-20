@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Avatar, Box, Group, Paper, Text, type PaperProps } from '@mantine/core';
+import { Avatar, Box, Group, Paper, Text } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 
@@ -11,7 +11,7 @@ import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import type { UserTag } from '@/types/generated/zod';
 import type { User } from '@prisma/client';
 
-export type UserCardProps = Pick<PaperProps, 'bg' | 'withBorder'> & {
+export type UserCardProps = {
   user: Pick<User, 'id' | 'name' | 'image'> & {
     tags: Array<{
       userTag: Pick<UserTag, 'name'>;
@@ -20,9 +20,9 @@ export type UserCardProps = Pick<PaperProps, 'bg' | 'withBorder'> & {
   isCurrentUser?: boolean;
 };
 
-const UserCard: React.FC<UserCardProps> = ({ user, isCurrentUser, ...props }) => {
+const UserCard: React.FC<UserCardProps> = ({ user, isCurrentUser }) => {
   return (
-    <Paper component={Link} href={`/members/${user.id}`} p="md" h="100%" {...props}>
+    <Paper component={Link} href={`/members/${user.id}`} p="md" h="100%" bg="dark">
       <Group h="100%">
         {isCurrentUser ? (
           <CurrentUserAvatar src={user.image} alt={user.name ?? ''} />
