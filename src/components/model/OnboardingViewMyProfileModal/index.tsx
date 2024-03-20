@@ -13,22 +13,27 @@ const OnboardingViewMyProfileModal: React.FC = () => {
   const hasOpened = useRef(false);
   const [opened, { open, close }] = useDisclosure();
   const { data: session, status } = useSession();
-  const { data } = api.onboarding.findByCurrentUser.useQuery({
-    step: 'VIEW_MY_PROFILE',
-  });
+  const { data, isFetched } = api.onboarding.findByCurrentUser.useQuery(
+    {
+      step: 'VIEW_MY_PROFILE',
+    },
+    {
+      enabled: status === 'authenticated',
+    },
+  );
   const { mutate } = api.onboarding.create.useMutation();
 
   useEffect(() => {
     if (hasOpened.current) return;
     if (status === 'unauthenticated') return;
-    if (data && !data?.createdAt) {
+    if (isFetched && !data?.createdAt) {
       open();
       mutate({
         step: 'VIEW_MY_PROFILE',
       });
       hasOpened.current = true;
     }
-  }, [data, mutate, open, status]);
+  }, [data?.createdAt, isFetched, mutate, open, status]);
 
   if (status !== 'authenticated' || !session?.user) return null;
   return (
