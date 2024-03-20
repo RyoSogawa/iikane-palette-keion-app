@@ -5,8 +5,6 @@ export const getAll = publicProcedure.query(({ ctx }) => {
     select: {
       id: true,
       name: true,
-      nickname: true,
-      introduction: true,
       image: true,
       tags: {
         select: {
@@ -18,6 +16,9 @@ export const getAll = publicProcedure.query(({ ctx }) => {
           },
         },
       },
+    },
+    orderBy: {
+      createdAt: 'desc',
     },
   });
 });
