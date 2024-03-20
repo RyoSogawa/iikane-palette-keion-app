@@ -4,6 +4,7 @@ import React from 'react';
 
 import { Input, type InputWrapperProps } from '@mantine/core';
 import { Link as LinkExtension, RichTextEditor } from '@mantine/tiptap';
+import { Placeholder } from '@tiptap/extension-placeholder';
 import { type Content, useEditor } from '@tiptap/react';
 import { StarterKit } from '@tiptap/starter-kit';
 import { type FieldValues, useController, type UseControllerProps } from 'react-hook-form';
@@ -12,13 +13,16 @@ export type ControlledRichEditorProps<T extends FieldValues> = Omit<
   InputWrapperProps,
   'error' | 'children'
 > &
-  Pick<UseControllerProps<T>, 'name' | 'control' | 'disabled' | 'rules'>;
+  Pick<UseControllerProps<T>, 'name' | 'control' | 'disabled' | 'rules'> & {
+    placeholder?: string;
+  };
 
 const ControlledRichEditor = <T extends FieldValues>({
   name,
   control,
   disabled,
   rules,
+  placeholder,
   ...props
 }: ControlledRichEditorProps<T>) => {
   const {
@@ -32,7 +36,7 @@ const ControlledRichEditor = <T extends FieldValues>({
   });
 
   const editor = useEditor({
-    extensions: [StarterKit, LinkExtension],
+    extensions: [StarterKit, LinkExtension, Placeholder.configure({ placeholder })],
     content: value ? (JSON.parse(value) as Content) : undefined,
     editable: !disabled,
     onBlur,

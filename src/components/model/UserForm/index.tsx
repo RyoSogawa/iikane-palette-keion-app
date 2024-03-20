@@ -25,10 +25,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
     <form onSubmit={handleSubmit}>
       <Paper p="lg" radius="md" withBorder>
         <Stack>
-          <Title order={2}>基本情報</Title>
-          <div>
-            <AvatarInput user={user} />
-          </div>
+          <AvatarInput user={user} />
           <Flex direction={{ base: 'column', sm: 'row' }} gap="md" w="100%">
             <ControlledTextInput label="お名前" control={control} name="name" flex={1} required />
             <ControlledTextInput label="ニックネーム" control={control} name="nickname" flex={1} />
@@ -83,6 +80,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
         labelProps={{ fz: 'lg', fw: 700 }}
         control={control}
         name="introduction"
+        placeholder="スペースならある。半生でも好きな音楽でも自由に語りたまえ。"
       />
       <Button type="submit" variant="filled" mt={32} loading={isLoading}>
         <IconCheck size={18} />

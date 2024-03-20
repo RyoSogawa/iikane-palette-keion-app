@@ -76,25 +76,27 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
   );
 
   return (
-    <FileButton accept="image/*" disabled={isUploading} onChange={handleChange}>
-      {(buttonProps) => (
-        <UnstyledButton aria-label="アバターを変更する" {...buttonProps} pos="relative">
-          <CurrentUserAvatar src={src} alt="" size={80} />
-          <Flex
-            pos="absolute"
-            inset={0}
-            align="center"
-            justify="center"
-            style={{
-              background: 'rgba(0,0,0,0.3)',
-              borderRadius: '50%',
-            }}
-          >
-            <IconCamera color="white" />
-          </Flex>
-        </UnstyledButton>
-      )}
-    </FileButton>
+    <div>
+      <FileButton accept="image/*" disabled={isUploading} onChange={handleChange}>
+        {(buttonProps) => (
+          <UnstyledButton aria-label="アバターを変更する" {...buttonProps} pos="relative">
+            <CurrentUserAvatar src={src} alt="" size={80} />
+            <Flex
+              pos="absolute"
+              inset={0}
+              align="center"
+              justify="center"
+              style={{
+                background: 'rgba(0,0,0,0.3)',
+                borderRadius: '50%',
+              }}
+            >
+              <IconCamera color="white" />
+            </Flex>
+          </UnstyledButton>
+        )}
+      </FileButton>
+    </div>
   );
 };
 
