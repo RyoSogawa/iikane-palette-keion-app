@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Input, type InputWrapperProps } from '@mantine/core';
 import { Link as LinkExtension, RichTextEditor } from '@mantine/tiptap';
-import { useEditor } from '@tiptap/react';
+import { type Content, useEditor } from '@tiptap/react';
 import { StarterKit } from '@tiptap/starter-kit';
 import { type FieldValues, useController, type UseControllerProps } from 'react-hook-form';
 
@@ -33,11 +33,11 @@ const ControlledRichEditor = <T extends FieldValues>({
 
   const editor = useEditor({
     extensions: [StarterKit, LinkExtension],
-    content: value,
+    content: JSON.parse(value) as Content,
     editable: !disabled,
     onBlur,
     onUpdate: (arg) => {
-      onChange(arg.editor.getHTML());
+      onChange(JSON.stringify(arg.editor.getJSON()));
     },
   });
 

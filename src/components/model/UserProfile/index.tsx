@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import SnsLinks from '@/components/model/UserProfile/parts/SnsLinks';
+import EditorViewer from '@/components/ui/EditorViewer';
 import { type UserTag } from '@/types/generated/zod';
 
 export type UserProfileProps = {
@@ -84,13 +85,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
       <SnsLinks user={user} mt="md" justify={{ base: 'flex-start', sm: 'center' }} />
       <Divider mt={32} />
       {user.introduction && (
-        <Box
-          mt={32}
-          mx={{ base: 0, sm: 32 }}
-          dangerouslySetInnerHTML={{
-            __html: user.introduction,
-          }}
-        />
+        <EditorViewer value={user.introduction} mt={32} mx={{ base: 0, sm: 32 }} />
       )}
     </Container>
   );
