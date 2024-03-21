@@ -82,7 +82,16 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
         name="introduction"
         placeholder="スペースならある。半生でも好きな音楽でも自由に語りたまえ。"
       />
-      <Button type="submit" variant="filled" mt={32} loading={isLoading}>
+      <Button
+        type="submit"
+        variant="filled"
+        mt={40}
+        loading={isLoading}
+        size="md"
+        maw={400}
+        mx="auto"
+        fullWidth
+      >
         <IconCheck size={18} />
         <Space w={8} />
         保存
