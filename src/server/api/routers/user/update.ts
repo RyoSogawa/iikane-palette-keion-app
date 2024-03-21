@@ -46,42 +46,42 @@ export const updateProfile = protectedProcedure
         },
       });
 
-      await tx.userOnUserTag.deleteMany({
-        where: {
-          AND: {
-            NOT: {
-              userTagId: {
-                in: userTags.map((tag) => tag.id),
-              },
-            },
-            userId: input.id,
+      await Promise.all([
+        tx.user.update({
+          where: {
+            id: input.id,
           },
-        },
-      });
-
-      await tx.userOnUserTag.createMany({
-        data: userTags.map((tag) => ({
-          userTagId: tag.id,
-          userId: input.id,
-        })),
-        skipDuplicates: true,
-      });
-
-      return tx.user.update({
-        where: {
-          id: input.id,
-        },
-        data: {
-          name: input.name,
-          nickname: input.nickname,
-          residence: input.residence,
-          introduction: input.introduction,
-          instagramLink: input.instagramLink,
-          twitterLink: input.twitterLink,
-          musicLink: input.musicLink,
-          podcastLink: input.podcastLink,
-          websiteLink: input.websiteLink,
-        },
-      });
+          data: {
+            name: input.name,
+            nickname: input.nickname,
+            residence: input.residence,
+            introduction: input.introduction,
+            instagramLink: input.instagramLink,
+            twitterLink: input.twitterLink,
+            musicLink: input.musicLink,
+            podcastLink: input.podcastLink,
+            websiteLink: input.websiteLink,
+          },
+        }),
+        tx.userOnUserTag.deleteMany({
+          where: {
+            AND: {
+              NOT: {
+                userTagId: {
+                  in: userTags.map((tag) => tag.id),
+                },
+              },
+              userId: input.id,
+            },
+          },
+        }),
+        tx.userOnUserTag.createMany({
+          data: userTags.map((tag) => ({
+            userTagId: tag.id,
+            userId: input.id,
+          })),
+          skipDuplicates: true,
+        }),
+      ]);
     });
   });
