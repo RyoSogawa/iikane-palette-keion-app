@@ -14,7 +14,8 @@
     "prettier": "prettier \"./src/**/*.(js|ts|jsx|tsx)\"",
     "lint": "eslint ./src",
     "format": "pnpm lint --fix && pnpm prettier --write",
-    "start": "next start"
+    "start": "next start",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.4.0",
@@ -67,6 +68,8 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unused-imports": "^3.1.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.2.2",
     "postcss": "^8.4.34",
     "postcss-preset-mantine": "^1.13.0",
     "postcss-simple-vars": "^7.0.1",
