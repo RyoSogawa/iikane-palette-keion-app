@@ -48,10 +48,13 @@ export const updateProfile = protectedProcedure
 
       await tx.userOnUserTag.deleteMany({
         where: {
-          NOT: {
-            userTagId: {
-              in: userTags.map((tag) => tag.id),
+          AND: {
+            NOT: {
+              userTagId: {
+                in: userTags.map((tag) => tag.id),
+              },
             },
+            userId: input.id,
           },
         },
       });
@@ -59,14 +62,14 @@ export const updateProfile = protectedProcedure
       await tx.userOnUserTag.createMany({
         data: userTags.map((tag) => ({
           userTagId: tag.id,
-          userId: ctx.session.user.id,
+          userId: input.id,
         })),
         skipDuplicates: true,
       });
 
       return tx.user.update({
         where: {
-          id: ctx.session.user.id,
+          id: input.id,
         },
         data: {
           name: input.name,
