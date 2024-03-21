@@ -2,7 +2,8 @@
 
 import React from 'react';
 
-import { Avatar, Menu, Skeleton, UnstyledButton } from '@mantine/core';
+import { Avatar, Menu, Skeleton, Tooltip, UnstyledButton } from '@mantine/core';
+import { IconLogin } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
@@ -17,9 +18,13 @@ const AccountMenuButton: React.FC = () => {
 
   if (!session) {
     return (
-      <UnstyledButton component={Link} href="/api/auth/signin" aria-label="ログイン">
-        <Avatar />
-      </UnstyledButton>
+      <Tooltip label="ログイン">
+        <UnstyledButton component={Link} href="/api/auth/signin" aria-label="ログイン">
+          <Avatar>
+            <IconLogin />
+          </Avatar>
+        </UnstyledButton>
+      </Tooltip>
     );
   }
 
