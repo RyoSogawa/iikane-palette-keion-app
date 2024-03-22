@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { FileButton, Flex, UnstyledButton } from '@mantine/core';
+import { FileButton, Flex, Skeleton, UnstyledButton } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconCamera } from '@tabler/icons-react';
 
@@ -60,19 +60,25 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
       <FileButton accept="image/*" disabled={isUploading} onChange={handleChange}>
         {(buttonProps) => (
           <UnstyledButton aria-label="アバターを変更する" {...buttonProps} pos="relative">
-            <CurrentUserAvatar src={src} alt="" size={80} />
-            <Flex
-              pos="absolute"
-              inset={0}
-              align="center"
-              justify="center"
-              style={{
-                background: 'rgba(0,0,0,0.3)',
-                borderRadius: '50%',
-              }}
-            >
-              <IconCamera color="white" />
-            </Flex>
+            {isUploading ? (
+              <Skeleton w={80} h={80} circle />
+            ) : (
+              <>
+                <CurrentUserAvatar src={src} alt="" size={80} />
+                <Flex
+                  pos="absolute"
+                  inset={0}
+                  align="center"
+                  justify="center"
+                  style={{
+                    background: 'rgba(0,0,0,0.3)',
+                    borderRadius: '50%',
+                  }}
+                >
+                  <IconCamera color="white" />
+                </Flex>
+              </>
+            )}
           </UnstyledButton>
         )}
       </FileButton>
