@@ -87,7 +87,7 @@ dependencies:
     specifier: ^0.0.1
     version: 0.0.1
   sharp:
-    specifier: ^0.32.6
+    specifier: 0.32.6
     version: 0.32.6
   superjson:
     specifier: ^2.2.1
