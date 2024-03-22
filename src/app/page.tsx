@@ -1,5 +1,6 @@
 import { Container, Title } from '@mantine/core';
 
+import SearchParamController from '@/components/functional/SearchParamController';
 import OnboardingViewMyProfileModal from '@/components/model/OnboardingViewMyProfileModal';
 import UserCardList from '@/components/model/UserCardList';
 import { getServerAuthSession } from '@/server/auth';
@@ -26,6 +27,7 @@ export default async function Home({
       <Title order={2}>部員名簿</Title>
       <UserCardList users={users} mt={32} />
       {session && shouldShowOnboarding && <OnboardingViewMyProfileModal user={session.user} />}
+      <SearchParamController paramsToRemove={['login-callback']} />
     </Container>
   );
 }
