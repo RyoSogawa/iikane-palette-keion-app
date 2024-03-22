@@ -8,10 +8,9 @@ import UserCard, { type UserCardProps } from '@/components/model/UserCard';
 
 export type UserCardListProps = GridProps & {
   users: UserCardProps['user'][];
-  currentUserId?: string;
 };
 
-const UserCardList: React.FC<UserCardListProps> = ({ users, currentUserId, ...props }) => {
+const UserCardList: React.FC<UserCardListProps> = ({ users, ...props }) => {
   return (
     <Grid {...props} align="stretch">
       {users.map((user) => (
@@ -23,7 +22,7 @@ const UserCardList: React.FC<UserCardListProps> = ({ users, currentUserId, ...pr
             md: 4,
           }}
         >
-          <UserCard user={user} isCurrentUser={user.id === currentUserId} />
+          <UserCard user={user} />
         </Grid.Col>
       ))}
     </Grid>

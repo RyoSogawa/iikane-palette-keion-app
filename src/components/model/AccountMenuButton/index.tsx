@@ -7,8 +7,6 @@ import { IconLogin, IconLogout, IconSettings, IconUser } from '@tabler/icons-rea
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
-import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
-
 const AccountMenuButton: React.FC = () => {
   const { data: session, status } = useSession();
 
@@ -32,7 +30,11 @@ const AccountMenuButton: React.FC = () => {
     <Menu position="bottom-end">
       <Menu.Target>
         <UnstyledButton aria-label="アカウントメニュー">
-          <CurrentUserAvatar src={session.user.image} alt={session.user.name ?? 'アバター'} />
+          <Avatar
+            src={session.user.image}
+            alt={session.user.name ?? 'アバター'}
+            imageProps={{ loading: 'lazy' }}
+          />
         </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown>

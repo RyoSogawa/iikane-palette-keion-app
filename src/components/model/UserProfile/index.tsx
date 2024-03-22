@@ -5,7 +5,6 @@ import { type User } from '@prisma/client';
 import { IconEdit, IconMapPin } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import SnsLinks from '@/components/model/UserProfile/parts/SnsLinks';
 import EditorViewer from '@/components/ui/EditorViewer';
 import { type UserTag } from '@/types/generated/zod';
@@ -36,22 +35,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
           編集
         </Button>
       )}
-      {isCurrentUser ? (
-        <CurrentUserAvatar
-          src={user.image}
-          alt={user.name ?? 'アバター'}
-          size={80}
-          mx={{ base: 'unset', sm: 'auto' }}
-        />
-      ) : (
-        <Avatar
-          src={user.image}
-          alt={user.name ?? 'アバター'}
-          size={80}
-          mx={{ base: 'unset', sm: 'auto' }}
-          imageProps={{ loading: 'lazy' }}
-        />
-      )}
+      <Avatar
+        src={user.image}
+        alt={user.name ?? 'アバター'}
+        size={80}
+        mx={{ base: 'unset', sm: 'auto' }}
+        imageProps={{ loading: 'lazy' }}
+      />
       <Box mt="md">
         <Title order={1} size="h2" ta={{ base: 'left', sm: 'center' }}>
           {user.name}

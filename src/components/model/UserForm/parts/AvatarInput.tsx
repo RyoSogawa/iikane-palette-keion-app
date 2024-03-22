@@ -2,14 +2,13 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { FileButton, Flex, Skeleton, UnstyledButton } from '@mantine/core';
+import { Avatar, FileButton, Flex, Skeleton, UnstyledButton } from '@mantine/core';
 import { showNotification } from '@mantine/notifications';
 import { IconCamera } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
 
-import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import { updateUserAvatar } from '@/components/model/UserForm/actions';
 import { NotificationOptions } from '@/constants/notification';
-import { useAvatarUpdatedAt } from '@/store/avatar-updated-at';
 import { type User } from '@/types/generated/zod';
 
 export type AvatarInputProps = {
@@ -18,8 +17,8 @@ export type AvatarInputProps = {
 
 const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
   const [src, setSrc] = useState(user.image);
+  const { update } = useSession();
   const [isUploading, setIsUploading] = useState(false);
-  const updateAvatarUpdatedAt = useAvatarUpdatedAt((store) => store.update);
 
   const handleChange = useCallback(
     async (file: File | null) => {
@@ -39,7 +38,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         const imagePath = await updateUserAvatar(formData);
 
         setSrc(imagePath);
-        updateAvatarUpdatedAt();
+        await update({ image: imagePath });
 
         showNotification({
           ...NotificationOptions.success,
@@ -52,7 +51,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         setIsUploading(false);
       }
     },
-    [updateAvatarUpdatedAt, user.id],
+    [update, user.id],
   );
 
   return (
@@ -64,7 +63,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
               <Skeleton w={80} h={80} circle />
             ) : (
               <>
-                <CurrentUserAvatar src={src} alt="" size={80} />
+                <Avatar src={src} alt="" size={80} imageProps={{ loading: 'lazy' }} />
                 <Flex
                   pos="absolute"
                   inset={0}

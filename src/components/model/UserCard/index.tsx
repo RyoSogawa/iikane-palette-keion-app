@@ -6,8 +6,6 @@ import { Avatar, Box, Group, Paper, Text } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
-
 import type { UserTag } from '@/types/generated/zod';
 import type { User } from '@prisma/client';
 
@@ -17,18 +15,13 @@ export type UserCardProps = {
       userTag: Pick<UserTag, 'name'>;
     }>;
   };
-  isCurrentUser?: boolean;
 };
 
-const UserCard: React.FC<UserCardProps> = ({ user, isCurrentUser }) => {
+const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (
     <Paper component={Link} href={`/members/${user.id}`} p="md" h="100%" bg="dark">
       <Group h="100%">
-        {isCurrentUser ? (
-          <CurrentUserAvatar src={user.image} alt={user.name ?? ''} />
-        ) : (
-          <Avatar src={user.image} alt={user.name ?? ''} imageProps={{ loading: 'lazy' }} />
-        )}
+        <Avatar src={user.image} alt={user.name ?? ''} imageProps={{ loading: 'lazy' }} />
         <Box flex={1}>
           <Text size="sm" fw={500} c="bright" truncate="end">
             {user.name}
