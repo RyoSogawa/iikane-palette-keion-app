@@ -7,7 +7,7 @@ import { showNotification } from '@mantine/notifications';
 import { IconCamera } from '@tabler/icons-react';
 
 import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
-import { updateUserAvatar } from '@/components/model/UserForm/server-actions';
+import { updateUserAvatar } from '@/components/model/UserForm/actions';
 import { NotificationOptions } from '@/constants/notification';
 import { useAvatarUpdatedAt } from '@/store/avatar-updated-at';
 import { type User } from '@/types/generated/zod';
