@@ -18,20 +18,23 @@ export const updateUserProfile = async (input: UserUpdateProfileInput) => {
 };
 
 export const updateUserAvatar = async (formData: FormData) => {
+  console.log(1, formData);
   const userId = formData.get('userId') as string;
   const file = formData.get('file') as File;
 
   const cookieStore = cookies();
   const supabase = createSupabaseServerClient(cookieStore);
+  console.log(2);
 
   const { data: existingData } = await supabase.storage.from('profiles').list(userId, {
     search: 'avatar',
   });
+  console.log(3, existingData);
   if (existingData) {
     const filePaths = existingData.map((existingFile) => `${userId}/${existingFile.name}`);
     await supabase.storage.from('profiles').remove(filePaths);
+    console.log(4, filePaths);
   }
-
   const compressedFile = await sharp(await file.arrayBuffer())
     .webp({ quality: 90, nearLossless: true })
     .resize({
@@ -41,6 +44,7 @@ export const updateUserAvatar = async (formData: FormData) => {
     })
     .toBuffer();
 
+  console.log(5, compressedFile);
   const newFilename = `${userId}/avatar${new Date().getTime()}.webp`;
   const { data, error: uploadError } = await supabase.storage
     .from('profiles')
@@ -48,6 +52,7 @@ export const updateUserAvatar = async (formData: FormData) => {
       upsert: true,
     });
 
+  console.log(6, data, uploadError);
   if (uploadError) {
     throw uploadError;
   }
