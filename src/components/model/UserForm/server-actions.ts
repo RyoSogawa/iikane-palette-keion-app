@@ -24,7 +24,15 @@ export const updateUserAvatar = async (formData: FormData) => {
   const cookieStore = cookies();
   const supabase = createSupabaseServerClient(cookieStore);
 
-  const filename = `${userId}/avatar.webp`;
+  const { data: existingData } = await supabase.storage.from('profiles').list(userId, {
+    search: 'avatar',
+  });
+  if (existingData) {
+    const filePaths = existingData.map((existingFile) => `${userId}/${existingFile.name}`);
+    await supabase.storage.from('profiles').remove(filePaths);
+  }
+
+  const filename = `${userId}/avatar${new Date().getTime()}.webp`;
 
   const compressedFile = await sharp(await file.arrayBuffer())
     .webp({ quality: 90, nearLossless: true })
