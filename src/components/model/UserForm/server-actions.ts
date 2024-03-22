@@ -26,9 +26,13 @@ export const updateUserAvatar = async (formData: FormData) => {
 
   const filename = `${userId}/avatar.webp`;
 
-  // 圧縮
   const compressedFile = await sharp(await file.arrayBuffer())
-    .webp({ quality: 80 })
+    .webp({ quality: 90, nearLossless: true })
+    .resize({
+      width: 600,
+      height: 600,
+      fit: 'cover',
+    })
     .toBuffer();
 
   const { data, error: uploadError } = await supabase.storage
@@ -50,6 +54,7 @@ export const updateUserAvatar = async (formData: FormData) => {
     id: userId,
     image: imagePath,
   });
+
   revalidatePath(`/members/${userId}`);
 
   return imagePath;
