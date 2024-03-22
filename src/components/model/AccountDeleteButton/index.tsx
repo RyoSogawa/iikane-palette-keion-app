@@ -12,7 +12,7 @@ import { deleteAccount } from '@/components/model/AccountDeleteButton/actions';
 import { NotificationOptions } from '@/constants/notification';
 
 const AccountDeleteButton: React.FC = () => {
-  const { data: session, status, update } = useSession();
+  const { data: session, status } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -35,7 +35,7 @@ const AccountDeleteButton: React.FC = () => {
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [session?.user.id, update]);
+  }, [session?.user.id]);
 
   return (
     <>
