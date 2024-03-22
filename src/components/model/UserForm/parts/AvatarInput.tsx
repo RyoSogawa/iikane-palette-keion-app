@@ -9,10 +9,8 @@ import { IconCamera } from '@tabler/icons-react';
 import CurrentUserAvatar from '@/components/model/CurrentUserAvatar';
 import { updateUserAvatar } from '@/components/model/UserForm/server-actions';
 import { NotificationOptions } from '@/constants/notification';
-import { STORAGE_PATH } from '@/constants/supabase';
 import { useAvatarUpdatedAt } from '@/store/avatar-updated-at';
 import { type User } from '@/types/generated/zod';
-import { createSupabaseBrowserClient } from '@/utils/supabase';
 
 export type AvatarInputProps = {
   user: Pick<User, 'id' | 'image'>;
@@ -34,29 +32,11 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         if (!file.type.match('image.*')) {
           throw new Error('You must select an image to upload.');
         }
-        const fileExt = file.name.split('.').pop();
-        const filename = `${user.id}/avatar.${fileExt}`;
 
-        const supabase = createSupabaseBrowserClient();
-        const { data, error: uploadError } = await supabase.storage
-          .from('profiles')
-          .upload(filename, file, {
-            upsert: true,
-          });
-
-        if (uploadError) {
-          throw uploadError;
-        }
-        if (!data) {
-          throw new Error('Failed to upload image.');
-        }
-
-        const imagePath = `${STORAGE_PATH}/profiles/${data.path}`;
-
-        await updateUserAvatar({
-          id: user.id,
-          image: imagePath,
-        });
+        const formData = new FormData();
+        formData.append('userId', user.id);
+        formData.append('file', file);
+        const imagePath = await updateUserAvatar(formData);
 
         setSrc(imagePath);
         updateAvatarUpdatedAt();
