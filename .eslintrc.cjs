@@ -40,6 +40,7 @@ const config = {
 
     'arrow-body-style': 'off',
     'no-alert': 'off',
+    'no-void': 'off',
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/jsx-no-target-blank': 2,
