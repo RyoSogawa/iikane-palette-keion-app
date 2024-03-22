@@ -9,6 +9,6 @@ export const NotificationOptions = {
   error: {
     withCloseButton: true,
     color: 'red',
-    message: 'エラーが発生しました🙏🏽',
+    message: 'エラーが発生しました👀',
   },
 } as const satisfies Record<string, Parameters<typeof showNotification>[0]>;

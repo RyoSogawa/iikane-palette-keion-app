@@ -13,7 +13,7 @@ export default function Error({ error }: { error: Error & { digest?: string } })
   return (
     <Container component="main" py={16} ta="center">
       <Text display="block" fz={64}>
-        🙏
+        👀
       </Text>
       <Title size={18} mt={8}>
         {error.message}
