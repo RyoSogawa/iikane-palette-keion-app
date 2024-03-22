@@ -5,11 +5,16 @@ import UserCardList from '@/components/model/UserCardList';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
   const [users, session] = await Promise.all([api.user.getAll.query(), getServerAuthSession()]);
 
   let shouldShowOnboarding = false;
-  if (session) {
+  // ログイン後にTOPに飛ばされたときだけfetchさせる
+  if (searchParams['login-callback'] === 'true' && session) {
     const onboarding = await api.onboarding.findByCurrentUser.query({
       step: 'VIEW_MY_PROFILE',
     });

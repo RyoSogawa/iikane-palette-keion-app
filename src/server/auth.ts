@@ -41,6 +41,9 @@ export const authOptions: NextAuthOptions = {
     // logo: "", // Absolute URL to image
   },
   callbacks: {
+    redirect: () => {
+      return '/?login-callback=true';
+    },
     session: ({ session, user }) => {
       return {
         ...session,
