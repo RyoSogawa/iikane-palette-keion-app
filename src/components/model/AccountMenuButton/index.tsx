@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { Avatar, Menu, Skeleton, Tooltip, UnstyledButton } from '@mantine/core';
-import { IconLogin, IconLogout, IconUser } from '@tabler/icons-react';
+import { IconLogin, IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
@@ -42,6 +42,13 @@ const AccountMenuButton: React.FC = () => {
           leftSection={<IconUser size={14} />}
         >
           プロフィール
+        </Menu.Item>
+        <Menu.Item
+          component={Link}
+          href="/settings/account"
+          leftSection={<IconSettings size={14} />}
+        >
+          アカウント設定
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item component={Link} href="/api/auth/signout" leftSection={<IconLogout size={14} />}>
