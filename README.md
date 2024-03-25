@@ -26,5 +26,5 @@ https://www.prisma.io/docs/orm/prisma-migrate/workflows/seeding
 $ prisma db push
 $ pnpm db:seed # seed data
 $ pnpm db:clear # clear all data
-$ migrate dev # create migration file
+$ prisma migrate dev # create migration file
 ```
