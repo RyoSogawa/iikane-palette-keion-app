@@ -1,5 +1,4 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import { createBrowserClient } from '@supabase/ssr';
 
 import { env } from '@/env';
 
@@ -32,6 +31,3 @@ export const createSupabaseServerClient = (cookieStore: ReturnType<typeof cookie
     },
   });
 };
-
-export const createSupabaseBrowserClient = () =>
-  createBrowserClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_ANON_KEY);
