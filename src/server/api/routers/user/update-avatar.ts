@@ -7,8 +7,6 @@ const userUpdateAvatarInputSchema = z.object({
   image: z.string(),
 });
 
-export type UserUpdateAvatarInput = z.infer<typeof userUpdateAvatarInputSchema>;
-
 export const updateAvatar = protectedProcedure
   .input(userUpdateAvatarInputSchema)
   .mutation(({ ctx, input }) => {

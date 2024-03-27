@@ -21,8 +21,6 @@ const userUpdateProfileInputSchema = z.intersection(
   }),
 );
 
-export type UserUpdateProfileInput = z.infer<typeof userUpdateProfileInputSchema>;
-
 export const updateProfile = protectedProcedure
   .input(userUpdateProfileInputSchema)
   .mutation(({ ctx, input }) => {

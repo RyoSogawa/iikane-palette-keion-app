@@ -6,12 +6,12 @@ import { redirect } from 'next/navigation';
 import sharp from 'sharp';
 
 import { STORAGE_PATH } from '@/constants/supabase';
-import { type UserUpdateProfileInput } from '@/server/api/routers/user/update';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
+import { type RouterInputs } from '@/trpc/shared';
 import { createSupabaseServerClient } from '@/utils/supabase';
 
-export const updateUserProfile = async (input: UserUpdateProfileInput) => {
+export const updateUserProfile = async (input: RouterInputs['user']['updateProfile']) => {
   return api.user.updateProfile.mutate(input).then(() => {
     revalidatePath(`/members/${input.id}`);
     redirect(`/members/${input.id}`);
