@@ -1,4 +1,5 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { sign } from 'jsonwebtoken';
 import { getServerSession, type DefaultSession, type NextAuthOptions } from 'next-auth';
 import { type Adapter } from 'next-auth/adapters';
 import DiscordProvider from 'next-auth/providers/discord';
@@ -16,6 +17,7 @@ import { isJoiningGuild } from '@/utils/discord';
  */
 declare module 'next-auth' {
   interface Session extends DefaultSession {
+    supabaseAccessToken: string;
     user: {
       id: string;
       // ...other properties
@@ -44,9 +46,18 @@ export const authOptions: NextAuthOptions = {
     redirect: () => {
       return '/?login-callback=true';
     },
-    session: ({ session, user }) => {
+    session: async ({ session, user }) => {
+      const payload = {
+        aud: 'authenticated',
+        exp: Math.floor(new Date(session.expires).getTime() / 1000),
+        sub: user.id,
+        email: user.email,
+        role: 'authenticated',
+      };
+      const supabaseAccessToken = sign(payload, env.SUPABASE_JWT_SECRET);
       return {
         ...session,
+        supabaseAccessToken,
         user: {
           ...session.user,
           id: user.id,
