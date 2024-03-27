@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 
 import { Button, Flex, List, Modal, Space, Stack, Text, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -8,19 +8,16 @@ import { showNotification } from '@mantine/notifications';
 import { IconExclamationCircle, IconTrash } from '@tabler/icons-react';
 import { useSession, signOut } from 'next-auth/react';
 
-import { deleteAccount } from '@/components/model/AccountDeleteButton/actions';
 import { NotificationOptions } from '@/constants/notification';
+import { api } from '@/trpc/react';
 
 const AccountDeleteButton: React.FC = () => {
-  const { data: session, status } = useSession();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { status } = useSession();
   const [opened, { open, close }] = useDisclosure(false);
+  const { mutateAsync, isLoading } = api.user.deleteMe.useMutation();
 
-  const handleSubmit = useCallback(async () => {
-    if (!session?.user.id) return;
-    setIsSubmitting(true);
-
-    await deleteAccount(session?.user.id)
+  const handleSubmit = useCallback(() => {
+    mutateAsync()
       .then(() => {
         void signOut({ callbackUrl: '/' });
         showNotification({
@@ -31,11 +28,8 @@ const AccountDeleteButton: React.FC = () => {
       .catch((err) => {
         console.error(err);
         showNotification(NotificationOptions.error);
-      })
-      .finally(() => {
-        setIsSubmitting(false);
       });
-  }, [session?.user.id]);
+  }, [mutateAsync]);
 
   return (
     <>
@@ -56,7 +50,7 @@ const AccountDeleteButton: React.FC = () => {
           </Button>
           <Button
             color="red"
-            loading={isSubmitting}
+            loading={isLoading}
             disabled={status !== 'authenticated'}
             fullWidth
             onClick={handleSubmit}
@@ -65,7 +59,7 @@ const AccountDeleteButton: React.FC = () => {
           </Button>
         </Flex>
       </Modal>
-      <Button variant="outline" color="red" onClick={open}>
+      <Button variant="outline" color="red" disabled={status !== 'authenticated'} onClick={open}>
         <IconTrash size={14} />
         <Space w={4} />
         アカウント削除
