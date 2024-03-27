@@ -4,8 +4,16 @@ import { env } from '@/env';
 
 import type { cookies } from 'next/headers';
 
-export const createSupabaseServerClient = (cookieStore: ReturnType<typeof cookies>) => {
+export const createSupabaseServerClient = (
+  cookieStore: ReturnType<typeof cookies>,
+  supabaseAccessToken?: string,
+) => {
   return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${supabaseAccessToken}`,
+      },
+    },
     cookies: {
       get(name: string) {
         return cookieStore.get(name)?.value;

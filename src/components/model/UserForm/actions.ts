@@ -7,6 +7,7 @@ import sharp from 'sharp';
 
 import { STORAGE_PATH } from '@/constants/supabase';
 import { type UserUpdateProfileInput } from '@/server/api/routers/user/update';
+import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 import { createSupabaseServerClient } from '@/utils/supabase';
 
@@ -22,7 +23,8 @@ export const updateUserAvatar = async (formData: FormData) => {
   const file = formData.get('file') as File;
 
   const cookieStore = cookies();
-  const supabase = createSupabaseServerClient(cookieStore);
+  const session = await getServerAuthSession();
+  const supabase = createSupabaseServerClient(cookieStore, session?.supabaseAccessToken);
 
   const { data: existingData } = await supabase.storage.from('profiles').list(userId, {
     search: 'avatar',
