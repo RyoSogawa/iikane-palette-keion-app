@@ -26,6 +26,7 @@ export const env = createEnv({
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
     SUPABASE_ANON_KEY: z.string(),
+    SUPABASE_JWT_SECRET: z.string(),
   },
 
   /**
@@ -51,6 +52,7 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+    SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET,
     NEXT_PUBLIC_IIKANE_GUILD_ID: process.env.NEXT_PUBLIC_IIKANE_GUILD_ID,
   },
   /**
