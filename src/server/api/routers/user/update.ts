@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 import { protectedProcedure } from '@/server/api/trpc';
@@ -81,5 +82,8 @@ export const updateProfile = protectedProcedure
           skipDuplicates: true,
         }),
       ]);
+
+      revalidatePath(`/members/${input.id}`);
+      revalidatePath(`/`);
     });
   });

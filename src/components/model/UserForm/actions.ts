@@ -1,6 +1,5 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import sharp from 'sharp';
@@ -13,7 +12,6 @@ import { createSupabaseServerClient } from '@/utils/supabase';
 
 export const updateUserProfile = async (input: RouterInputs['user']['updateProfile']) => {
   return api.user.updateProfile.mutate(input).then(() => {
-    revalidatePath(`/members/${input.id}`);
     redirect(`/members/${input.id}`);
   });
 };
@@ -64,8 +62,6 @@ export const updateUserAvatar = async (formData: FormData) => {
     id: userId,
     image: imagePath,
   });
-
-  revalidatePath(`/members/${userId}`);
 
   return imagePath;
 };

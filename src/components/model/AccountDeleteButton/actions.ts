@@ -1,6 +1,5 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import { getServerAuthSession } from '@/server/auth';
@@ -22,6 +21,4 @@ export const deleteAccount = async (userId: string) => {
   }
 
   await api.user.deleteMe.mutate();
-  revalidatePath('/');
-  revalidatePath(`/members/${userId}`);
 };

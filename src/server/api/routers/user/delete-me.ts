@@ -1,3 +1,5 @@
+import { revalidatePath } from 'next/cache';
+
 import { protectedProcedure } from '@/server/api/trpc';
 
 export const deleteMe = protectedProcedure.mutation(({ ctx }) => {
@@ -7,5 +9,8 @@ export const deleteMe = protectedProcedure.mutation(({ ctx }) => {
         id: ctx.session.user.id,
       },
     });
+
+    revalidatePath('/');
+    revalidatePath(`/members/${ctx.session.user.id}`);
   });
 });
