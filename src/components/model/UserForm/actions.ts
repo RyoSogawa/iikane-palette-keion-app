@@ -10,6 +10,7 @@ import { api } from '@/trpc/server';
 import { type RouterInputs } from '@/trpc/shared';
 import { createSupabaseServerClient } from '@/utils/supabase';
 
+// HACK: client側でリダイレクトさせるとrevalidateがされない？ので、サーバー側でリダイレクトさせる
 export const updateUserProfile = async (input: RouterInputs['user']['updateProfile']) => {
   return api.user.updateProfile.mutate(input).then(() => {
     redirect(`/members/${input.id}`);
