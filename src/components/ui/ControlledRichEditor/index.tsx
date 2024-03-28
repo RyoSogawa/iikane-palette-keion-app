@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { Input, type InputWrapperProps } from '@mantine/core';
 import { Link as LinkExtension, RichTextEditor } from '@mantine/tiptap';
@@ -45,6 +45,10 @@ const ControlledRichEditor = <T extends FieldValues>({
     },
   });
 
+  const handleClickContent = useCallback(() => {
+    if (!editor?.isFocused) editor?.chain().focus();
+  }, [editor]);
+
   return (
     <Input.Wrapper {...props} error={error?.message}>
       <RichTextEditor editor={editor}>
@@ -81,7 +85,14 @@ const ControlledRichEditor = <T extends FieldValues>({
             <RichTextEditor.AlignRight />
           </RichTextEditor.ControlsGroup>
         </RichTextEditor.Toolbar>
-        <RichTextEditor.Content ref={ref} mih={100} />
+        <RichTextEditor.Content
+          ref={ref}
+          mih={100}
+          style={{
+            cursor: 'text',
+          }}
+          onClick={handleClickContent}
+        />
       </RichTextEditor>
     </Input.Wrapper>
   );
