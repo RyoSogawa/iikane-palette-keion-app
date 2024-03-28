@@ -48,24 +48,24 @@ model Session {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  createdAt     DateTime        @default(now())
-  name          String?
-  email         String?         @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  nickname      String          @default("")
-  residence     String          @default("")
-  introduction  String          @default("")
-  twitterLink   String          @default("")
-  instagramLink String          @default("")
-  musicLink     String          @default("")
-  podcastLink   String          @default("")
-  websiteLink   String          @default("")
-  tags          UserOnUserTag[]
-  Onboarding    Onboarding[]
+  id                String          @id @default(cuid())
+  createdAt         DateTime        @default(now())
+  name              String?
+  email             String?         @unique
+  emailVerified     DateTime?
+  image             String?
+  accounts          Account[]
+  sessions          Session[]
+  nickname          String          @default("")
+  residence         String          @default("")
+  introduction      String          @default("")
+  twitterUsername   String          @default("")
+  instagramUsername String          @default("")
+  musicLink         String          @default("")
+  podcastLink       String          @default("")
+  websiteLink       String          @default("")
+  tags              UserOnUserTag[]
+  Onboarding        Onboarding[]
 }
 
 model VerificationToken {

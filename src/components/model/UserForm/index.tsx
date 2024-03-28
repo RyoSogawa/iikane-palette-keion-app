@@ -54,16 +54,16 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
           <ControlledTextInput
             label="X/Twitter"
             control={control}
-            name="twitterLink"
             placeholder="https://twitter.com/..."
             type="url"
+            name="twitterUsername"
           />
           <ControlledTextInput
             label="Instagram"
             control={control}
-            name="instagramLink"
             placeholder="https://www.instagram.com/..."
             type="url"
+            name="instagramUsername"
           />
           <ControlledTextInput
             label="Webサイト"

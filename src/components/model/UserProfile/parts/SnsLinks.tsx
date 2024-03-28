@@ -13,7 +13,10 @@ import {
 import SnsLink from '@/components/model/UserProfile/parts/SnsLink';
 
 export type SnsLinkProps = FlexProps & {
-  user: Pick<User, 'instagramLink' | 'musicLink' | 'twitterLink' | 'websiteLink' | 'podcastLink'>;
+  user: Pick<
+    User,
+    'instagramUsername' | 'musicLink' | 'twitterUsername' | 'websiteLink' | 'podcastLink'
+  >;
 };
 
 const SnsLinks: React.FC<SnsLinkProps> = ({ user, ...props }) => {
@@ -29,13 +32,13 @@ const SnsLinks: React.FC<SnsLinkProps> = ({ user, ...props }) => {
           <IconBrandApplePodcast />
         </SnsLink>
       )}
-      {user.twitterLink && (
-        <SnsLink href={user.twitterLink} aria-label="twitter link">
+      {user.twitterUsername && (
+        <SnsLink href={user.twitterUsername} aria-label="twitter link">
           <IconBrandX />
         </SnsLink>
       )}
-      {user.instagramLink && (
-        <SnsLink href={user.instagramLink} aria-label="instagram link">
+      {user.instagramUsername && (
+        <SnsLink href={user.instagramUsername} aria-label="instagram link">
           <IconBrandInstagram />
         </SnsLink>
       )}

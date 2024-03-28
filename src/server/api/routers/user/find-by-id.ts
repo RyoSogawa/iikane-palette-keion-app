@@ -19,8 +19,8 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
       websiteLink: true,
       musicLink: true,
       podcastLink: true,
-      instagramLink: true,
-      twitterLink: true,
+      instagramUsername: true,
+      twitterUsername: true,
       tags: {
         select: {
           userTag: {
