@@ -27,7 +27,7 @@ const AccountMenuButton: React.FC = () => {
   }
 
   return (
-    <Menu position="bottom-end">
+    <Menu position="bottom-end" trigger="click-hover">
       <Menu.Target>
         <UnstyledButton aria-label="アカウントメニュー">
           <Avatar
