@@ -33,12 +33,15 @@ const SnsLinks: React.FC<SnsLinkProps> = ({ user, ...props }) => {
         </SnsLink>
       )}
       {user.twitterUsername && (
-        <SnsLink href={user.twitterUsername} aria-label="twitter link">
+        <SnsLink href={`https://twitter.com/${user.twitterUsername}`} aria-label="twitter link">
           <IconBrandX />
         </SnsLink>
       )}
       {user.instagramUsername && (
-        <SnsLink href={user.instagramUsername} aria-label="instagram link">
+        <SnsLink
+          href={`https://www.instagram.com/${user.instagramUsername}`}
+          aria-label="instagram link"
+        >
           <IconBrandInstagram />
         </SnsLink>
       )}

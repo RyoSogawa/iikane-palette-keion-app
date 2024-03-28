@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { Button, Flex, Paper, Space, Stack, Title } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
+import { IconAt, IconCheck } from '@tabler/icons-react';
 
 import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
 import AvatarInput, { type AvatarInputProps } from '@/components/model/UserForm/parts/AvatarInput';
@@ -54,16 +54,18 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
           <ControlledTextInput
             label="X/Twitter"
             control={control}
-            placeholder="https://twitter.com/..."
-            type="url"
             name="twitterUsername"
+            placeholder="ユーザー名"
+            leftSection={<IconAt size={14} />}
+            inputMode="url"
           />
           <ControlledTextInput
             label="Instagram"
             control={control}
-            placeholder="https://www.instagram.com/..."
-            type="url"
             name="instagramUsername"
+            placeholder="ユーザー名"
+            leftSection={<IconAt size={14} />}
+            inputMode="url"
           />
           <ControlledTextInput
             label="Webサイト"
