@@ -6,7 +6,6 @@ import { IconEdit, IconMapPin } from '@tabler/icons-react';
 import Link from 'next/link';
 
 import SnsLinks from '@/components/model/UserProfile/parts/SnsLinks';
-import EditorViewer from '@/components/ui/EditorViewer';
 import { type UserTag } from '@/types/generated/zod';
 
 export type UserProfileProps = {
@@ -20,7 +19,7 @@ export type UserProfileProps = {
 
 const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
   return (
-    <Container pos="relative" py={32}>
+    <Container pos="relative">
       {isCurrentUser && (
         <Button
           component={Link}
@@ -28,7 +27,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
           variant="outline"
           pos="absolute"
           right={32}
-          top={32}
+          top={0}
         >
           <IconEdit size={18} />
           <Space w={4} />
@@ -73,10 +72,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
         ))}
       </Flex>
       <SnsLinks user={user} mt="md" justify={{ base: 'flex-start', sm: 'center' }} />
-      <Divider mt={32} />
-      {user.introduction && (
-        <EditorViewer value={user.introduction} mt={32} mx={{ base: 0, sm: 32 }} />
-      )}
+      <Divider my={32} />
     </Container>
   );
 };
