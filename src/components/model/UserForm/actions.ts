@@ -11,8 +11,8 @@ import { type RouterInputs } from '@/trpc/shared';
 import { createSupabaseServerClient } from '@/utils/supabase';
 
 // HACK: client側でリダイレクトさせるとrevalidateがされない？ので、サーバー側でリダイレクトさせる
-export const updateUserProfile = async (input: RouterInputs['user']['updateProfile']) => {
-  return api.user.updateProfile.mutate(input).then(() => {
+export const updateUserProfile = async (input: RouterInputs['user']['update']) => {
+  return api.user.update.mutate(input).then(() => {
     redirect(`/members/${input.id}`);
   });
 };
@@ -59,7 +59,7 @@ export const updateUserAvatar = async (formData: FormData) => {
 
   const imagePath = `${STORAGE_PATH}/profiles/${data.path}`;
 
-  await api.user.updateAvatar.mutate({
+  await api.user.update.mutate({
     id: userId,
     image: imagePath,
   });
