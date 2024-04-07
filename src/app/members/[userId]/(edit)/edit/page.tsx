@@ -10,14 +10,14 @@ import { api } from '@/trpc/server';
 
 type Props = {
   params: {
-    id: string;
+    userId: string;
   };
 };
 
 export default async function MemberEditPage({ params }: Props) {
   const [user, tags, session] = await Promise.all([
     api.user.findById.query({
-      id: params.id,
+      id: params.userId,
     }),
     api.userTag.getAll.query(),
     getServerAuthSession(),
@@ -41,7 +41,7 @@ export default async function MemberEditPage({ params }: Props) {
       <Flex align="center">
         <Button
           component={Link}
-          href={`/members/${params.id}/profile`}
+          href={`/members/${params.userId}/profile`}
           variant="subtle"
           color="gray"
         >

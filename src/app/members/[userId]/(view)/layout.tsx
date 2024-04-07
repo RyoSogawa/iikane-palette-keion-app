@@ -9,7 +9,7 @@ import { api } from '@/trpc/server';
 
 type Props = {
   params: {
-    id: string;
+    userId: string;
   };
   children: React.ReactNode;
 };
@@ -17,7 +17,7 @@ type Props = {
 export default async function MemberSingleLayout({ params, children }: Props) {
   const [user, session] = await Promise.all([
     api.user.findById.query({
-      id: params.id,
+      id: params.userId,
     }),
     getServerAuthSession(),
   ]);
@@ -29,7 +29,7 @@ export default async function MemberSingleLayout({ params, children }: Props) {
   return (
     <Container py={32}>
       <UserProfile user={user} isCurrentUser={session?.user.id === user.id} />
-      <UserProfileTab userId={params.id} />
+      <UserProfileTab userId={params.userId} />
       {children}
     </Container>
   );

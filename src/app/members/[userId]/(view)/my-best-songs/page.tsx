@@ -6,14 +6,14 @@ import { api } from '@/trpc/server';
 
 type Props = {
   params: {
-    id: string;
+    userId: string;
   };
 };
 
 export default async function MemberMyBestsPage({ params }: Props) {
   const [user] = await Promise.all([
     api.user.findById.query({
-      id: params.id,
+      id: params.userId,
     }),
   ]);
 
