@@ -40,7 +40,7 @@ const AccountMenuButton: React.FC = () => {
       <Menu.Dropdown>
         <Menu.Item
           component={Link}
-          href={`/members/${session.user.id}`}
+          href={`/members/${session.user.id}/profile`}
           leftSection={<IconUser size={14} />}
         >
           プロフィール

@@ -27,6 +27,6 @@ export const deleteMe = protectedProcedure.mutation(({ ctx }) => {
     });
 
     revalidatePath('/');
-    revalidatePath(`/members/${userId}`);
+    revalidatePath(`/members/${userId}/profile`);
   });
 });

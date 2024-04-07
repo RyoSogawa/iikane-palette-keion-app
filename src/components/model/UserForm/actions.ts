@@ -13,7 +13,7 @@ import { createSupabaseServerClient } from '@/utils/supabase';
 // HACK: client側でリダイレクトさせるとrevalidateがされない？ので、サーバー側でリダイレクトさせる
 export const updateUserProfile = async (input: RouterInputs['user']['update']) => {
   return api.user.update.mutate(input).then(() => {
-    redirect(`/members/${input.id}`);
+    redirect(`/members/${input.id}/profile`);
   });
 };
 

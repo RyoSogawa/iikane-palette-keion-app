@@ -39,7 +39,12 @@ export default async function MemberEditPage({ params }: Props) {
   return (
     <Container py={16}>
       <Flex align="center">
-        <Button component={Link} href={`/members/${params.id}`} variant="subtle" color="gray">
+        <Button
+          component={Link}
+          href={`/members/${params.id}/profile`}
+          variant="subtle"
+          color="gray"
+        >
           <IconArrowLeft size={16} />
           <Space w={4} />
           戻る

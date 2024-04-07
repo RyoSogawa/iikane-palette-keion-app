@@ -67,7 +67,7 @@ const OnboardingViewMyProfileModal: React.FC<OnboardingViewMyProfileModalProps> 
         <Button variant="outline" color="gray" onClick={close}>
           あとで
         </Button>
-        <Button component={Link} href={`/members/${user.id}`} onClick={close}>
+        <Button component={Link} href={`/members/${user.id}/profile`} onClick={close}>
           プロフィールを見る
         </Button>
       </Group>

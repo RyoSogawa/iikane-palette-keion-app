@@ -91,7 +91,7 @@ export const update = protectedProcedure
         input.tags ? upsertUserTag(input.tags) : undefined,
       ]);
 
-      revalidatePath(`/members/${input.id}`);
+      revalidatePath(`/members/${input.id}/profile`);
       revalidatePath(`/`);
     });
   });

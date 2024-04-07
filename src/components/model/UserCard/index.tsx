@@ -19,7 +19,7 @@ export type UserCardProps = {
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (
-    <Paper component={Link} href={`/members/${user.id}`} p="md" h="100%" bg="dark">
+    <Paper component={Link} href={`/members/${user.id}/profile`} p="md" h="100%" bg="dark">
       <Group h="100%">
         <Avatar src={user.image} alt={user.name ?? ''} imageProps={{ loading: 'lazy' }} />
         <Box flex={1}>
