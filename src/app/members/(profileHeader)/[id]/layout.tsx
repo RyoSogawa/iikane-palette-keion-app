@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Box } from '@mantine/core';
+import { Container } from '@mantine/core';
 
 import UserProfile from '@/components/model/UserProfile';
+import UserProfileTab from '@/components/model/UserProfileTab';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 
@@ -26,9 +27,10 @@ export default async function MemberSingleLayout({ params, children }: Props) {
   }
 
   return (
-    <Box py={32}>
+    <Container py={32}>
       <UserProfile user={user} isCurrentUser={session?.user.id === user.id} />
+      <UserProfileTab userId={params.id} />
       {children}
-    </Box>
+    </Container>
   );
 }

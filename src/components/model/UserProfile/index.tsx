@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Avatar, Box, Button, Container, Divider, Flex, Space, Text, Title } from '@mantine/core';
+import { Avatar, Box, Button, Flex, Space, Text, Title } from '@mantine/core';
 import { type User } from '@prisma/client';
 import { IconEdit, IconMapPin } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -19,7 +19,7 @@ export type UserProfileProps = {
 
 const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
   return (
-    <Container pos="relative">
+    <Box pos="relative">
       {isCurrentUser && (
         <Button
           component={Link}
@@ -72,8 +72,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
         ))}
       </Flex>
       <SnsLinks user={user} mt="md" justify={{ base: 'flex-start', sm: 'center' }} />
-      <Divider my={32} />
-    </Container>
+    </Box>
   );
 };
 
