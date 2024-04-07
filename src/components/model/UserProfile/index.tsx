@@ -23,7 +23,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
       {isCurrentUser && (
         <Button
           component={Link}
-          href={`/members/${user.id}/edit`}
+          href={`/members/${user.id}/edit/profile`}
           variant="outline"
           pos="absolute"
           right={32}

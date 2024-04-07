@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Text } from '@mantine/core';
+import { Box, Text, Title } from '@mantine/core';
 
 import { api } from '@/trpc/server';
 
@@ -22,7 +22,10 @@ export default async function MemberMyBestsPage({ params }: Props) {
   }
 
   return (
-    <Box mx={{ base: 0, sm: 32 }}>
+    <Box>
+      <Title order={1} mt={40} mb={32}>
+        My Best Songs
+      </Title>
       <Text>Coming soon...</Text>
     </Box>
   );

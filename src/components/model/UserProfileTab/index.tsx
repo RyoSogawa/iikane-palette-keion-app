@@ -8,9 +8,10 @@ import { usePathname, useRouter } from 'next/navigation';
 
 export type UserProfileTabProps = {
   userId: string;
+  isEdit?: boolean;
 };
 
-const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId }) => {
+const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId, isEdit }) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -23,9 +24,13 @@ const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId }) => {
 
   const handleChange = useCallback(
     (newValue: string | null) => {
+      if (isEdit) {
+        router.push(`/members/${userId}/edit/${newValue}`);
+        return;
+      }
       router.push(`/members/${userId}/${newValue}`);
     },
-    [router, userId],
+    [isEdit, router, userId],
   );
 
   return (

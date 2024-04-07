@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { Container } from '@mantine/core';
-
 import EditorViewer from '@/components/ui/EditorViewer';
 import { api } from '@/trpc/server';
 
@@ -26,9 +24,5 @@ export default async function MemberProfilePage({ params }: Props) {
     return null;
   }
 
-  return (
-    <Container>
-      <EditorViewer value={user.introduction} mx={{ base: 0, sm: 32 }} />
-    </Container>
-  );
+  return <EditorViewer value={user.introduction} mx={{ base: 0, sm: 32 }} />;
 }

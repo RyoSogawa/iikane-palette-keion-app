@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { Button, Container, Flex, Space, Title } from '@mantine/core';
-import { IconArrowLeft } from '@tabler/icons-react';
-import Link from 'next/link';
+import { Box, Title } from '@mantine/core';
 
 import UserForm from '@/components/model/UserForm';
 import { getServerAuthSession } from '@/server/auth';
@@ -37,23 +35,11 @@ export default async function MemberEditPage({ params }: Props) {
   };
 
   return (
-    <Container py={16}>
-      <Flex align="center">
-        <Button
-          component={Link}
-          href={`/members/${params.userId}/profile`}
-          variant="subtle"
-          color="gray"
-        >
-          <IconArrowLeft size={16} />
-          <Space w={4} />
-          戻る
-        </Button>
-      </Flex>
-      <Title order={1} mt={32} mb={16}>
+    <Box>
+      <Title order={1} mt={40} mb={32}>
         プロフィール編集
       </Title>
       <UserForm user={userFormValues} tags={tags} />
-    </Container>
+    </Box>
   );
 }
