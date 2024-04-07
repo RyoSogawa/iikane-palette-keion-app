@@ -27,6 +27,8 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: z.string(),
     SUPABASE_ANON_KEY: z.string(),
     SUPABASE_JWT_SECRET: z.string(),
+    SPOTIFY_CLIENT_ID: z.string(),
+    SPOTIFY_CLIENT_SECRET: z.string(),
   },
 
   /**
@@ -52,6 +54,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
     SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET,
+    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
