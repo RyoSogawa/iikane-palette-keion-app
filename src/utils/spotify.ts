@@ -9,9 +9,11 @@ const SpotifyAccessTokenSchema = z.object({
 });
 
 export class SpotifyApi {
+  private static readonly baseUrl = 'https://api.spotify.com/v1';
+
   private accessToken = '';
 
-  public async setSpotifyAccessToken() {
+  private async setSpotifyAccessToken() {
     const url = 'https://accounts.spotify.com/api/token';
     const key = Buffer.from(`${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`).toString(
       'base64',
@@ -36,6 +38,37 @@ export class SpotifyApi {
       }
       const data: unknown = await response.json();
       this.accessToken = SpotifyAccessTokenSchema.parse(data).access_token;
+    } catch (error) {
+      console.error('There was an error!', error);
+    }
+  }
+
+  public async search(
+    params: SpotifyApi.SearchForItemParameterObject,
+  ): Promise<(SpotifyApi.TrackSearchResponse & SpotifyApi.AlbumSearchResponse) | void> {
+    if (!this.accessToken) {
+      await this.setSpotifyAccessToken();
+    }
+
+    const url = `${SpotifyApi.baseUrl}/search`;
+    const searchParams = new URLSearchParams(
+      Object.fromEntries(Object.entries(params).map(([key, value]) => [key, String(value)])),
+    );
+
+    try {
+      const response = await fetch(`${url}?${searchParams.toString()}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return (await response.json()) as SpotifyApi.TrackSearchResponse &
+        SpotifyApi.AlbumSearchResponse;
     } catch (error) {
       console.error('There was an error!', error);
     }
