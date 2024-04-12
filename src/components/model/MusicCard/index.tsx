@@ -10,14 +10,15 @@ export type MusicCardProps = {
   artist: string;
   name: string;
   image?: string;
+  rightSlot?: React.ReactElement;
 };
 
-const MusicCard: React.FC<MusicCardProps> = ({ artist, image, name, type }) => {
+const MusicCard: React.FC<MusicCardProps> = ({ artist, image, name, type, rightSlot }) => {
   return (
     <Paper p="md">
       <Group h="100%" wrap="nowrap">
         <Image src={image} alt={name} width={60} height={60} loading="lazy" bg="gray" />
-        <Box flex={1}>
+        <Box flex={1} pb={4}>
           <MusicTypeBadge type={type} />
           <Text mt={4} size="sm" fw={500} c="bright" lineClamp={1}>
             {name}
@@ -26,6 +27,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ artist, image, name, type }) => {
             {artist}
           </Text>
         </Box>
+        {rightSlot}
       </Group>
     </Paper>
   );

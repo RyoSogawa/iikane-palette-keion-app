@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Box, Text, Title } from '@mantine/core';
+import { Box, Title } from '@mantine/core';
 
 import { api } from '@/trpc/server';
+import MyBestSongsAddModalButton from 'src/components/model/MyBestSongsAddModalButton';
 
 type Props = {
   params: {
@@ -26,7 +27,7 @@ export default async function MemberMyBestsPage({ params }: Props) {
       <Title order={1} mt={40} mb={32}>
         My Best Songs
       </Title>
-      <Text>Coming soon...</Text>
+      <MyBestSongsAddModalButton />
     </Box>
   );
 }
