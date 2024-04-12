@@ -45,6 +45,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.50.1",
     "react-use": "^17.5.0",
+    "react-virtuoso": "^4.7.8",
     "server-only": "^0.0.1",
     "sharp": "0.32.6",
     "superjson": "^2.2.1",
