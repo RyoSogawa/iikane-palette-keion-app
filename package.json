@@ -8,6 +8,7 @@
     "db:seed": "prisma db seed",
     "db:clear": "prisma migrate reset --skip-seed",
     "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev --create-only",
     "db:studio": "prisma studio",
     "dev": "next dev",
     "postinstall": "prisma generate",
