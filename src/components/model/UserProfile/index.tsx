@@ -40,6 +40,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
         size={80}
         mx={{ base: 'unset', sm: 'auto' }}
         imageProps={{ loading: 'lazy' }}
+        bg="gray"
       />
       <Box mt="md">
         <Title order={1} size="h2" ta={{ base: 'left', sm: 'center' }}>
