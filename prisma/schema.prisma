@@ -66,6 +66,7 @@ model User {
   websiteLink       String          @default("")
   tags              UserOnUserTag[]
   Onboarding        Onboarding[]
+  myBestSongs       MyBestSong[]
 }
 
 model VerificationToken {
@@ -106,4 +107,15 @@ model Onboarding {
   user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, step])
+}
+
+model MyBestSong {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  spotifyId String   @default("")
+  artist    String   @default("")
+  name      String
+  image     String   @default("")
 }
