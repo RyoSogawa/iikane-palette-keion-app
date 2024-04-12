@@ -11,7 +11,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { NotificationOptions } from '@/constants/notification';
 import { api } from '@/trpc/react';
 
-const AccountDeleteButton: React.FC = () => {
+const AccountDeleteModalButton: React.FC = () => {
   const { status } = useSession();
   const [opened, { open, close }] = useDisclosure(false);
   const { mutateAsync, isLoading } = api.user.deleteMe.useMutation();
@@ -68,4 +68,4 @@ const AccountDeleteButton: React.FC = () => {
   );
 };
 
-export default AccountDeleteButton;
+export default AccountDeleteModalButton;
