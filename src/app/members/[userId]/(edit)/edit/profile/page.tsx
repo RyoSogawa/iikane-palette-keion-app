@@ -3,7 +3,6 @@ import React from 'react';
 import { Box, Title } from '@mantine/core';
 
 import UserForm from '@/components/model/UserForm';
-import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 
 type Props = {
@@ -13,20 +12,15 @@ type Props = {
 };
 
 export default async function MemberEditPage({ params }: Props) {
-  const [user, tags, session] = await Promise.all([
+  const [user, tags] = await Promise.all([
     api.user.findById.query({
       id: params.userId,
     }),
     api.userTag.getAll.query(),
-    getServerAuthSession(),
   ]);
 
   if (!user) {
     throw new Error('メンバーが見つかりませんでした');
-  }
-
-  if (session?.user.id !== user.id) {
-    throw new Error('アクセス権がありません');
   }
 
   const userFormValues = {

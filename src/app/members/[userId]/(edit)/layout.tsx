@@ -27,6 +27,10 @@ export default async function MemberSingleLayout({ params, children }: Props) {
     throw new Error('メンバーが見つかりませんでした');
   }
 
+  if (session?.user.id !== user.id) {
+    throw new Error('アクセス権がありません');
+  }
+
   return (
     <Container py={32}>
       <Button
