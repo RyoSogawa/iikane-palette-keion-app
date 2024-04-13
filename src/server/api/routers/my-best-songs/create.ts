@@ -10,7 +10,7 @@ const inputSchema = MyBestSongSchema.pick({
   type: true,
 });
 
-export const add = protectedProcedure.input(inputSchema).mutation(async ({ input, ctx }) => {
+export const create = protectedProcedure.input(inputSchema).mutation(async ({ input, ctx }) => {
   return ctx.db.myBestSong.create({
     data: {
       userId: input.userId,
