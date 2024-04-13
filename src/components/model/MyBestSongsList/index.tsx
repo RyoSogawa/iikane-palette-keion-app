@@ -16,7 +16,7 @@ export type MyBestSongsListProps = {
 
 const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ userId }) => {
   const { data, isFetching } = useFetchData(userId);
-  const { deleteSong } = useDeleteSong();
+  const { deleteSong } = useDeleteSong(userId);
 
   const itemContent = useCallback<ItemContent<MyBestSong, unknown>>(
     (_index, song) =>
