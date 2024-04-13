@@ -6,18 +6,8 @@ import { getQueryKey } from '@trpc/react-query';
 
 import { NotificationOptions } from '@/constants/notification';
 import { api } from '@/trpc/react';
-import { type RouterOutputs } from '@/trpc/shared';
 
-export const useFetchData = (userId: string) => {
-  const { data, isFetching } = api.myBestSongs.findByUserId.useQuery({
-    userId,
-  });
-
-  return {
-    data,
-    isFetching,
-  };
-};
+import type { RouterOutputs } from '@/trpc/shared';
 
 export const useDeleteSong = (userId: string) => {
   const queryClient = useQueryClient();

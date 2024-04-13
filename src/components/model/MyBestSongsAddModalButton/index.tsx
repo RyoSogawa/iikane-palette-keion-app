@@ -4,12 +4,15 @@ import React, { useCallback, useState } from 'react';
 
 import { ActionIcon, Button, Flex, Loader, Modal, Space } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconPlus } from '@tabler/icons-react';
+import { IconCheck, IconPlus } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
 import MusicCard from '@/components/model/MusicCard';
 import MusicSearchInput from '@/components/model/MusicSearchInput';
-import { useAddSong, useSearchSongs } from '@/components/model/MyBestSongsAddModalButton/logics';
+import { useAddSong } from '@/features/my-best-songs/hooks/useAddSong';
+import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
+import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
+import { useSearchSpotify } from '@/features/my-best-songs/hooks/useSearchSpotify';
 import { type RouterOutputs } from '@/trpc/shared';
 
 import s from './style.module.css';
@@ -21,8 +24,10 @@ export type MyBestSongsAddModalButtonProps = {
 const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ userId }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchValue, setSearchValue] = useState('');
-  const { data, isFetching } = useSearchSongs(searchValue);
+  const { data, isFetching } = useSearchSpotify(searchValue);
   const { addSong } = useAddSong(userId);
+  const { deleteSong } = useDeleteSong(userId);
+  const { data: currentData } = useFindSongsByUserId(userId);
 
   const handleOpen = useCallback(() => {
     setSearchValue('');
@@ -32,8 +37,11 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
   const itemContent = useCallback<
     ItemContent<RouterOutputs['myBestSongs']['search'][number], unknown>
   >(
-    (_index, song) =>
-      song && (
+    (_index, song) => {
+      const existingData = currentData?.find(
+        (currentSong) => currentSong.spotifyId === song.spotifyId,
+      );
+      return (
         <div key={song.spotifyId} className={s.modalBodySpace}>
           <MusicCard
             type={song.type}
@@ -41,14 +49,27 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
             name={song.name}
             image={song.image}
             rightSlot={
-              <ActionIcon radius="50%" aria-label="my best songsに追加" onClick={addSong(song)}>
-                <IconPlus size={16} />
-              </ActionIcon>
+              existingData ? (
+                <ActionIcon
+                  radius="50%"
+                  aria-label="削除"
+                  color="green"
+                  variant="outline"
+                  onClick={deleteSong(existingData.id)}
+                >
+                  <IconCheck size={16} />
+                </ActionIcon>
+              ) : (
+                <ActionIcon radius="50%" aria-label="my best songsに追加" onClick={addSong(song)}>
+                  <IconPlus size={16} />
+                </ActionIcon>
+              )
             }
           />
         </div>
-      ),
-    [addSong],
+      );
+    },
+    [addSong, currentData, deleteSong],
   );
 
   return (

@@ -7,7 +7,8 @@ import { IconTrash } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
 import MusicCard from '@/components/model/MusicCard';
-import { useDeleteSong, useFetchData } from '@/components/model/MyBestSongsList/logics';
+import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
+import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { type MyBestSong } from '@/types/generated/zod';
 
 export type MyBestSongsListProps = {
@@ -15,7 +16,7 @@ export type MyBestSongsListProps = {
 };
 
 const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ userId }) => {
-  const { data, isFetching } = useFetchData(userId);
+  const { data, isFetching } = useFindSongsByUserId(userId);
   const { deleteSong } = useDeleteSong(userId);
 
   const itemContent = useCallback<ItemContent<MyBestSong, unknown>>(

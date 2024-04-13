@@ -1,42 +1,15 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { showNotification } from '@mantine/notifications';
 import { useQueryClient } from '@tanstack/react-query';
 import { getQueryKey } from '@trpc/react-query';
 import { useSession } from 'next-auth/react';
-import { useDebounce } from 'react-use';
 
 import { NotificationOptions } from '@/constants/notification';
 import { api } from '@/trpc/react';
-import { type MyBestSong } from '@/types/generated/zod';
 
 import type { RouterOutputs } from '@/trpc/shared';
-
-export const useSearchSongs = (searchValue: string) => {
-  const [debouncedValue, setDebouncedValue] = useState('');
-
-  useDebounce(
-    () => {
-      setDebouncedValue(searchValue);
-    },
-    1000,
-    [searchValue],
-  );
-
-  const { data, isFetching } = api.myBestSongs.search.useQuery(
-    {
-      keyword: debouncedValue.trim(),
-    },
-    {
-      enabled: !!debouncedValue,
-    },
-  );
-
-  return {
-    data,
-    isFetching,
-  };
-};
+import type { MyBestSong } from '@/types/generated/zod';
 
 export const useAddSong = (userId: string) => {
   const queryClient = useQueryClient();
@@ -62,6 +35,15 @@ export const useAddSong = (userId: string) => {
           ...song,
         },
         {
+          onSuccess: (data) => {
+            // IDをキャッシュに追加するために最後の要素を更新する
+            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+            const cacheData = queryClient.getQueryData(
+              myBestSongsKey,
+            ) as RouterOutputs['myBestSongs']['findByUserId'];
+            cacheData[cacheData.length - 1] = data;
+            queryClient.setQueryData(myBestSongsKey, cacheData);
+          },
           onError: (error) => {
             showNotification(NotificationOptions.error);
             console.error(error);
