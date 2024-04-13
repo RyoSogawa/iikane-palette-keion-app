@@ -109,12 +109,18 @@ model Onboarding {
   @@unique([userId, step])
 }
 
+enum SongType {
+  track
+  album
+}
+
 model MyBestSong {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   spotifyId String   @default("")
+  type      SongType
   artist    String   @default("")
   name      String
   image     String   @default("")
