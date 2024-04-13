@@ -38,10 +38,20 @@ const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId, isEdit }) => {
   return (
     <Tabs value={value} className={s.wrapper} onChange={handleChange}>
       <Tabs.List justify="center">
-        <Tabs.Tab value="profile" leftSection={<IconUser size={16} />}>
+        <Tabs.Tab
+          value="profile"
+          leftSection={<IconUser size={16} />}
+          w={{ base: '50%', sm: 'auto' }}
+          miw={160}
+        >
           Profile
         </Tabs.Tab>
-        <Tabs.Tab value="my-best-songs" leftSection={<IconMusic size={16} />}>
+        <Tabs.Tab
+          value="my-best-songs"
+          leftSection={<IconMusic size={16} />}
+          w={{ base: '50%', sm: 'auto' }}
+          miw={160}
+        >
           My Best Songs
         </Tabs.Tab>
       </Tabs.List>
