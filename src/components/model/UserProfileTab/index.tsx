@@ -6,6 +6,8 @@ import { Tabs } from '@mantine/core';
 import { IconMusic, IconUser } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 
+import s from './style.module.css';
+
 export type UserProfileTabProps = {
   userId: string;
   isEdit?: boolean;
@@ -34,7 +36,7 @@ const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId, isEdit }) => {
   );
 
   return (
-    <Tabs value={value} my={32} onChange={handleChange}>
+    <Tabs value={value} className={s.wrapper} onChange={handleChange}>
       <Tabs.List justify="center">
         <Tabs.Tab value="profile" leftSection={<IconUser size={16} />}>
           Profile

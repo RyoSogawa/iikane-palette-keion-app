@@ -1,0 +1,7 @@
+.wrapper {
+  position: sticky;
+  top: 60px;
+  z-index: 1;
+  margin: 32px 0;
+  background-color: var(--mantine-color-body);
+}
