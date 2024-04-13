@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
+import seedMyBestSong from './my-best-song';
 import seedUser from './user';
 import seedUserOnUserTag from './user-on-user-tag';
 import seedUserTag from './user-tag';
@@ -10,6 +11,7 @@ async function main() {
   const users = await seedUser();
   const userTags = await seedUserTag();
   await seedUserOnUserTag(users, userTags);
+  await seedMyBestSong(users);
 }
 
 main()
