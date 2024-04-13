@@ -15,7 +15,7 @@ export type MusicCardProps = {
 
 const MusicCard: React.FC<MusicCardProps> = ({ artist, image, name, type, rightSlot }) => {
   return (
-    <Paper p="md">
+    <Paper p="xs">
       <Group h="100%" wrap="nowrap">
         <Image src={image} alt={name} w={60} width={60} height={60} loading="lazy" bg="gray" />
         <Box flex={1} pb={4}>
