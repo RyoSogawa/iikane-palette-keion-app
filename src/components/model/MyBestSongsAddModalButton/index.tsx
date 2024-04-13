@@ -14,11 +14,15 @@ import { type RouterOutputs } from '@/trpc/shared';
 
 import s from './style.module.css';
 
-const MyBestSongsAddModalButton: React.FC = () => {
+export type MyBestSongsAddModalButtonProps = {
+  userId: string;
+};
+
+const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ userId }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchValue, setSearchValue] = useState('');
   const { data, isFetching } = useSearchSongs(searchValue);
-  const { addSong } = useAddSong();
+  const { addSong } = useAddSong(userId);
 
   const handleOpen = useCallback(() => {
     setSearchValue('');

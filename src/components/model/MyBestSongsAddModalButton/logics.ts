@@ -1,12 +1,16 @@
 import { useCallback, useState } from 'react';
 
 import { showNotification } from '@mantine/notifications';
+import { useQueryClient } from '@tanstack/react-query';
+import { getQueryKey } from '@trpc/react-query';
 import { useSession } from 'next-auth/react';
 import { useDebounce } from 'react-use';
 
 import { NotificationOptions } from '@/constants/notification';
 import { api } from '@/trpc/react';
 import { type MyBestSong } from '@/types/generated/zod';
+
+import type { RouterOutputs } from '@/trpc/shared';
 
 export const useSearchSongs = (searchValue: string) => {
   const [debouncedValue, setDebouncedValue] = useState('');
@@ -34,7 +38,8 @@ export const useSearchSongs = (searchValue: string) => {
   };
 };
 
-export const useAddSong = () => {
+export const useAddSong = (userId: string) => {
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const { mutateAsync } = api.myBestSongs.create.useMutation();
   const addSong = useCallback(
@@ -48,7 +53,15 @@ export const useAddSong = () => {
           ...song,
         },
         {
-          onSuccess: () => {},
+          onSuccess: () => {
+            const myBestSongsKey = getQueryKey(api.myBestSongs.findByUserId, { userId }, 'query');
+            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+            const prevData = queryClient.getQueryData(
+              myBestSongsKey,
+            ) as RouterOutputs['myBestSongs']['findByUserId'];
+
+            queryClient.setQueryData(myBestSongsKey, prevData ? [...prevData, song] : [song]);
+          },
           onError: (error) => {
             showNotification(NotificationOptions.error);
             console.error(error);
@@ -56,7 +69,7 @@ export const useAddSong = () => {
         },
       );
     },
-    [mutateAsync, session],
+    [mutateAsync, queryClient, session, userId],
   );
 
   return {
