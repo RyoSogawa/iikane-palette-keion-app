@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, Group, Image, Paper, Text } from '@mantine/core';
 
-import MusicTypeBadge from '@/components/model/MusicTypeBadge';
+import MusicTypeBadge from '@/features/my-best-songs/components/MusicTypeBadge';
 import { type MusicType } from '@/types/music';
 
 export type MusicCardProps = {

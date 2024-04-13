@@ -4,7 +4,7 @@ import { Button, Container, Space } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import UserProfileTab from '@/components/model/UserProfileTab';
+import UserProfileTab from '@/features/user/components/UserProfileTab';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

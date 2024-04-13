@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MyBestSongsList from '@/components/model/MyBestSongsList';
+import MyBestSongsList from '@/features/my-best-songs/components/MyBestSongsList';
 
 type Props = {
   params: {

@@ -5,8 +5,9 @@ import { type User } from '@prisma/client';
 import { IconEdit, IconMapPin } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import SnsLinks from '@/components/model/UserProfile/parts/SnsLinks';
 import { type UserTag } from '@/types/generated/zod';
+
+import SnsLinks from './parts/SnsLinks';
 
 export type UserProfileProps = {
   user: Omit<User, 'createdAt' | 'email' | 'emailVerified'> & {

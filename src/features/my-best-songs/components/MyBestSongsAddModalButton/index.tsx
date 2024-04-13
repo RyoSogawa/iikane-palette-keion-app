@@ -7,8 +7,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { IconCheck, IconPlus } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
-import MusicCard from '@/components/model/MusicCard';
-import MusicSearchInput from '@/components/model/MusicSearchInput';
+import MusicCard from '@/features/my-best-songs/components/MusicCard';
+import MusicSearchInput from '@/features/my-best-songs/components/MusicSearchInput';
 import { useAddSong } from '@/features/my-best-songs/hooks/useAddSong';
 import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';

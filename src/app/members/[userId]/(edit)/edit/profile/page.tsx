@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, Title } from '@mantine/core';
 
-import UserForm from '@/components/model/UserForm';
+import UserForm from '@/features/user/components/UserForm';
 import { api } from '@/trpc/server';
 
 type Props = {

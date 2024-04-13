@@ -5,8 +5,9 @@ import { showNotification } from '@mantine/notifications';
 import { type User } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 
-import { updateUserProfile } from '@/components/model/UserForm/actions';
 import { NotificationOptions } from '@/constants/notification';
+
+import { updateUserProfile } from './actions';
 
 export type UserFormValues = Pick<
   User,

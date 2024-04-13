@@ -7,9 +7,10 @@ import { showNotification } from '@mantine/notifications';
 import { IconCamera } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 
-import { updateUserAvatar } from '@/components/model/UserForm/actions';
 import { NotificationOptions } from '@/constants/notification';
 import { type User } from '@/types/generated/zod';
+
+import { updateUserAvatar } from '../actions';
 
 export type AvatarInputProps = {
   user: Pick<User, 'id' | 'image'>;

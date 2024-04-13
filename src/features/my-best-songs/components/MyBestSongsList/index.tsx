@@ -6,7 +6,7 @@ import { ActionIcon, Flex, Loader } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
-import MusicCard from '@/components/model/MusicCard';
+import MusicCard from '@/features/my-best-songs/components/MusicCard';
 import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { type MyBestSong } from '@/types/generated/zod';

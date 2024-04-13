@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Grid, type GridProps } from '@mantine/core';
 
-import UserCard, { type UserCardProps } from '@/components/model/UserCard';
+import UserCard, { type UserCardProps } from '@/features/user/components/UserCard';
 
 export type UserCardListProps = GridProps & {
   users: UserCardProps['user'][];

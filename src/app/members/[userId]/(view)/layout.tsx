@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Container } from '@mantine/core';
 
-import UserProfile from '@/components/model/UserProfile';
-import UserProfileTab from '@/components/model/UserProfileTab';
+import UserProfile from '@/features/user/components/UserProfile';
+import UserProfileTab from '@/features/user/components/UserProfileTab';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

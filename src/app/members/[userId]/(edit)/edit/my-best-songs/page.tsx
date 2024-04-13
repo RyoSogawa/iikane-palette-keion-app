@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Box } from '@mantine/core';
 
-import MyBestSongsList from '@/components/model/MyBestSongsList';
-import MyBestSongsAddModalButton from 'src/components/model/MyBestSongsAddModalButton';
+import MyBestSongsAddModalButton from '@/features/my-best-songs/components/MyBestSongsAddModalButton';
+import MyBestSongsList from '@/features/my-best-songs/components/MyBestSongsList';
 
 type Props = {
   params: {

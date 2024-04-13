@@ -1,8 +1,8 @@
 import { Container, Title } from '@mantine/core';
 
 import SearchParamController from '@/components/functional/SearchParamController';
-import OnboardingViewMyProfileModal from '@/components/model/OnboardingViewMyProfileModal';
-import UserCardList from '@/components/model/UserCardList';
+import OnboardingViewMyProfileModal from '@/features/account/components/OnboardingViewMyProfileModal';
+import UserCardList from '@/features/user/components/UserCardList';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 

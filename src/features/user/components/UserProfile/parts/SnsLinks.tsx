@@ -10,7 +10,7 @@ import {
   IconWorldWww,
 } from '@tabler/icons-react';
 
-import SnsLink from '@/components/model/UserProfile/parts/SnsLink';
+import SnsLink from './SnsLink';
 
 export type SnsLinkProps = FlexProps & {
   user: Pick<

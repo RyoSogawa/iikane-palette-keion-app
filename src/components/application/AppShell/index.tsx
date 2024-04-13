@@ -14,7 +14,7 @@ import {
 import Link from 'next/link';
 
 import Footer from '@/components/application/Footer';
-import AccountMenuButton from '@/components/model/AccountMenuButton';
+import AccountMenuButton from '@/features/account/components/AccountMenuButton';
 
 import s from './style.module.css';
 

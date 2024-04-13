@@ -3,8 +3,8 @@ import React from 'react';
 import { Container, Title } from '@mantine/core';
 import { redirect } from 'next/navigation';
 
+import AccountDeleteModalButton from '@/features/account/components/AccountDeleteModalButton';
 import { getServerAuthSession } from '@/server/auth';
-import AccountDeleteModalButton from 'src/components/model/AccountDeleteModalButton';
 
 export default async function AccountSettingPage() {
   const session = await getServerAuthSession();

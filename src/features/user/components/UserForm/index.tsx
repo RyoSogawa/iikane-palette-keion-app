@@ -5,13 +5,14 @@ import React from 'react';
 import { Button, Flex, Paper, Space, Stack, Title } from '@mantine/core';
 import { IconAt, IconCheck } from '@tabler/icons-react';
 
-import { type UserFormValues, useUserForm } from '@/components/model/UserForm/logics';
-import AvatarInput, { type AvatarInputProps } from '@/components/model/UserForm/parts/AvatarInput';
-import ControlledUserTagsInput, {
-  type ControlledUserTagsInputProps,
-} from '@/components/model/UserForm/parts/ControlledUserTagsInput';
 import ControlledRichEditor from '@/components/ui/ControlledRichEditor';
 import ControlledTextInput from '@/components/ui/ControlledTextInput';
+
+import { type UserFormValues, useUserForm } from './logics';
+import AvatarInput, { type AvatarInputProps } from './parts/AvatarInput';
+import ControlledUserTagsInput, {
+  type ControlledUserTagsInputProps,
+} from './parts/ControlledUserTagsInput';
 
 export type UserFormProps = {
   user: UserFormValues & AvatarInputProps['user'];
