@@ -47,24 +47,25 @@ export const useAddSong = (userId: string) => {
       if (!session) {
         return;
       }
+
+      // optimistic update
+      const myBestSongsKey = getQueryKey(api.myBestSongs.findByUserId, { userId }, 'query');
+      // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
+      const prevData = queryClient.getQueryData(
+        myBestSongsKey,
+      ) as RouterOutputs['myBestSongs']['findByUserId'];
+      queryClient.setQueryData(myBestSongsKey, prevData ? [...prevData, song] : [song]);
+
       return mutateAsync(
         {
           userId: session.user.id,
           ...song,
         },
         {
-          onSuccess: () => {
-            const myBestSongsKey = getQueryKey(api.myBestSongs.findByUserId, { userId }, 'query');
-            // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-            const prevData = queryClient.getQueryData(
-              myBestSongsKey,
-            ) as RouterOutputs['myBestSongs']['findByUserId'];
-
-            queryClient.setQueryData(myBestSongsKey, prevData ? [...prevData, song] : [song]);
-          },
           onError: (error) => {
             showNotification(NotificationOptions.error);
             console.error(error);
+            void queryClient.invalidateQueries(myBestSongsKey);
           },
         },
       );
