@@ -9,7 +9,7 @@ import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
 import MusicCard from '@/components/model/MusicCard';
 import MusicSearchInput from '@/components/model/MusicSearchInput';
-import { useSearchSongs } from '@/components/model/MyBestSongsAddModalButton/logics';
+import { useAddSong, useSearchSongs } from '@/components/model/MyBestSongsAddModalButton/logics';
 import { type RouterOutputs } from '@/trpc/shared';
 
 import s from './style.module.css';
@@ -18,6 +18,7 @@ const MyBestSongsAddModalButton: React.FC = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchValue, setSearchValue] = useState('');
   const { data, isFetching } = useSearchSongs(searchValue);
+  const { addSong } = useAddSong();
 
   const handleOpen = useCallback(() => {
     setSearchValue('');
@@ -36,7 +37,7 @@ const MyBestSongsAddModalButton: React.FC = () => {
             name={song.name}
             image={song.image}
             rightSlot={
-              <ActionIcon radius="50%" aria-label="my best songsに追加">
+              <ActionIcon radius="50%" aria-label="my best songsに追加" onClick={addSong(song)}>
                 <IconPlus size={16} />
               </ActionIcon>
             }
