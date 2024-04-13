@@ -7,6 +7,7 @@ const inputSchema = MyBestSongSchema.pick({
   name: true,
   artist: true,
   image: true,
+  type: true,
 });
 
 export const add = protectedProcedure.input(inputSchema).mutation(async ({ input, ctx }) => {
@@ -17,6 +18,7 @@ export const add = protectedProcedure.input(inputSchema).mutation(async ({ input
       name: input.name,
       artist: input.artist,
       image: input.image,
+      type: input.type,
     },
   });
 });

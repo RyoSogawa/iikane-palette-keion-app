@@ -38,7 +38,7 @@ export const useAddSong = () => {
   const { data: session } = useSession();
   const { mutateAsync } = api.myBestSongs.add.useMutation();
   const addSong = useCallback(
-    (song: Pick<MyBestSong, 'spotifyId' | 'name' | 'artist' | 'image'>) => () => {
+    (song: Pick<MyBestSong, 'spotifyId' | 'name' | 'artist' | 'image' | 'type'>) => () => {
       if (!session) {
         return;
       }
