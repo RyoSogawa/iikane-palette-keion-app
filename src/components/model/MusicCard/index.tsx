@@ -17,7 +17,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ artist, image, name, type, rightS
   return (
     <Paper p="md">
       <Group h="100%" wrap="nowrap">
-        <Image src={image} alt={name} width={60} height={60} loading="lazy" bg="gray" />
+        <Image src={image} alt={name} w={60} width={60} height={60} loading="lazy" bg="gray" />
         <Box flex={1} pb={4}>
           <MusicTypeBadge type={type} />
           <Text mt={4} size="sm" fw={500} c="bright" lineClamp={1}>
