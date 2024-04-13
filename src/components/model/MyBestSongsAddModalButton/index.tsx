@@ -44,7 +44,7 @@ const MyBestSongsAddModalButton: React.FC = () => {
           />
         </div>
       ),
-    [],
+    [addSong],
   );
 
   return (
