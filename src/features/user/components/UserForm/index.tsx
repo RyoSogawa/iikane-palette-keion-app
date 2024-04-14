@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { Button, Flex, Paper, Space, Stack, Title } from '@mantine/core';
+import { Button, Fieldset, Flex, Space, Stack } from '@mantine/core';
 import { IconAt, IconCheck } from '@tabler/icons-react';
 
 import ControlledRichEditor from '@/components/ui/ControlledRichEditor';
@@ -24,7 +24,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Paper p="lg" radius="md" withBorder>
+      <Fieldset legend="Personal information">
         <Stack>
           <AvatarInput user={user} />
           <Flex direction={{ base: 'column', sm: 'row' }} gap="md" w="100%">
@@ -34,10 +34,9 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
           <ControlledTextInput label="お住まいの地域" control={control} name="residence" />
           <ControlledUserTagsInput tags={tags} control={control} name="tags" />
         </Stack>
-      </Paper>
-      <Paper p="lg" radius="md" mt={32} withBorder>
+      </Fieldset>
+      <Fieldset legend="Links" mt={32}>
         <Stack>
-          <Title order={2}>リンク</Title>
           <ControlledTextInput
             label="音楽等"
             control={control}
@@ -76,7 +75,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
             type="url"
           />
         </Stack>
-      </Paper>
+      </Fieldset>
       <ControlledRichEditor
         label="自己紹介等"
         mt={32}

@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { Box, Title } from '@mantine/core';
-
 import UserForm from '@/features/user/components/UserForm';
 import { api } from '@/trpc/server';
 
@@ -28,12 +26,5 @@ export default async function MemberEditPage({ params }: Props) {
     tags: user.tags.map((tag) => tag.userTag.name),
   };
 
-  return (
-    <Box>
-      <Title order={1} mt={40} mb={32}>
-        プロフィール編集
-      </Title>
-      <UserForm user={userFormValues} tags={tags} />
-    </Box>
-  );
+  return <UserForm user={userFormValues} tags={tags} />;
 }

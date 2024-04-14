@@ -87,7 +87,7 @@ const ControlledRichEditor = <T extends FieldValues>({
         </RichTextEditor.Toolbar>
         <RichTextEditor.Content
           ref={ref}
-          mih={100}
+          mih={300}
           style={{
             cursor: 'text',
           }}
