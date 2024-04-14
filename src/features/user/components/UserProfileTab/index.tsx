@@ -3,7 +3,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { Tabs } from '@mantine/core';
-import { IconMusic, IconUser } from '@tabler/icons-react';
+import { IconHeart, IconUser } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 import s from './style.module.css';
@@ -48,7 +48,7 @@ const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId, isEdit }) => {
         </Tabs.Tab>
         <Tabs.Tab
           value="my-best-songs"
-          leftSection={<IconMusic size={16} />}
+          leftSection={<IconHeart size={16} />}
           w={{ base: '50%', sm: 'auto' }}
           miw={160}
         >
