@@ -18,6 +18,7 @@ export default async function seedMyBestSong(users: User[]) {
         userId: user.id,
         type: faker.helpers.enumValue(Type),
         spotifyId: '12345',
+        spotifyUri: 'https://open.spotify.com/intl-ja/track/12345',
         name: faker.music.songName(),
         artist: faker.person.fullName(),
         image: faker.image.url(),
