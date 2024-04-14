@@ -3,10 +3,10 @@ import React from 'react';
 import { Box, Group, Image, Paper, Text } from '@mantine/core';
 
 import MusicTypeBadge from '@/features/my-best-songs/components/MusicTypeBadge';
-import { type MusicType } from '@/types/music';
+import { type SongTypeType } from '@/types/generated/zod';
 
 export type MusicCardProps = {
-  type: MusicType;
+  type: SongTypeType;
   artist: string;
   name: string;
   image?: string;

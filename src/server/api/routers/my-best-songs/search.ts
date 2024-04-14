@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { protectedProcedure } from '@/server/api/trpc';
-import { musicTypeSchema } from '@/types/music';
+import { SongTypeSchema } from '@/types/generated/zod';
 import { SpotifyApi } from '@/utils/spotify';
 
 const inputSchema = z.object({
@@ -9,7 +9,7 @@ const inputSchema = z.object({
 });
 
 const songSchema = z.object({
-  type: musicTypeSchema,
+  type: SongTypeSchema,
   spotifyId: z.string(),
   artist: z.string(),
   name: z.string(),
