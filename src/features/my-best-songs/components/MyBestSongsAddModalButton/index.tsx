@@ -14,6 +14,7 @@ import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { useSearchSpotify } from '@/features/my-best-songs/hooks/useSearchSpotify';
 import { type RouterOutputs } from '@/trpc/shared';
+import { type SongTypeType } from '@/types/generated/zod';
 import StickyBottomButton from 'src/components/ui/StickyBottomButton';
 
 import s from './style.module.css';
@@ -25,7 +26,8 @@ export type MyBestSongsAddModalButtonProps = {
 const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ userId }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchValue, setSearchValue] = useState('');
-  const { data, isFetching } = useSearchSpotify(searchValue);
+  const [searchType, setSearchType] = useState<SongTypeType>('track');
+  const { data, isFetching } = useSearchSpotify(searchValue, searchType);
   const { addSong } = useAddSong(userId);
   const { deleteSong } = useDeleteSong(userId);
   const { data: currentData } = useFindSongsByUserId(userId);
@@ -84,7 +86,12 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
           </Modal.Header>
           <Modal.Body className={s.modalBody}>
             <div className={s.modalBodySpace}>
-              <MusicSearchInput value={searchValue} onChange={setSearchValue} />
+              <MusicSearchInput
+                value={searchValue}
+                type={searchType}
+                onChange={setSearchValue}
+                onChangeType={setSearchType}
+              />
             </div>
             {isFetching && (
               <Flex align="center" justify="center" pt={120}>

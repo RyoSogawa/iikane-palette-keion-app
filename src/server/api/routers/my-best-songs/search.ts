@@ -6,6 +6,7 @@ import { SpotifyApi } from '@/utils/spotify';
 
 const inputSchema = z.object({
   keyword: z.string(),
+  type: SongTypeSchema,
 });
 
 const songSchema = z.object({
@@ -17,37 +18,41 @@ const songSchema = z.object({
   uri: z.string(),
 });
 
-const outputSchema = z.array(songSchema);
+export const search = protectedProcedure
+  .input(inputSchema)
+  .query<Array<z.infer<typeof songSchema>>>(async ({ input }) => {
+    const spotifyApi = new SpotifyApi();
+    const res = await spotifyApi.search({
+      q: input.keyword,
+      market: 'JP',
+      type: input.type,
+      limit: 20,
+    });
+    if (!res) {
+      return [];
+    }
 
-export const search = protectedProcedure.input(inputSchema).query(async ({ input }) => {
-  const spotifyApi = new SpotifyApi();
-  const res = await spotifyApi.search({
-    q: input.keyword,
-    market: 'JP',
-    type: 'track,album',
-    limit: 10,
+    if (input.type === 'track') {
+      return (
+        res.tracks?.items.map((track) => ({
+          type: 'track',
+          spotifyId: track.id,
+          artist: track.artists.map((artist) => artist.name).join(', '),
+          name: track.name,
+          image: track.album.images[0]?.url ?? '',
+          uri: track.uri,
+        })) ?? []
+      );
+    }
+
+    return (
+      res.albums?.items.map((album) => ({
+        type: 'album',
+        spotifyId: album.id,
+        artist: album.artists.map((artist) => artist.name).join(', '),
+        name: album.name,
+        image: album.images[0]?.url ?? '',
+        uri: album.uri,
+      })) ?? []
+    );
   });
-  if (!res) {
-    return [];
-  }
-
-  const tracks: z.infer<typeof outputSchema> = res.tracks.items.map((track) => ({
-    type: 'track',
-    spotifyId: track.id,
-    artist: track.artists.map((artist) => artist.name).join(', '),
-    name: track.name,
-    image: track.album.images[0]?.url ?? '',
-    uri: track.uri,
-  }));
-
-  const albums: z.infer<typeof outputSchema> = res.albums.items.map((album) => ({
-    type: 'album',
-    spotifyId: album.id,
-    artist: album.artists.map((artist) => artist.name).join(', '),
-    name: album.name,
-    image: album.images[0]?.url ?? '',
-    uri: album.uri,
-  }));
-
-  return [...tracks, ...albums];
-});

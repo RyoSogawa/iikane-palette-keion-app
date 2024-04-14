@@ -45,7 +45,7 @@ export class SpotifyApi {
 
   public async search(
     params: SpotifyApi.SearchForItemParameterObject,
-  ): Promise<(SpotifyApi.TrackSearchResponse & SpotifyApi.AlbumSearchResponse) | void> {
+  ): Promise<SpotifyApi.SearchResponse | void> {
     if (!this.accessToken) {
       await this.setSpotifyAccessToken();
     }
@@ -67,8 +67,7 @@ export class SpotifyApi {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      return (await response.json()) as SpotifyApi.TrackSearchResponse &
-        SpotifyApi.AlbumSearchResponse;
+      return (await response.json()) as SpotifyApi.SearchResponse;
     } catch (error) {
       console.error('There was an error!', error);
     }
