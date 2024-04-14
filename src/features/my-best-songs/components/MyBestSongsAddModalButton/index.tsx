@@ -2,13 +2,13 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { ActionIcon, Alert, Flex, Loader, Modal, Space } from '@mantine/core';
+import { Alert, Flex, Loader, Modal, Space } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconCheck, IconInfoCircle, IconPlus } from '@tabler/icons-react';
+import { IconInfoCircle, IconPlus } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
-import MusicCard from '@/features/my-best-songs/components/MusicCard';
 import MusicSearchInput from '@/features/my-best-songs/components/MusicSearchInput';
+import MusicCardButton from '@/features/my-best-songs/components/MyBestSongsAddModalButton/parts/MusicCardButton';
 import { useAddSong } from '@/features/my-best-songs/hooks/useAddSong';
 import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
@@ -49,36 +49,13 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
         (currentSong) => currentSong.spotifyId === song.spotifyId,
       );
       return (
-        <div key={song.spotifyId} className={s.modalBodySpace}>
-          <MusicCard
-            type={song.type}
-            artist={song.artist}
-            name={song.name}
-            image={song.image}
-            rightSlot={
-              existingData ? (
-                <ActionIcon
-                  radius="50%"
-                  aria-label="削除"
-                  color="green"
-                  variant="outline"
-                  onClick={deleteSong(existingData.id)}
-                >
-                  <IconCheck size={16} />
-                </ActionIcon>
-              ) : (
-                <ActionIcon
-                  radius="50%"
-                  aria-label="my best songsに追加"
-                  disabled={isOverflowed}
-                  onClick={addSong(song)}
-                >
-                  <IconPlus size={16} />
-                </ActionIcon>
-              )
-            }
-          />
-        </div>
+        <MusicCardButton
+          song={song}
+          forAdd={!existingData}
+          disabledToAdd={isOverflowed}
+          onAdd={addSong(song)}
+          onRemove={existingData ? deleteSong(existingData.id) : undefined}
+        />
       );
     },
     [addSong, currentData, deleteSong, isOverflowed],

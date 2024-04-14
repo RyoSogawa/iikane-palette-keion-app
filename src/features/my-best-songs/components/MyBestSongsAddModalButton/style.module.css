@@ -17,3 +17,13 @@
   margin-top: 12px;
   flex: 1;
 }
+
+.musicCard {
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.1s;
+
+  &:hover {
+    background-color: var(--mantine-color-dark-8);
+  }
+}
