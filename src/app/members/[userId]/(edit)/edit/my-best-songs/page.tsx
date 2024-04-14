@@ -14,8 +14,8 @@ type Props = {
 export default async function MemberMyBestsPage({ params }: Props) {
   return (
     <Box>
-      <MyBestSongsAddModalButton userId={params.userId} />
       <MyBestSongsList userId={params.userId} editable />
+      <MyBestSongsAddModalButton userId={params.userId} />
     </Box>
   );
 }

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { ActionIcon, Button, Flex, Loader, Modal, Space } from '@mantine/core';
+import { ActionIcon, Flex, Loader, Modal, Space } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconCheck, IconPlus } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
@@ -14,6 +14,7 @@ import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { useSearchSpotify } from '@/features/my-best-songs/hooks/useSearchSpotify';
 import { type RouterOutputs } from '@/trpc/shared';
+import StickyBottomButton from 'src/components/ui/StickyBottomButton';
 
 import s from './style.module.css';
 
@@ -96,11 +97,11 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
-      <Button onClick={handleOpen}>
+      <StickyBottomButton mt={32} onClick={handleOpen}>
         <IconPlus size={16} />
-        <Space w={2} />
+        <Space w={4} />
         追加
-      </Button>
+      </StickyBottomButton>
     </>
   );
 };
