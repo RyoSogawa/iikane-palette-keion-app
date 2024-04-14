@@ -2,9 +2,9 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { ActionIcon, Flex, Loader, Modal, Space } from '@mantine/core';
+import { ActionIcon, Alert, Flex, Loader, Modal, Space } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconCheck, IconPlus } from '@tabler/icons-react';
+import { IconCheck, IconInfoCircle, IconPlus } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
@@ -30,9 +30,11 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
   const [searchValue, setSearchValue] = useState('');
   const [searchType, setSearchType] = useState<SongTypeType>('track');
   const { data, isFetching } = useSearchSpotify(searchValue, searchType);
+  const { data: currentSongs, isFetching: isFetchingCurrentSongs } = useFindSongsByUserId(userId);
   const { addSong } = useAddSong(userId);
   const { deleteSong } = useDeleteSong(userId);
   const { data: currentData } = useFindSongsByUserId(userId);
+  const isOverflowed = currentSongs && currentSongs?.length >= 100;
 
   const handleOpen = useCallback(() => {
     setSearchValue('');
@@ -65,7 +67,12 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
                   <IconCheck size={16} />
                 </ActionIcon>
               ) : (
-                <ActionIcon radius="50%" aria-label="my best songsに追加" onClick={addSong(song)}>
+                <ActionIcon
+                  radius="50%"
+                  aria-label="my best songsに追加"
+                  disabled={isOverflowed}
+                  onClick={addSong(song)}
+                >
                   <IconPlus size={16} />
                 </ActionIcon>
               )
@@ -74,7 +81,7 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
         </div>
       );
     },
-    [addSong, currentData, deleteSong],
+    [addSong, currentData, deleteSong, isOverflowed],
   );
 
   return (
@@ -94,6 +101,17 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
                 onChange={setSearchValue}
                 onChangeType={setSearchType}
               />
+              {isOverflowed && (
+                <Alert
+                  mt="md"
+                  title="もう十分登録しました。"
+                  variant="light"
+                  color="red"
+                  icon={<IconInfoCircle />}
+                >
+                  My Best Songsは100曲までです。
+                </Alert>
+              )}
             </div>
             {isFetching && (
               <Flex align="center" justify="center" pt={120}>
@@ -113,11 +131,13 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
-      <StickyBottomButton mt={32} onClick={handleOpen}>
-        <IconPlus size={16} />
-        <Space w={4} />
-        追加
-      </StickyBottomButton>
+      {!isFetchingCurrentSongs && (
+        <StickyBottomButton mt={32} onClick={handleOpen}>
+          <IconPlus size={16} />
+          <Space w={4} />
+          追加
+        </StickyBottomButton>
+      )}
     </>
   );
 };
