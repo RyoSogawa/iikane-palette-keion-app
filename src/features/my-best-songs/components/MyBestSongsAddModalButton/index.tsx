@@ -19,6 +19,8 @@ import StickyBottomButton from 'src/components/ui/StickyBottomButton';
 
 import s from './style.module.css';
 
+const FooterSpace = () => <Space h={32} />;
+
 export type MyBestSongsAddModalButtonProps = {
   userId: string;
 };
@@ -99,7 +101,14 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
               </Flex>
             )}
             {searchValue && !isFetching && (
-              <Virtuoso data={data} className={s.musicCardList} itemContent={itemContent} />
+              <Virtuoso
+                data={data}
+                className={s.musicCardList}
+                itemContent={itemContent}
+                components={{
+                  Footer: FooterSpace,
+                }}
+              />
             )}
           </Modal.Body>
         </Modal.Content>

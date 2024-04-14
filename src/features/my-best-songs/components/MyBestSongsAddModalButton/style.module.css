@@ -14,5 +14,6 @@
 }
 
 .musicCardList {
+  margin-top: 12px;
   flex: 1;
 }
