@@ -24,7 +24,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <Fieldset legend="Personal information">
+      <Fieldset legend="基本情報">
         <Stack>
           <AvatarInput user={user} />
           <Flex direction={{ base: 'column', sm: 'row' }} gap="md" w="100%">
@@ -35,7 +35,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, tags }) => {
           <ControlledUserTagsInput tags={tags} control={control} name="tags" />
         </Stack>
       </Fieldset>
-      <Fieldset legend="Links" mt={32}>
+      <Fieldset legend="リンク" mt={32}>
         <Stack>
           <ControlledTextInput
             label="音楽等"
