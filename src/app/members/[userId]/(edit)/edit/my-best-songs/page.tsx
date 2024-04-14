@@ -15,7 +15,7 @@ export default async function MemberMyBestsPage({ params }: Props) {
   return (
     <Box>
       <MyBestSongsAddModalButton userId={params.userId} />
-      <MyBestSongsList userId={params.userId} />
+      <MyBestSongsList userId={params.userId} editable />
     </Box>
   );
 }
