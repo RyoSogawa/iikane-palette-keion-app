@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Button, Container, Space } from '@mantine/core';
+import { Button, Container, Space, Title } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
 import Link from 'next/link';
 
@@ -32,17 +32,21 @@ export default async function MemberSingleLayout({ params, children }: Props) {
   }
 
   return (
-    <Container py={32}>
+    <Container pt={16} pb={32}>
       <Button
         component={Link}
         href={`/members/${params.userId}/profile`}
-        variant="subtle"
+        variant="default"
         color="gray"
+        size="xs"
       >
-        <IconArrowLeft size={16} />
+        <IconArrowLeft size={14} />
         <Space w={4} />
         戻る
       </Button>
+      <Title size="h2" mt={24}>
+        プロフィール編集
+      </Title>
       <UserProfileTab userId={params.userId} isEdit />
       {children}
     </Container>
