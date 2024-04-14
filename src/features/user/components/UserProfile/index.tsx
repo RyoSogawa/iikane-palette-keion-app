@@ -27,7 +27,6 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
           href={`/members/${user.id}/edit/profile`}
           variant="outline"
           pos="absolute"
-          radius="xl"
           right={0}
           top={0}
         >
