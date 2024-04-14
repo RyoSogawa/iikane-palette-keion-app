@@ -27,10 +27,11 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
           href={`/members/${user.id}/edit/profile`}
           variant="outline"
           pos="absolute"
-          right={32}
+          radius="xl"
+          right={0}
           top={0}
         >
-          <IconEdit size={18} />
+          <IconEdit size={16} />
           <Space w={4} />
           編集
         </Button>
@@ -39,41 +40,34 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
         src={user.image}
         alt={user.name ?? 'アバター'}
         size={80}
-        mx={{ base: 'unset', sm: 'auto' }}
+        mx="auto"
         imageProps={{ loading: 'lazy' }}
         bg="gray"
       />
       <Box mt="md">
-        <Title order={1} size="h2" ta={{ base: 'left', sm: 'center' }}>
+        <Title order={1} size="h2" ta="center">
           {user.name}
         </Title>
         {user.nickname && (
-          <Text c="dimmed" fz="xs" ta={{ base: 'left', sm: 'center' }}>
+          <Text c="dimmed" fz="xs" ta="center">
             {user.nickname}
           </Text>
         )}
         {user.residence && (
-          <Flex
-            mt="xs"
-            c="dimmed"
-            fz="xs"
-            align="center"
-            gap={4}
-            justify={{ base: 'flex-start', sm: 'center' }}
-          >
+          <Flex mt="xs" c="dimmed" fz="xs" align="center" gap={4} justify="center">
             <IconMapPin size={16} />
             {user.residence}
           </Flex>
         )}
       </Box>
-      <Flex wrap="wrap" gap="sm" mt="md" justify={{ base: 'flex-start', sm: 'center' }}>
+      <Flex wrap="wrap" gap="sm" mt="md" justify="center">
         {user.tags?.map(({ userTag }) => (
           <Text key={userTag.name} fz="xs">
             #{userTag.name}
           </Text>
         ))}
       </Flex>
-      <SnsLinks user={user} mt="md" justify={{ base: 'flex-start', sm: 'center' }} />
+      <SnsLinks user={user} mt="md" justify="center" />
     </Box>
   );
 };
