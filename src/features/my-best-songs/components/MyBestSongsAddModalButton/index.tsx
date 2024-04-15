@@ -109,7 +109,7 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
         </Modal.Content>
       </Modal.Root>
       {!isFetchingCurrentSongs && (
-        <StickyBottomButton mt={32} onClick={handleOpen}>
+        <StickyBottomButton className={s.addButton} mt={32} onClick={handleOpen}>
           <IconPlus size={16} />
           <Space w={4} />
           追加
