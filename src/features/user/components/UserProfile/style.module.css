@@ -1,0 +1,9 @@
+.alertWrapper {
+  align-items: center;
+}
+
+.alertMessage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

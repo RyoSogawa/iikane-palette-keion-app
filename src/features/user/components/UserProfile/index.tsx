@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Avatar, Box, Button, Flex, Space, Text, Title } from '@mantine/core';
+import { Avatar, Box, Flex, Text, Title } from '@mantine/core';
 import { type User } from '@prisma/client';
-import { IconEdit, IconMapPin } from '@tabler/icons-react';
-import Link from 'next/link';
+import { IconMapPin } from '@tabler/icons-react';
 
+import YourProfileAlert from '@/features/user/components/UserProfile/parts/YourProfileAlert';
 import { type UserTag } from '@/types/generated/zod';
 
 import SnsLinks from './parts/SnsLinks';
@@ -21,20 +21,7 @@ export type UserProfileProps = {
 const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
   return (
     <Box pos="relative">
-      {isCurrentUser && (
-        <Button
-          component={Link}
-          href={`/members/${user.id}/edit/profile`}
-          variant="outline"
-          pos="absolute"
-          right={0}
-          top={0}
-        >
-          <IconEdit size={16} />
-          <Space w={4} />
-          編集
-        </Button>
-      )}
+      {isCurrentUser && <YourProfileAlert userId={user.id} />}
       <Avatar
         src={user.image}
         alt={user.name ?? 'アバター'}
