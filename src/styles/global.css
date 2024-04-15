@@ -1,3 +1,7 @@
+:root {
+  --input-fz: 1rem;
+}
+
 body {
   &.dragging {
     cursor: grabbing !important;
