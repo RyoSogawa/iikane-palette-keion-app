@@ -11,6 +11,8 @@ import { type FieldValues, useController, type UseControllerProps } from 'react-
 
 import { HEADER_HEIGHT } from '@/components/application/AppShell';
 
+import s from './style.module.css';
+
 export type ControlledRichEditorProps<T extends FieldValues> = Omit<
   InputWrapperProps,
   'error' | 'children'
@@ -54,7 +56,7 @@ const ControlledRichEditor = <T extends FieldValues>({
   return (
     <Input.Wrapper {...props} error={error?.message}>
       <RichTextEditor editor={editor}>
-        <RichTextEditor.Toolbar stickyOffset={HEADER_HEIGHT} sticky>
+        <RichTextEditor.Toolbar stickyOffset={HEADER_HEIGHT} className={s.toolbar} sticky>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Undo />
             <RichTextEditor.Redo />
