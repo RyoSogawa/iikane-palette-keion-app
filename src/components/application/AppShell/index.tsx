@@ -18,13 +18,15 @@ import AccountMenuButton from '@/features/account/components/AccountMenuButton';
 
 import s from './style.module.css';
 
+export const HEADER_HEIGHT = 60;
+
 export type AppShellProps = {
   children: React.ReactNode;
 };
 
 const AppShell: React.FC<AppShellProps> = ({ children }) => {
   return (
-    <MantineAppShell header={{ height: 60 }} padding="md">
+    <MantineAppShell header={{ height: HEADER_HEIGHT }} padding="md">
       <MantineAppShell.Header>
         <Container px={20} h="100%">
           <Flex align="center" h="100%">

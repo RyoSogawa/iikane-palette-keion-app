@@ -9,6 +9,8 @@ import { type Content, useEditor } from '@tiptap/react';
 import { StarterKit } from '@tiptap/starter-kit';
 import { type FieldValues, useController, type UseControllerProps } from 'react-hook-form';
 
+import { HEADER_HEIGHT } from '@/components/application/AppShell';
+
 export type ControlledRichEditorProps<T extends FieldValues> = Omit<
   InputWrapperProps,
   'error' | 'children'
@@ -52,7 +54,7 @@ const ControlledRichEditor = <T extends FieldValues>({
   return (
     <Input.Wrapper {...props} error={error?.message}>
       <RichTextEditor editor={editor}>
-        <RichTextEditor.Toolbar stickyOffset={60} sticky>
+        <RichTextEditor.Toolbar stickyOffset={HEADER_HEIGHT} sticky>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Undo />
             <RichTextEditor.Redo />
