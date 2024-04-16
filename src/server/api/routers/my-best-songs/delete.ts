@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 import { protectedProcedure } from '@/server/api/trpc';
@@ -23,6 +24,8 @@ export const deleteSong = protectedProcedure.input(inputSchema).mutation(async (
   if (data.userId !== ctx.session?.user.id) {
     throw new Error('Forbidden');
   }
+
+  revalidatePath(`/members/${data.userId}/my-best-songs`);
 
   return ctx.db.myBestSong.delete({
     where: {

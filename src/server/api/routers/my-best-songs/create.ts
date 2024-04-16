@@ -1,3 +1,5 @@
+import { revalidatePath } from 'next/cache';
+
 import { protectedProcedure } from '@/server/api/trpc';
 import { MyBestSongSchema } from '@/types/generated/zod';
 
@@ -11,6 +13,8 @@ const inputSchema = MyBestSongSchema.pick({
 });
 
 export const create = protectedProcedure.input(inputSchema).mutation(async ({ input, ctx }) => {
+  revalidatePath(`/members/${input.userId}/my-best-songs`);
+
   return ctx.db.myBestSong.create({
     data: {
       userId: input.userId,
