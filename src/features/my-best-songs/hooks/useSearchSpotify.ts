@@ -10,6 +10,9 @@ export const useSearchSpotify = (searchValue: string, searchType: SongTypeType) 
 
   useDebounce(
     () => {
+      if (searchValue.trim() === debouncedValue.trim()) {
+        return;
+      }
       setDebouncedValue(searchValue);
     },
     1000,
