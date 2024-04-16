@@ -14,20 +14,15 @@ import type { MyBestSong } from '@/types/generated/zod';
 export const useAddSong = (userId: string) => {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
-  const { mutateAsync } = api.myBestSongs.create.useMutation();
+  const { mutateAsync, isLoading } = api.myBestSongs.create.useMutation();
+
   const addSong = useCallback(
     (song: Pick<MyBestSong, 'spotifyId' | 'name' | 'artist' | 'image' | 'type'>) => () => {
       if (!session) {
         return;
       }
 
-      // optimistic update
       const myBestSongsKey = getQueryKey(api.myBestSongs.findByUserId, { userId }, 'query');
-      // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-      const prevData = queryClient.getQueryData(
-        myBestSongsKey,
-      ) as RouterOutputs['myBestSongs']['findByUserId'];
-      queryClient.setQueryData(myBestSongsKey, prevData ? [...prevData, song] : [song]);
 
       return mutateAsync(
         {
@@ -36,13 +31,12 @@ export const useAddSong = (userId: string) => {
         },
         {
           onSuccess: (data) => {
-            // IDをキャッシュに追加するために最後の要素を更新する
+            // キャッシュに追加する
             // eslint-disable-next-line @typescript-eslint/non-nullable-type-assertion-style
-            const cacheData = queryClient.getQueryData(
+            const prevData = queryClient.getQueryData(
               myBestSongsKey,
             ) as RouterOutputs['myBestSongs']['findByUserId'];
-            cacheData[cacheData.length - 1] = data;
-            queryClient.setQueryData(myBestSongsKey, cacheData);
+            queryClient.setQueryData(myBestSongsKey, prevData ? [...prevData, data] : [data]);
           },
           onError: (error) => {
             showNotification(NotificationOptions.error);
@@ -56,6 +50,7 @@ export const useAddSong = (userId: string) => {
   );
 
   return {
+    isAdding: isLoading,
     addSong,
   };
 };
