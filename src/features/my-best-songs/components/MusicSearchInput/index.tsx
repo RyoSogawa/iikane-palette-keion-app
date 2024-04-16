@@ -52,7 +52,7 @@ const MusicSearchInput: React.FC<MusicSearchInputProps> = ({
             </ActionIcon>
           )
         }
-        placeholder="Spotifyから検索..."
+        placeholder="Spotifyから検索"
         value={value}
         flex={1}
         onChange={handleChange}
