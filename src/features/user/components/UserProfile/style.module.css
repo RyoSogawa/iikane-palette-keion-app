@@ -2,6 +2,10 @@
   align-items: center;
 }
 
+.alertIcon {
+  margin-top: 0;
+}
+
 .alertMessage {
   display: flex;
   align-items: center;

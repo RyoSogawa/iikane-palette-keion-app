@@ -18,14 +18,16 @@ const YourProfileAlert: React.FC<YourProfileAlertProps> = ({ userId }) => {
       mt={-16}
       mb={24}
       py="xs"
+      pr={{ base: 'xs', sm: 'md' }}
       classNames={{
+        icon: s.alertIcon,
         wrapper: s.alertWrapper,
         message: s.alertMessage,
       }}
       icon={<IconInfoCircle />}
     >
       あなたのプロフィールです
-      <Button component={Link} href={`/members/${userId}/edit/profile`} variant="subtle">
+      <Button component={Link} href={`/members/${userId}/edit/profile`} variant="subtle" px="xs">
         編集
       </Button>
     </Alert>
