@@ -6,8 +6,7 @@ import { type User } from '@prisma/client';
 import { useForm } from 'react-hook-form';
 
 import { NotificationOptions } from '@/constants/notification';
-
-import { updateUserProfile } from './actions';
+import { api } from '@/trpc/react';
 
 export type UserFormValues = Pick<
   User,
@@ -34,10 +33,12 @@ export const useUserForm = (defaultValues: UserFormValues) => {
     defaultValues,
   });
 
+  const { mutateAsync } = api.user.update.useMutation();
+
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       await submit(async (data) => {
-        await updateUserProfile(data)
+        await mutateAsync(data)
           .then(() => {
             showNotification({
               ...NotificationOptions.success,
@@ -50,7 +51,7 @@ export const useUserForm = (defaultValues: UserFormValues) => {
           });
       })(e);
     },
-    [submit],
+    [mutateAsync, submit],
   );
 
   return {

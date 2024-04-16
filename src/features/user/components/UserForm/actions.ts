@@ -1,21 +1,12 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import sharp from 'sharp';
 
 import { STORAGE_PATH } from '@/constants/supabase';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
-import { type RouterInputs } from '@/trpc/shared';
 import { createSupabaseServerClient } from '@/utils/supabase';
-
-// HACK: client側でリダイレクトさせるとrevalidateがされない？ので、サーバー側でリダイレクトさせる
-export const updateUserProfile = async (input: RouterInputs['user']['update']) => {
-  return api.user.update.mutate(input).then(() => {
-    redirect(`/members/${input.id}/profile`);
-  });
-};
 
 export const updateUserAvatar = async (formData: FormData) => {
   const userId = formData.get('userId') as string;
