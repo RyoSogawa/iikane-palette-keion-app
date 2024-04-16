@@ -2,22 +2,19 @@
 
 import React, { useCallback } from 'react';
 
-import { ActionIcon, Flex, Loader } from '@mantine/core';
+import { ActionIcon } from '@mantine/core';
 import { IconBrandSpotify } from '@tabler/icons-react';
 import Link from 'next/link';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
-import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { type MyBestSong } from '@/types/generated/zod';
 
 export type MyBestSongsListProps = {
-  userId: string;
+  data: MyBestSong[];
 };
 
-const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ userId }) => {
-  const { data, isFetching } = useFindSongsByUserId(userId);
-
+const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ data }) => {
   const itemContent = useCallback<ItemContent<MyBestSong, unknown>>(
     (_index, song) =>
       song && (
@@ -44,13 +41,6 @@ const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ userId }) => {
       ),
     [],
   );
-
-  if (isFetching)
-    return (
-      <Flex align="center" justify="center" pt={120}>
-        <Loader />
-      </Flex>
-    );
 
   return <Virtuoso data={data ?? []} itemContent={itemContent} useWindowScroll />;
 };
