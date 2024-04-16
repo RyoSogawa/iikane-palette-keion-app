@@ -3,11 +3,11 @@
 import React, { useCallback } from 'react';
 
 import { ActionIcon, Flex, Loader } from '@mantine/core';
-import { IconBrandSpotify } from '@tabler/icons-react';
-import Link from 'next/link';
+import { IconTrash } from '@tabler/icons-react';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
+import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { type MyBestSong } from '@/types/generated/zod';
 
@@ -17,6 +17,7 @@ export type MyBestSongsListProps = {
 
 const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ userId }) => {
   const { data, isFetching } = useFindSongsByUserId(userId);
+  const { deleteSong } = useDeleteSong(userId);
 
   const itemContent = useCallback<ItemContent<MyBestSong, unknown>>(
     (_index, song) =>
@@ -28,21 +29,18 @@ const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ userId }) => {
           image={song.image}
           rightSlot={
             <ActionIcon
-              component={Link}
-              href={`https://open.spotify.com/intl-ja/${song.type}/${song.spotifyId}`}
-              target="_blank"
-              rel="noreferrer"
               radius="50%"
+              aria-label="削除する"
+              color="red"
               variant="outline"
-              color="#2ebd59"
-              aria-label="Spotifyで開く"
+              onClick={deleteSong(song.id)}
             >
-              <IconBrandSpotify size={16} />
+              <IconTrash size={16} />
             </ActionIcon>
           }
         />
       ),
-    [],
+    [deleteSong],
   );
 
   if (isFetching)
