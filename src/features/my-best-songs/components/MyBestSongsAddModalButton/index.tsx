@@ -63,7 +63,14 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
 
   return (
     <>
-      <Modal.Root opened={opened} size="lg" onClose={close}>
+      <Modal.Root
+        opened={opened}
+        size="lg"
+        transitionProps={{
+          transition: 'fade',
+        }}
+        onClose={close}
+      >
         <Modal.Overlay />
         <Modal.Content className={s.modalContent}>
           <Modal.Header>
