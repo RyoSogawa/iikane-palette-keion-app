@@ -37,7 +37,9 @@ const MyBestSongsAddModalButton: React.FC<MyBestSongsAddModalButtonProps> = ({ u
   const isOverflowed = currentSongs && currentSongs?.length >= 100;
 
   const handleOpen = useCallback(() => {
+    // reset form
     setSearchValue('');
+    setSearchType('track');
     open();
   }, [open]);
 
