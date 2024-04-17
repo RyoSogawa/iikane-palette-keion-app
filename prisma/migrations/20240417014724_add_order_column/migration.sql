@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "MyBestSong" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 0;

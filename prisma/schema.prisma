@@ -124,4 +124,5 @@ model MyBestSong {
   artist    String   @default("")
   name      String
   image     String   @default("")
+  order     Int      @default(0)
 }
