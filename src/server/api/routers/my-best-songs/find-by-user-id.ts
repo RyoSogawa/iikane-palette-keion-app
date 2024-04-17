@@ -11,5 +11,8 @@ export const findByUserId = publicProcedure.input(inputSchema).query(async ({ ct
     where: {
       userId: input.userId,
     },
+    orderBy: {
+      order: 'asc',
+    },
   });
 });
