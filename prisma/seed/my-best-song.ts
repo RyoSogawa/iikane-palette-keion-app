@@ -12,7 +12,7 @@ export default async function seedMyBestSong(users: User[]) {
         track = 'track',
         album = 'album',
       }
-      return Array.from({ length: count }).map(() => ({
+      return Array.from({ length: count }).map((_, index) => ({
         id: faker.string.uuid(),
         createdAt: new Date(),
         userId: user.id,
@@ -21,6 +21,7 @@ export default async function seedMyBestSong(users: User[]) {
         name: faker.music.songName(),
         artist: faker.person.fullName(),
         image: faker.image.url(),
+        order: index,
       }));
     })
     .flat();
