@@ -11,6 +11,7 @@ export const deleteSong = protectedProcedure.input(inputSchema).mutation(async (
   const data = await ctx.db.myBestSong.findFirst({
     select: {
       userId: true,
+      order: true,
     },
     where: {
       id: input.id,
@@ -27,9 +28,26 @@ export const deleteSong = protectedProcedure.input(inputSchema).mutation(async (
 
   revalidatePath(`/members/${data.userId}/my-best-songs`);
 
-  return ctx.db.myBestSong.delete({
-    where: {
-      id: input.id,
-    },
+  return ctx.db.$transaction(async (tx) => {
+    await Promise.all([
+      tx.myBestSong.delete({
+        where: {
+          id: input.id,
+        },
+      }),
+      tx.myBestSong.updateMany({
+        where: {
+          userId: data.userId,
+          order: {
+            gt: data.order,
+          },
+        },
+        data: {
+          order: {
+            decrement: 1,
+          },
+        },
+      }),
+    ]);
   });
 });
