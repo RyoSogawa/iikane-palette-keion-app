@@ -26,6 +26,7 @@ export const useSearchSpotify = (searchValue: string, searchType: SongTypeType) 
     },
     {
       enabled: !!debouncedValue,
+      refetchOnWindowFocus: false,
     },
   );
 
