@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 import { protectedProcedure } from '@/server/api/trpc';
+import { SpotifyApiService } from '@/server/applications/services/spotify-api.service';
 import { SongTypeSchema } from '@/types/generated/zod';
-import { SpotifyApi } from '@/utils/spotify';
 
 const inputSchema = z.object({
   keyword: z.string(),
@@ -21,8 +21,8 @@ const songSchema = z.object({
 export const search = protectedProcedure
   .input(inputSchema)
   .query<Array<z.infer<typeof songSchema>>>(async ({ input }) => {
-    const spotifyApi = new SpotifyApi();
-    const res = await spotifyApi.search({
+    const spotifyApiService = new SpotifyApiService();
+    const res = await spotifyApiService.search({
       q: input.keyword,
       market: 'JP',
       type: input.type,

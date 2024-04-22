@@ -8,7 +8,7 @@ const SpotifyAccessTokenSchema = z.object({
   expires_in: z.number(),
 });
 
-export class SpotifyApi {
+export class SpotifyApiService {
   private static readonly baseUrl = 'https://api.spotify.com/v1';
 
   private accessToken = '';
@@ -50,7 +50,7 @@ export class SpotifyApi {
       await this.setSpotifyAccessToken();
     }
 
-    const url = `${SpotifyApi.baseUrl}/search`;
+    const url = `${SpotifyApiService.baseUrl}/search`;
     const searchParams = new URLSearchParams(
       Object.fromEntries(Object.entries(params).map(([key, value]) => [key, String(value)])),
     );
