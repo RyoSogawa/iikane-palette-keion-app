@@ -41,6 +41,9 @@ const SortableMusicCard: React.FC<SortableMusicCardProps> = ({ deleteSong, song 
           aria-label="ドラッグアンドドロップで並び替える"
           size={22}
           cursor="grab"
+          style={{
+            touchAction: 'none',
+          }}
           {...listeners}
         />
       }
