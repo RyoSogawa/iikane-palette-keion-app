@@ -6,6 +6,8 @@ import UserCardList from '@/features/user/components/UserCardList';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 
+export const revalidate = 3600;
+
 export default async function Home({
   searchParams,
 }: {

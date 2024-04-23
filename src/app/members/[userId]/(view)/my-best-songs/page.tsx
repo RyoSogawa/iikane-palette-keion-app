@@ -3,6 +3,8 @@ import React from 'react';
 import MyBestSongsList from '@/features/my-best-songs/components/MyBestSongsList';
 import { api } from '@/trpc/server';
 
+export const revalidate = 3600;
+
 type Props = {
   params: {
     userId: string;

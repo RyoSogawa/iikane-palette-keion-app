@@ -3,6 +3,8 @@ import React from 'react';
 import EditorViewer from '@/components/ui/EditorViewer';
 import { api } from '@/trpc/server';
 
+export const revalidate = 3600;
+
 type Props = {
   params: {
     userId: string;

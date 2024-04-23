@@ -7,6 +7,8 @@ import UserProfileTab from '@/features/user/components/UserProfileTab';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 
+export const revalidate = 3600;
+
 type Props = {
   params: {
     userId: string;

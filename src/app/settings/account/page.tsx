@@ -6,6 +6,8 @@ import { redirect } from 'next/navigation';
 import AccountDeleteModalButton from '@/features/account/components/AccountDeleteModalButton';
 import { getServerAuthSession } from '@/server/auth';
 
+export const revalidate = 3600;
+
 export default async function AccountSettingPage() {
   const session = await getServerAuthSession();
 
