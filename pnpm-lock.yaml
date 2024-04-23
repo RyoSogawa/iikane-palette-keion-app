@@ -77,6 +77,9 @@ dependencies:
   jsonwebtoken:
     specifier: ^9.0.2
     version: 9.0.2
+  just-split:
+    specifier: ^3.2.0
+    version: 3.2.0
   next:
     specifier: ^14.1.0
     version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
@@ -3507,6 +3510,10 @@ packages:
       object.assign: 4.1.5
       object.values: 1.1.7
     dev: true
+
+  /just-split@3.2.0:
+    resolution: {integrity: sha512-hh57dN5koTBkmg3T6gBFISVVaW5bgZ6Ct1W5KODD5M7hQJKqGzTKkfMwOil8MBxyztLQEjh/v6UGXE8cP5tnqQ==}
+    dev: false
 
   /jwa@1.4.1:
     resolution: {integrity: sha512-qiLX/xhEEFKUAJ6FiBMbes3w9ATzyk5W7Hvzpa/SLYdxNtng+gcurvrI7TbACjIXlsJyr05/S1oUhZrc63evQA==}
