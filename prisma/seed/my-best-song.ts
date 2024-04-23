@@ -20,7 +20,6 @@ export default async function seedMyBestSong(users: User[]) {
         spotifyId: '12345',
         name: faker.music.songName(),
         artist: faker.person.fullName(),
-        image: faker.image.url(),
         order: index,
       }));
     })
