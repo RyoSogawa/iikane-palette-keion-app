@@ -72,4 +72,56 @@ export class SpotifyApiService {
       console.error('There was an error!', error);
     }
   }
+
+  public async getSeveralAlbums(ids: string[]): Promise<SpotifyApi.MultipleAlbumsResponse | void> {
+    if (!this.accessToken) {
+      await this.setSpotifyAccessToken();
+    }
+
+    const url = `${SpotifyApiService.baseUrl}/albums`;
+    const searchParams = new URLSearchParams({ ids: ids.join(',') });
+
+    try {
+      const response = await fetch(`${url}?${searchParams.toString()}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return (await response.json()) as SpotifyApi.MultipleAlbumsResponse;
+    } catch (error) {
+      console.error('There was an error!', error);
+    }
+  }
+
+  public async getSeveralTracks(ids: string[]): Promise<SpotifyApi.MultipleTracksResponse | void> {
+    if (!this.accessToken) {
+      await this.setSpotifyAccessToken();
+    }
+
+    const url = `${SpotifyApiService.baseUrl}/tracks`;
+    const searchParams = new URLSearchParams({ ids: ids.join(',') });
+
+    try {
+      const response = await fetch(`${url}?${searchParams.toString()}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return (await response.json()) as SpotifyApi.MultipleTracksResponse;
+    } catch (error) {
+      console.error('There was an error!', error);
+    }
+  }
 }
