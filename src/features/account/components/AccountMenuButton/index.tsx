@@ -16,8 +16,8 @@ const AccountMenuButton: React.FC = () => {
 
   if (!session) {
     return (
-      <Tooltip label="ログイン">
-        <UnstyledButton component={Link} href="/api/auth/signin" aria-label="ログイン">
+      <Tooltip label="ログイン・新規登録" openDelay={500}>
+        <UnstyledButton component={Link} href="/api/auth/signin" aria-label="ログイン・新規登録">
           <Avatar>
             <IconLogin />
           </Avatar>

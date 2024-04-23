@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react';
 
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Tooltip } from '@mantine/core';
 import { IconBrandSpotify } from '@tabler/icons-react';
 import Link from 'next/link';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
@@ -24,18 +24,20 @@ const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ data }) => {
           name={song.name}
           image={song.image}
           rightSlot={
-            <ActionIcon
-              component={Link}
-              href={`https://open.spotify.com/intl-ja/${song.type}/${song.spotifyId}`}
-              target="_blank"
-              rel="noreferrer"
-              radius="50%"
-              variant="outline"
-              color="#2ebd59"
-              aria-label="Spotifyで開く"
-            >
-              <IconBrandSpotify size={16} />
-            </ActionIcon>
+            <Tooltip label="Spotifyで聴く" openDelay={500}>
+              <ActionIcon
+                component={Link}
+                href={`https://open.spotify.com/intl-ja/${song.type}/${song.spotifyId}`}
+                target="_blank"
+                rel="noreferrer"
+                radius="50%"
+                variant="outline"
+                color="#2ebd59"
+                aria-label="Spotifyで聴く"
+              >
+                <IconBrandSpotify size={16} />
+              </ActionIcon>
+            </Tooltip>
           }
         />
       ),
