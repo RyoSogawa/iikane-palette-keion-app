@@ -1,14 +1,22 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { Avatar, Menu, Skeleton, Tooltip, UnstyledButton } from '@mantine/core';
 import { IconLogin, IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 const AccountMenuButton: React.FC = () => {
   const { data: session, status } = useSession();
+
+  const handleSignIn = useCallback(() => {
+    void signIn('discord');
+  }, []);
+
+  const handleSignOut = useCallback(() => {
+    void signOut();
+  }, []);
 
   if (status === 'loading') {
     return <Skeleton w={38} h={38} circle />;
@@ -17,7 +25,7 @@ const AccountMenuButton: React.FC = () => {
   if (!session) {
     return (
       <Tooltip label="ログイン・新規登録" openDelay={500}>
-        <UnstyledButton component={Link} href="/api/auth/signin" aria-label="ログイン・新規登録">
+        <UnstyledButton aria-label="ログイン・新規登録" onClick={handleSignIn}>
           <Avatar>
             <IconLogin />
           </Avatar>
@@ -53,7 +61,7 @@ const AccountMenuButton: React.FC = () => {
           アカウント設定
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item component={Link} href="/api/auth/signout" leftSection={<IconLogout size={14} />}>
+        <Menu.Item leftSection={<IconLogout size={14} />} onClick={handleSignOut}>
           ログアウト
         </Menu.Item>
       </Menu.Dropdown>
