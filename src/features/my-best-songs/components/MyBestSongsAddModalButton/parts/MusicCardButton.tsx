@@ -5,10 +5,10 @@ import { IconCheck, IconPlus } from '@tabler/icons-react';
 
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
 import s from '@/features/my-best-songs/components/MyBestSongsAddModalButton/style.module.css';
-import { type MyBestSong } from '@/types/generated/zod';
+import { type SongWithImage } from '@/types/types';
 
 export type MusicCardButtonProps = {
-  song: Pick<MyBestSong, 'type' | 'artist' | 'name' | 'image'>;
+  song: Pick<SongWithImage, 'type' | 'artist' | 'name' | 'image'>;
   forAdd?: boolean;
   disabledToAdd?: boolean;
   onAdd?: () => void;
