@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ActionIcon, UnstyledButton } from '@mantine/core';
+import { ThemeIcon, UnstyledButton } from '@mantine/core';
 import { IconCheck, IconPlus } from '@tabler/icons-react';
 
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
@@ -36,13 +36,13 @@ const MusicCardButton: React.FC<MusicCardButtonProps> = ({
         image={song.image}
         rightSlot={
           forAdd ? (
-            <ActionIcon component="span" radius="50%">
+            <ThemeIcon radius="50%">
               <IconPlus size={16} />
-            </ActionIcon>
+            </ThemeIcon>
           ) : (
-            <ActionIcon component="span" radius="50%" color="green" variant="outline">
+            <ThemeIcon radius="50%" color="green" variant="outline">
               <IconCheck size={16} />
-            </ActionIcon>
+            </ThemeIcon>
           )
         }
       />
