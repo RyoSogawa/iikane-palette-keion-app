@@ -13,7 +13,7 @@ export class SpotifyApiService {
 
   private accessToken = '';
 
-  private async setSpotifyAccessToken() {
+  public async setAccessToken() {
     const url = 'https://accounts.spotify.com/api/token';
     const key = Buffer.from(`${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`).toString(
       'base64',
@@ -47,7 +47,7 @@ export class SpotifyApiService {
     params: SpotifyApi.SearchForItemParameterObject,
   ): Promise<SpotifyApi.SearchResponse | void> {
     if (!this.accessToken) {
-      await this.setSpotifyAccessToken();
+      await this.setAccessToken();
     }
 
     const url = `${SpotifyApiService.baseUrl}/search`;
@@ -75,7 +75,7 @@ export class SpotifyApiService {
 
   public async getSeveralAlbums(ids: string[]): Promise<SpotifyApi.MultipleAlbumsResponse | void> {
     if (!this.accessToken) {
-      await this.setSpotifyAccessToken();
+      await this.setAccessToken();
     }
 
     const url = `${SpotifyApiService.baseUrl}/albums`;
@@ -101,7 +101,7 @@ export class SpotifyApiService {
 
   public async getSeveralTracks(ids: string[]): Promise<SpotifyApi.MultipleTracksResponse | void> {
     if (!this.accessToken) {
-      await this.setSpotifyAccessToken();
+      await this.setAccessToken();
     }
 
     const url = `${SpotifyApiService.baseUrl}/tracks`;
