@@ -8,21 +8,21 @@ import Link from 'next/link';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
-import { type MyBestSong } from '@/types/generated/zod';
+import { type SongWithImage } from '@/types/types';
 
 export type MyBestSongsListProps = {
-  data: MyBestSong[];
+  data: SongWithImage[];
 };
 
 const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ data }) => {
-  const itemContent = useCallback<ItemContent<MyBestSong, unknown>>(
+  const itemContent = useCallback<ItemContent<SongWithImage, unknown>>(
     (_index, song) =>
       song && (
         <MusicCard
           type={song.type}
           artist={song.artist}
           name={song.name}
-          // image={song.image} TODO
+          image={song.image}
           rightSlot={
             <ActionIcon
               component={Link}

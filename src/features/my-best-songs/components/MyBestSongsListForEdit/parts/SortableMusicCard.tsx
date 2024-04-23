@@ -6,10 +6,10 @@ import { ActionIcon } from '@mantine/core';
 import { IconGripVertical, IconTrash } from '@tabler/icons-react';
 
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
-import { type MyBestSong } from '@/types/generated/zod';
+import { type SongWithImage } from '@/types/types';
 
 export type SortableMusicCardProps = {
-  song: Pick<MyBestSong, 'id' | 'type' | 'artist' | 'name'>;
+  song: Pick<SongWithImage, 'id' | 'type' | 'artist' | 'name' | 'image'>;
   deleteSong: (id: string) => () => void;
 };
 
@@ -35,7 +35,7 @@ const SortableMusicCard: React.FC<SortableMusicCardProps> = ({ deleteSong, song 
       type={song.type}
       artist={song.artist}
       name={song.name}
-      // image={song.image} TODO
+      image={song.image}
       leftSlot={
         <IconGripVertical
           aria-label="ドラッグアンドドロップで並び替える"
