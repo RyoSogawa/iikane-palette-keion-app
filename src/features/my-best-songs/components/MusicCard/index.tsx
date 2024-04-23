@@ -5,6 +5,8 @@ import { Box, Flex, Group, Image, Paper, Text } from '@mantine/core';
 import MusicTypeBadge from '@/features/my-best-songs/components/MusicTypeBadge';
 import { type SongTypeType } from '@/types/generated/zod';
 
+import s from './style.module.css';
+
 export type MusicCardProps = React.ComponentProps<'div'> & {
   type: SongTypeType;
   artist: string;
@@ -15,11 +17,17 @@ export type MusicCardProps = React.ComponentProps<'div'> & {
 };
 
 const MusicCard = React.forwardRef<HTMLDivElement, MusicCardProps>(
-  ({ artist, image, name, type, leftSlot, rightSlot, ...props }, forwardedRef) => {
+  ({ artist, image, name, type, leftSlot, rightSlot, className, ...props }, forwardedRef) => {
     return (
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error
-      <Paper ref={forwardedRef} p="xs" bg="transparent" {...props}>
+      <Paper
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
+        ref={forwardedRef}
+        py="xs"
+        px={{ base: 'xs', sm: 'lg' }}
+        className={`${s.wrapper} ${className}`}
+        {...props}
+      >
         <Group h="100%" wrap="nowrap">
           {leftSlot}
           {image ? (

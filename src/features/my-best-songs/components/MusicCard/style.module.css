@@ -1,0 +1,7 @@
+.wrapper {
+  transition: background-color 0.1s;
+
+  &:hover {
+    background-color: var(--mantine-color-dark-8);
+  }
+}
