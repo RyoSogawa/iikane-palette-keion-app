@@ -2,20 +2,19 @@ import { z } from 'zod';
 
 import { protectedProcedure } from '@/server/api/trpc';
 import { SpotifyApiService } from '@/server/applications/services/spotify-api.service';
-import { SongTypeSchema } from '@/types/generated/zod';
+import { MyBestSongSchema, SongTypeSchema } from '@/types/generated/zod';
 
 const inputSchema = z.object({
   keyword: z.string(),
   type: SongTypeSchema,
 });
 
-const songSchema = z.object({
-  type: SongTypeSchema,
-  spotifyId: z.string(),
-  artist: z.string(),
-  name: z.string(),
-  image: z.string(),
-  uri: z.string(),
+const songSchema = MyBestSongSchema.pick({
+  type: true,
+  spotifyId: true,
+  artist: true,
+  name: true,
+  image: true,
 });
 
 export const search = protectedProcedure
@@ -40,7 +39,6 @@ export const search = protectedProcedure
           artist: track.artists.map((artist) => artist.name).join(', '),
           name: track.name,
           image: track.album.images[0]?.url ?? '',
-          uri: track.uri,
         })) ?? []
       );
     }
@@ -52,7 +50,6 @@ export const search = protectedProcedure
         artist: album.artists.map((artist) => artist.name).join(', '),
         name: album.name,
         image: album.images[0]?.url ?? '',
-        uri: album.uri,
       })) ?? []
     );
   });
