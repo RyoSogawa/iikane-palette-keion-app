@@ -22,7 +22,7 @@ const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ data }) => {
           type={song.type}
           artist={song.artist}
           name={song.name}
-          image={song.image}
+          // image={song.image} TODO
           rightSlot={
             <ActionIcon
               component={Link}

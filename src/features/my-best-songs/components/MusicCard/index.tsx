@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Group, Image, Paper, Text } from '@mantine/core';
+import { Box, Flex, Group, Image, Paper, Text } from '@mantine/core';
 
 import MusicTypeBadge from '@/features/my-best-songs/components/MusicTypeBadge';
 import { type SongTypeType } from '@/types/generated/zod';
@@ -22,7 +22,15 @@ const MusicCard = React.forwardRef<HTMLDivElement, MusicCardProps>(
       <Paper ref={forwardedRef} p="xs" bg="transparent" {...props}>
         <Group h="100%" wrap="nowrap">
           {leftSlot}
-          <Image src={image} alt={name} w={60} width={60} height={60} loading="lazy" bg="gray" />
+          {image ? (
+            <Image src={image} alt={name} w={60} width={60} height={60} loading="lazy" bg="gray" />
+          ) : (
+            <Flex w={60} h={60} bg="gray" fz="xs" align="center" justify="center">
+              No
+              <br />
+              Image
+            </Flex>
+          )}
           <Box flex={1} pb={4}>
             <MusicTypeBadge type={type} />
             <Text mt={4} size="sm" fw={500} c="bright" lineClamp={1}>

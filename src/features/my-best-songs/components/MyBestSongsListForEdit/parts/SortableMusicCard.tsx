@@ -9,7 +9,7 @@ import MusicCard from '@/features/my-best-songs/components/MusicCard';
 import { type MyBestSong } from '@/types/generated/zod';
 
 export type SortableMusicCardProps = {
-  song: Pick<MyBestSong, 'id' | 'type' | 'artist' | 'name' | 'image'>;
+  song: Pick<MyBestSong, 'id' | 'type' | 'artist' | 'name'>;
   deleteSong: (id: string) => () => void;
 };
 
@@ -35,7 +35,7 @@ const SortableMusicCard: React.FC<SortableMusicCardProps> = ({ deleteSong, song 
       type={song.type}
       artist={song.artist}
       name={song.name}
-      image={song.image}
+      // image={song.image} TODO
       leftSlot={
         <IconGripVertical
           aria-label="ドラッグアンドドロップで並び替える"

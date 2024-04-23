@@ -8,7 +8,6 @@ const inputSchema = MyBestSongSchema.pick({
   spotifyId: true,
   name: true,
   artist: true,
-  image: true,
   type: true,
 });
 
@@ -32,7 +31,6 @@ export const create = protectedProcedure.input(inputSchema).mutation(async ({ in
       spotifyId: input.spotifyId,
       name: input.name,
       artist: input.artist,
-      image: input.image,
       type: input.type,
       order,
     },
