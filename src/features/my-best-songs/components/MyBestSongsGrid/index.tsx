@@ -12,7 +12,11 @@ export type MyBestSongsGridProps = {
 
 const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data }) => {
   return (
-    <SimpleGrid cols={{ base: 4, sm: 6 }} spacing="sm" verticalSpacing="sm">
+    <SimpleGrid
+      cols={{ base: 4, sm: 6 }}
+      spacing={{ base: 'xs', sm: 'sm' }}
+      verticalSpacing={{ base: 'xs', sm: 'sm' }}
+    >
       {data.map((song) => (
         <div key={song.id}>
           <Image

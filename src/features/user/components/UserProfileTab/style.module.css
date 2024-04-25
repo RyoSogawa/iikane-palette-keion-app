@@ -2,6 +2,6 @@
   position: sticky;
   top: 60px;
   z-index: var(--mantine-z-index-app);
-  margin: 24px 0 32px;
+  margin: 24px 0;
   background-color: var(--mantine-color-body);
 }
