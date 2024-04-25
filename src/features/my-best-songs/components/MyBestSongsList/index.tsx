@@ -44,7 +44,14 @@ const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ data }) => {
     [],
   );
 
-  return <Virtuoso data={data ?? []} itemContent={itemContent} useWindowScroll />;
+  return (
+    <Virtuoso
+      style={{ minHeight: 72 * data.length }}
+      data={data ?? []}
+      itemContent={itemContent}
+      useWindowScroll
+    />
+  );
 };
 
 export default MyBestSongsList;
