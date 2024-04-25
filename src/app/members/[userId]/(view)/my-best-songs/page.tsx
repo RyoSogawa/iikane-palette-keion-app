@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MyBestSongsList from '@/features/my-best-songs/components/MyBestSongsList';
+import MyBestSongsGrid from '@/features/my-best-songs/components/MyBestSongsGrid';
 import { api } from '@/trpc/server';
 
 export const revalidate = 3600;
@@ -18,5 +18,5 @@ export default async function MemberMyBestsPage({ params }: Props) {
 
   if (!myBestSongs?.length) return null;
 
-  return <MyBestSongsList data={myBestSongs} />;
+  return <MyBestSongsGrid data={myBestSongs} />;
 }
