@@ -2,7 +2,8 @@ import React, { useMemo } from 'react';
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Image } from '@mantine/core';
+import { Image, ThemeIcon } from '@mantine/core';
+import { IconGripVertical } from '@tabler/icons-react';
 
 import type { SongWithImage } from '@/types/types';
 
@@ -17,14 +18,16 @@ const SortableMusicImage: React.FC<SortableMusicImageProps> = ({ song }) => {
 
   const style = useMemo<React.CSSProperties>(
     () => ({
+      position: 'relative',
       transform: CSS.Transform.toString(transform),
       transition,
+      userSelect: 'none',
     }),
     [transform, transition],
   );
 
   return (
-    <div style={style} {...attributes} ref={setNodeRef} {...listeners}>
+    <div style={style} {...attributes} ref={setNodeRef}>
       <Image
         src={song.image}
         alt={song.name}
@@ -35,10 +38,23 @@ const SortableMusicImage: React.FC<SortableMusicImageProps> = ({ song }) => {
         loading="lazy"
         bg="gray"
         draggable={false}
-        style={{
-          userSelect: 'none',
-        }}
       />
+      <ThemeIcon
+        pos="absolute"
+        style={{
+          touchAction: 'none',
+          cursor: 'grab',
+          zIndex: 1,
+          top: 10,
+          left: 10,
+        }}
+        variant="outline"
+        color="gray"
+        bg="dark"
+        {...listeners}
+      >
+        <IconGripVertical aria-label="ドラッグアンドドロップで並び替える" size={22} />
+      </ThemeIcon>
     </div>
   );
 };

@@ -13,7 +13,7 @@ export type MyBestSongsGridProps = {
 const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data }) => {
   return (
     <SimpleGrid
-      cols={{ base: 4, sm: 6 }}
+      cols={{ base: 3, sm: 6 }}
       spacing={{ base: 'xs', sm: 'sm' }}
       verticalSpacing={{ base: 'xs', sm: 'sm' }}
     >

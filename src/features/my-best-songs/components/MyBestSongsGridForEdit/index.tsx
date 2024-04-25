@@ -31,7 +31,7 @@ const MyBestSongsGridForEdit: React.FC<MyBestSongsGridForEditProps> = ({ userId 
     <DnDContext onDragEnd={handleDragEnd}>
       <SortableContext items={data ?? []} strategy={rectSortingStrategy}>
         <SimpleGrid
-          cols={{ base: 4, sm: 6 }}
+          cols={{ base: 3, sm: 6 }}
           spacing={{ base: 'xs', sm: 'sm' }}
           verticalSpacing={{ base: 'xs', sm: 'sm' }}
         >
