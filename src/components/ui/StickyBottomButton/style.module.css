@@ -1,0 +1,7 @@
+.wrapper {
+  position: sticky;
+  bottom: 24px;
+  text-align: center;
+  padding: 0;
+  z-index: var(--mantine-z-index-app);
+}
