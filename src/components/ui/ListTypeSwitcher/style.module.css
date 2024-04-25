@@ -1,0 +1,8 @@
+.wrapper {
+  position: sticky;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  padding: 0;
+  z-index: var(--mantine-z-index-app);
+}
