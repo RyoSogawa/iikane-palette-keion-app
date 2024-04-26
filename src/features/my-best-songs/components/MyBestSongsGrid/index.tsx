@@ -16,7 +16,7 @@ const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data, ...props }) => 
   return (
     <SimpleGrid
       {...props}
-      cols={{ base: 5, sm: 6 }}
+      cols={{ base: 5, sm: 7 }}
       spacing={{ base: 4, sm: 'sm' }}
       verticalSpacing={{ base: 4, sm: 'sm' }}
     >

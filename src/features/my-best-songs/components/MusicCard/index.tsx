@@ -24,7 +24,7 @@ const MusicCard = React.forwardRef<HTMLDivElement, MusicCardProps>(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         ref={forwardedRef}
-        py="xs"
+        py={{ base: 8, sm: 'xs' }}
         px={{ base: 'xs', sm: 'lg' }}
         className={`${s.wrapper} ${className}`}
         {...props}
@@ -32,7 +32,7 @@ const MusicCard = React.forwardRef<HTMLDivElement, MusicCardProps>(
         <Group h="100%" wrap="nowrap">
           {leftSlot}
           <MusicImage song={{ image, name }} size={60} />
-          <Box flex={1} pb={4}>
+          <Box flex={1}>
             <MusicTypeBadge type={type} />
             <Text mt={4} size="sm" fw={500} c="bright" lineClamp={1}>
               {name}

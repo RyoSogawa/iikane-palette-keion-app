@@ -18,18 +18,18 @@ const data: SegmentedControlItem[] = [
   {
     label: (
       <Flex align="center" justify="center">
-        <IconList aria-label="リスト" />
-      </Flex>
-    ),
-    value: 'list',
-  },
-  {
-    label: (
-      <Flex align="center" justify="center">
         <IconGridDots aria-label="グリッド" />
       </Flex>
     ),
     value: 'grid',
+  },
+  {
+    label: (
+      <Flex align="center" justify="center">
+        <IconList aria-label="リスト" />
+      </Flex>
+    ),
+    value: 'list',
   },
 ];
 

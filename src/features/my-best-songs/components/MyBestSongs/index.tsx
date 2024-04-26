@@ -13,7 +13,7 @@ export type MyBestsSongsProps = {
 };
 
 const MyBestsSongs: React.FC<MyBestsSongsProps> = ({ data }) => {
-  const [listType, setListType] = useState<ListType>('list');
+  const [listType, setListType] = useState<ListType>('grid');
 
   return (
     <div>
