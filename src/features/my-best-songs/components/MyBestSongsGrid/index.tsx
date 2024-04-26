@@ -14,8 +14,8 @@ const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data }) => {
   return (
     <SimpleGrid
       cols={{ base: 3, sm: 6 }}
-      spacing={{ base: 'xs', sm: 'sm' }}
-      verticalSpacing={{ base: 'xs', sm: 'sm' }}
+      spacing={{ base: 4, sm: 'sm' }}
+      verticalSpacing={{ base: 4, sm: 'sm' }}
     >
       {data.map((song) => (
         <div key={song.id}>
