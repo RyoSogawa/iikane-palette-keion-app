@@ -3,7 +3,7 @@ import React from 'react';
 import { Box } from '@mantine/core';
 
 import MyBestSongsAddModalButton from '@/features/my-best-songs/components/MyBestSongsAddModalButton';
-import MyBestSongsGridForEdit from '@/features/my-best-songs/components/MyBestSongsGridForEdit';
+import MyBestSongsListForEdit from '@/features/my-best-songs/components/MyBestSongsListForEdit';
 
 type Props = {
   params: {
@@ -14,7 +14,7 @@ type Props = {
 export default async function MemberMyBestsPage({ params }: Props) {
   return (
     <Box>
-      <MyBestSongsGridForEdit userId={params.userId} />
+      <MyBestSongsListForEdit userId={params.userId} />
       <MyBestSongsAddModalButton userId={params.userId} />
     </Box>
   );
