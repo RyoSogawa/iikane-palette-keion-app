@@ -2,7 +2,9 @@
 
 import React from 'react';
 
-import { Image, SimpleGrid } from '@mantine/core';
+import { SimpleGrid } from '@mantine/core';
+
+import MusicImage from '@/features/my-best-songs/components/MusicImage';
 
 import type { SongWithImage } from '@/types/types';
 
@@ -19,16 +21,7 @@ const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data }) => {
     >
       {data.map((song) => (
         <div key={song.id}>
-          <Image
-            src={song.image}
-            alt={song.name}
-            width={78}
-            height={78}
-            w="100%"
-            h="100%"
-            loading="lazy"
-            bg="gray"
-          />
+          <MusicImage song={song} size="100%" />
         </div>
       ))}
     </SimpleGrid>
