@@ -2,17 +2,18 @@
 
 import React from 'react';
 
-import { SimpleGrid, type SimpleGridProps } from '@mantine/core';
+import { SimpleGrid, type SimpleGridProps, UnstyledButton } from '@mantine/core';
 
 import MusicImage from '@/features/my-best-songs/components/MusicImage';
 
 import type { SongWithImage } from '@/types/types';
 
-export type MyBestSongsGridProps = SimpleGridProps & {
+export type MyBestSongsGridProps = Omit<SimpleGridProps, 'onClick'> & {
   data: SongWithImage[];
+  onClick: (id: string) => () => void;
 };
 
-const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data, ...props }) => {
+const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data, onClick, ...props }) => {
   return (
     <SimpleGrid
       {...props}
@@ -22,7 +23,9 @@ const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data, ...props }) => 
     >
       {data.map((song) => (
         <div key={song.id}>
-          <MusicImage song={song} size="100%" />
+          <UnstyledButton display="block" onClick={onClick?.(song.id)}>
+            <MusicImage song={song} size="100%" />
+          </UnstyledButton>
         </div>
       ))}
     </SimpleGrid>
