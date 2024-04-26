@@ -2,20 +2,21 @@
 
 import React from 'react';
 
-import { SimpleGrid } from '@mantine/core';
+import { SimpleGrid, type SimpleGridProps } from '@mantine/core';
 
 import MusicImage from '@/features/my-best-songs/components/MusicImage';
 
 import type { SongWithImage } from '@/types/types';
 
-export type MyBestSongsGridProps = {
+export type MyBestSongsGridProps = SimpleGridProps & {
   data: SongWithImage[];
 };
 
-const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data }) => {
+const MyBestSongsGrid: React.FC<MyBestSongsGridProps> = ({ data, ...props }) => {
   return (
     <SimpleGrid
-      cols={{ base: 3, sm: 6 }}
+      {...props}
+      cols={{ base: 5, sm: 6 }}
       spacing={{ base: 4, sm: 'sm' }}
       verticalSpacing={{ base: 4, sm: 'sm' }}
     >
