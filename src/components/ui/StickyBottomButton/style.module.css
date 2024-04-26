@@ -1,6 +1,6 @@
 .wrapper {
   position: sticky;
-  bottom: 24px;
+  bottom: 32px;
   text-align: center;
   padding: 0;
   z-index: var(--mantine-z-index-app);
