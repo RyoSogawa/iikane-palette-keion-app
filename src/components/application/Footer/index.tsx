@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { Box, Container, Flex, Text } from '@mantine/core';
+import { Box, Container, Flex, Image, Text } from '@mantine/core';
 import { IconBrandDiscordFilled, IconBrandGithubFilled } from '@tabler/icons-react';
+import Link from 'next/link';
 
 import IconLink from '@/components/application/Footer/parts/IconLink';
 import ImageLink from '@/components/application/Footer/parts/ImageLink';
@@ -10,8 +11,22 @@ import { LINK } from '@/constants/external-service';
 const Footer: React.FC = () => {
   return (
     <Box component="footer" pt="xl" pb="md">
-      <Container>
-        <Flex align="center" justify="center" gap="md">
+      <Container ta="center">
+        <Box component={Link} href="/" display="inline-block">
+          <Image
+            src="/images/logo/keion-logo.webp"
+            alt="ロゴ"
+            width={60}
+            height={60}
+            w={60}
+            h={60}
+            display="inline-block"
+            radius="xl"
+            bg="white"
+            loading="lazy"
+          />
+        </Box>
+        <Flex mt={32} align="center" justify="center" gap="md">
           <ImageLink
             href={LINK.IIKANE_PALETTE}
             src="/images/logo/iikane-palette.png"
