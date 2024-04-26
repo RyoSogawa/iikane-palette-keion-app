@@ -35,7 +35,15 @@ const MyBestsSongs: React.FC<MyBestsSongsProps> = ({ data }) => {
         <MyBestSongsList data={data} onClick={handleOpen} />
       )}
       <ListTypeSwitcher mt={24} currentType={listType} onChange={setListType} />
-      <MusicInfoModal opened={isOpen} song={openedSong} onClose={handleClose} />
+      <MusicInfoModal
+        opened={isOpen}
+        song={openedSong}
+        openNext={openNext}
+        openPrev={openPrev}
+        nextSongExists={nextSongExists}
+        prevSongExists={prevSongExists}
+        onClose={handleClose}
+      />
     </div>
   );
 };

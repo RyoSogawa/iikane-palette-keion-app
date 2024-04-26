@@ -2,19 +2,31 @@
 
 import React from 'react';
 
-import { Button, Modal, type ModalProps, Text } from '@mantine/core';
+import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import { IconBrandSpotify } from '@tabler/icons-react';
 import Link from 'next/link';
 
 import MusicImage from '@/features/my-best-songs/components/MusicImage';
+import NextPrevButton from '@/features/my-best-songs/components/MusicInfoModal/parts/NextPrevButton';
 import MusicTypeBadge from '@/features/my-best-songs/components/MusicTypeBadge';
 import { type SongWithImage } from '@/types/types';
 
 export type MusicInfoModalProps = ModalProps & {
   song?: Pick<SongWithImage, 'id' | 'spotifyId' | 'type' | 'name' | 'artist' | 'image'>;
+  openNext: () => void;
+  openPrev: () => void;
+  nextSongExists: boolean;
+  prevSongExists: boolean;
 };
 
-const MusicInfoModal: React.FC<MusicInfoModalProps> = ({ song, ...props }) => {
+const MusicInfoModal: React.FC<MusicInfoModalProps> = ({
+  song,
+  openNext,
+  openPrev,
+  nextSongExists,
+  prevSongExists,
+  ...props
+}) => {
   return (
     <Modal {...props}>
       {song && (
@@ -27,19 +39,24 @@ const MusicInfoModal: React.FC<MusicInfoModalProps> = ({ song, ...props }) => {
           <Text mt={4} c="dimmed" fz="sm">
             {song.artist}
           </Text>
-          <Button
-            component={Link}
-            href={`https://open.spotify.com/intl-ja/${song.type}/${song.spotifyId}`}
-            target="_blank"
-            rel="noreferrer"
-            mt={16}
-            color="#2ebd59"
-            variant="outline"
-            leftSection={<IconBrandSpotify size={16} />}
-            size="xs"
-          >
-            Spotifyで聴く
-          </Button>
+          <Group>
+            <Button
+              component={Link}
+              href={`https://open.spotify.com/intl-ja/${song.type}/${song.spotifyId}`}
+              target="_blank"
+              rel="noreferrer"
+              mt={16}
+              color="#2ebd59"
+              variant="outline"
+              leftSection={<IconBrandSpotify size={16} />}
+              size="xs"
+            >
+              Spotifyで聴く
+            </Button>
+            <Space flex={1} />
+            <NextPrevButton dir="prev" disabled={!prevSongExists} onClick={openPrev} />
+            <NextPrevButton dir="next" disabled={!nextSongExists} onClick={openNext} />
+          </Group>
         </div>
       )}
     </Modal>
