@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Container, Flex, Image, Text } from '@mantine/core';
+import { Box, Container, Flex, Image, Text, VisuallyHidden } from '@mantine/core';
 import { IconBrandDiscordFilled, IconBrandGithubFilled } from '@tabler/icons-react';
 import Link from 'next/link';
 
@@ -25,6 +25,7 @@ const Footer: React.FC = () => {
             bg="white"
             loading="lazy"
           />
+          <VisuallyHidden>いいかねパレット軽音楽部</VisuallyHidden>
         </Box>
         <Flex mt={32} align="center" justify="center" gap="md">
           <ImageLink
