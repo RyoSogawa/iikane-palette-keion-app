@@ -10,9 +10,10 @@ import { type Metadata } from 'next';
 
 import AppShell from '@/components/application/AppShell';
 import Providers from '@/components/functional/Providers';
+import { SITE_NAME } from '@/constants/site-info';
 
 export const metadata: Metadata = {
-  title: 'いいかねパレット軽音部',
+  title: SITE_NAME,
   description: 'いいかねパレット軽音部のポータルサイトです。',
 };
 

@@ -1,12 +1,19 @@
 import { Container, Title } from '@mantine/core';
 
 import SearchParamController from '@/components/functional/SearchParamController';
+import { SITE_NAME } from '@/constants/site-info';
 import OnboardingViewMyProfileModal from '@/features/account/components/OnboardingViewMyProfileModal';
 import UserCardList from '@/features/user/components/UserCardList';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 
+import type { Metadata } from 'next';
+
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: `部員名簿 | ${SITE_NAME}`,
+};
 
 export default async function Home({
   searchParams,

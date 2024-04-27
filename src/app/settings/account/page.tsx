@@ -3,10 +3,15 @@ import React from 'react';
 import { Container, Title } from '@mantine/core';
 import { redirect } from 'next/navigation';
 
+import { SITE_NAME } from '@/constants/site-info';
 import AccountDeleteModalButton from '@/features/account/components/AccountDeleteModalButton';
 import { getServerAuthSession } from '@/server/auth';
 
-export const revalidate = 3600;
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: `アカウント設定 | ${SITE_NAME}`,
+};
 
 export default async function AccountSettingPage() {
   const session = await getServerAuthSession();
