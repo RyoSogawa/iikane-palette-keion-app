@@ -1,7 +1,8 @@
 import { ImageResponse } from 'next/og';
 
 import { SITE_NAME } from '@/constants/site-info';
-import { env } from '@/env';
+import UserOgp from '@/features/user/components/UserOgp';
+import { type RouterInputs, type RouterOutputs } from '@/trpc/shared';
 
 export const runtime = 'edge';
 
@@ -13,6 +14,56 @@ export const size = {
 
 export const contentType = 'image/png';
 
+/**
+ * trpcを直接使うとegde上でのエラーが発生するのでfetchを使う
+ */
+const fetchMyBestSongs = async (userId: string) => {
+  const input: RouterInputs['myBestSongs']['findByUserId'] = {
+    userId,
+  };
+  const jsonStr = JSON.stringify({
+    '0': {
+      json: input,
+    },
+  });
+  const encodedStr = encodeURIComponent(jsonStr);
+  const url = `${process.env.NEXTAUTH_URL}api/trpc/myBestSongs.findByUserId?batch=1&input=${encodedStr}`;
+  const data = (await fetch(url).then((res) => res.json())) as [
+    {
+      result: {
+        data: {
+          json: RouterOutputs['myBestSongs']['findByUserId'];
+        };
+      };
+    },
+  ];
+  return data[0].result.data.json;
+};
+
+const fetchUserProfile = async (userId: string) => {
+  const input: RouterInputs['user']['findById'] = {
+    id: userId,
+  };
+  const jsonStr = JSON.stringify({
+    '0': {
+      json: input,
+    },
+  });
+  const encodedStr = encodeURIComponent(jsonStr);
+  const url = `${process.env.NEXTAUTH_URL}api/trpc/user.findById?batch=1&input=${encodedStr}`;
+  const data = (await fetch(url).then((res) => res.json())) as [
+    {
+      result: {
+        data: {
+          json: RouterOutputs['user']['findById'];
+        };
+      };
+    },
+  ];
+
+  return data[0].result.data.json;
+};
+
 type Props = {
   params: {
     userId: string;
@@ -20,42 +71,12 @@ type Props = {
 };
 
 export default async function Image({ params }: Props) {
-  const input = {
-    '0': {
-      json: {
-        userId: params.userId,
-      },
-    },
-  };
-  const jsonStr = JSON.stringify(input);
-  const encodedStr = encodeURIComponent(jsonStr);
-  const url = `https://iikane-palette-keion-app.vercel.app/api/trpc/myBestSongs.findByUserId?batch=1&input=${encodedStr}`;
-  const data = (await fetch(url).then((res) => res.json())) as { name: string }[];
-  console.warn(data);
-  console.warn(env.NEXTAUTH_URL);
-  console.warn(process.env.NEXTAUTH_URL);
+  const [user, songs] = await Promise.all([
+    fetchUserProfile(params.userId),
+    fetchMyBestSongs(params.userId),
+  ]);
 
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          fontSize: 40,
-          color: 'black',
-          background: 'white',
-          width: '100%',
-          height: '100%',
-          padding: '50px 200px',
-          textAlign: 'center',
-          justifyContent: 'center',
-          alignItems: 'center',
-          display: 'flex',
-        }}
-      >
-        👋 {data[0]?.name}
-      </div>
-    ),
-    {
-      ...size,
-    },
-  );
+  return new ImageResponse(<UserOgp user={user!} myBestSongs={songs} />, {
+    ...size,
+  });
 }
