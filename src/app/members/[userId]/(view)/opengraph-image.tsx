@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og';
 
 import { SITE_NAME } from '@/constants/site-info';
-import { api } from '@/trpc/server';
 
 export const runtime = 'edge';
 
@@ -14,8 +13,6 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-  await api.user.getAll.query();
-
   return new ImageResponse(
     (
       <div
