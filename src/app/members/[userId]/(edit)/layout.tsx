@@ -4,7 +4,6 @@ import { Button, Container, Space, Title } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import { SITE_NAME } from '@/constants/site-info';
 import UserProfileTab from '@/features/user/components/UserProfileTab';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
@@ -19,7 +18,7 @@ type Props = {
 };
 
 export const metadata: Metadata = {
-  title: `プロフィール編集 | ${SITE_NAME}`,
+  title: 'プロフィール編集',
 };
 
 export default async function MemberSingleLayout({ params, children }: Props) {

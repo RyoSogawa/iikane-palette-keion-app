@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Container } from '@mantine/core';
 
-import { SITE_NAME } from '@/constants/site-info';
 import UserProfile from '@/features/user/components/UserProfile';
 import UserProfileTab from '@/features/user/components/UserProfileTab';
 import { getServerAuthSession } from '@/server/auth';
@@ -25,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   return {
-    title: `${user?.name} | ${SITE_NAME}`,
+    title: `${user?.name}`,
   };
 }
 

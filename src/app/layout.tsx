@@ -14,7 +14,10 @@ import { SITE_NAME } from '@/constants/site-info';
 import { env } from '@/env';
 
 export const metadata: Metadata = {
-  title: SITE_NAME,
+  title: {
+    template: `%s | ${SITE_NAME}`,
+    default: SITE_NAME,
+  },
   description: 'いいかねパレット軽音部のポータルサイトです。',
   metadataBase: new URL(env.NEXTAUTH_URL),
 };

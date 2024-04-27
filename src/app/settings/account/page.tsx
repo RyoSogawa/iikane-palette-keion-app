@@ -3,14 +3,13 @@ import React from 'react';
 import { Container, Title } from '@mantine/core';
 import { redirect } from 'next/navigation';
 
-import { SITE_NAME } from '@/constants/site-info';
 import AccountDeleteModalButton from '@/features/account/components/AccountDeleteModalButton';
 import { getServerAuthSession } from '@/server/auth';
 
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: `アカウント設定 | ${SITE_NAME}`,
+  title: 'アカウント設定',
 };
 
 export default async function AccountSettingPage() {
