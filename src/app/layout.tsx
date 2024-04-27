@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: SITE_NAME,
   },
   description: 'いいかねパレット軽音部のポータルサイトです。',
-  metadataBase: new URL('https://iikane-palette-keion-app.vercel.app/'),
+  metadataBase: new URL('/'),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
