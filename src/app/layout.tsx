@@ -6,11 +6,15 @@ import '../styles/global.css';
 import React from 'react';
 
 import { ColorSchemeScript } from '@mantine/core';
-import { type Metadata } from 'next';
+import { type Metadata, type Viewport } from 'next';
 
 import AppShell from '@/components/application/AppShell';
 import Providers from '@/components/functional/Providers';
 import { SITE_NAME } from '@/constants/site-info';
+
+export const viewport: Viewport = {
+  themeColor: '#242424',
+};
 
 export const metadata: Metadata = {
   title: {
@@ -32,7 +36,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="shortcut icon" href="/favicon.ico" />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
-        <meta name="theme-color" content="#242424" />
       </head>
       <body>
         <Providers>
