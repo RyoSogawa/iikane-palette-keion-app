@@ -44,6 +44,7 @@ export default async function Image({ params }: Props) {
           textAlign: 'center',
           justifyContent: 'center',
           alignItems: 'center',
+          display: 'flex',
         }}
       >
         👋 {data[0]?.name}
