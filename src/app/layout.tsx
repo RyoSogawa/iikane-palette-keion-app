@@ -11,7 +11,6 @@ import { type Metadata } from 'next';
 import AppShell from '@/components/application/AppShell';
 import Providers from '@/components/functional/Providers';
 import { SITE_NAME } from '@/constants/site-info';
-import { env } from '@/env';
 
 export const metadata: Metadata = {
   title: {
@@ -19,7 +18,7 @@ export const metadata: Metadata = {
     default: SITE_NAME,
   },
   description: 'いいかねパレット軽音部のポータルサイトです。',
-  metadataBase: new URL(env.NEXTAUTH_URL),
+  metadataBase: new URL('https://iikane-palette-keion-app.vercel.app/'),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
