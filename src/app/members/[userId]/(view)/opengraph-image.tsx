@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 import { SITE_NAME } from '@/constants/site-info';
+import { env } from '@/env';
 
 export const runtime = 'edge';
 
@@ -30,6 +31,9 @@ export default async function Image({ params }: Props) {
   const encodedStr = encodeURIComponent(jsonStr);
   const url = `https://iikane-palette-keion-app.vercel.app/api/trpc/myBestSongs.findByUserId?batch=1&input=${encodedStr}`;
   const data = (await fetch(url).then((res) => res.json())) as { name: string }[];
+  console.warn(data);
+  console.warn(env.NEXTAUTH_URL);
+  console.warn(process.env.NEXTAUTH_URL);
 
   return new ImageResponse(
     (
