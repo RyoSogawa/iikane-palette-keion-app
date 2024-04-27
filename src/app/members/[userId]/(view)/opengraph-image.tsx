@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 import { SITE_NAME } from '@/constants/site-info';
+import { env } from '@/env';
 
 export const runtime = 'edge';
 
@@ -12,7 +13,25 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function Image() {
+type Props = {
+  params: {
+    userId: string;
+  };
+};
+
+export default async function Image({ params }: Props) {
+  const input = {
+    '0': {
+      json: {
+        userId: params.userId,
+      },
+    },
+  };
+  const jsonStr = JSON.stringify(input);
+  const encodedStr = encodeURIComponent(jsonStr);
+  const url = `${env.NEXTAUTH_URL}/api/trpc/myBestSongs.findByUserId?batch=1&input=${encodedStr}`;
+  const data = (await fetch(url).then((res) => res.json())) as { name: string }[];
+
   return new ImageResponse(
     (
       <div
@@ -28,7 +47,7 @@ export default async function Image() {
           alignItems: 'center',
         }}
       >
-        👋 Hello
+        👋 {data[0]?.name}
       </div>
     ),
     {
