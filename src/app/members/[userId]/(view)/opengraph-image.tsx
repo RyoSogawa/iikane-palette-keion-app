@@ -2,9 +2,7 @@ import { ImageResponse } from 'next/og';
 
 import { SITE_NAME } from '@/constants/site-info';
 
-export const config = {
-  runtime: 'edge',
-};
+export const runtime = 'edge';
 
 export const alt = SITE_NAME;
 export const size = {
