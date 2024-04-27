@@ -21,7 +21,7 @@ const MyBestSongsList: React.FC<MyBestSongsListProps> = ({ data, onClick }) => {
           <MusicCard type={song.type} artist={song.artist} name={song.name} image={song.image} />
         </UnstyledButton>
       ),
-    [],
+    [onClick],
   );
 
   return (
