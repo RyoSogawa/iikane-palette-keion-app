@@ -76,8 +76,6 @@ export default async function Image({ params }: Props) {
     fetchMyBestSongs(params.userId),
   ]);
 
-  console.warn(user, songs);
-
   return new ImageResponse(<UserOgp user={user!} myBestSongs={songs} />, {
     ...size,
   });
