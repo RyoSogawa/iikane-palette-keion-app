@@ -24,7 +24,12 @@ export const updateUserAvatar = async (formData: FormData) => {
     await supabase.storage.from('profiles').remove(filePaths);
   }
   const compressedFile = await sharp(await file.arrayBuffer())
-    .webp({ quality: 90, nearLossless: true })
+    .png({
+      quality: 90,
+      compressionLevel: 9,
+      adaptiveFiltering: true,
+      progressive: true,
+    })
     .resize({
       width: 600,
       height: 600,
@@ -32,12 +37,12 @@ export const updateUserAvatar = async (formData: FormData) => {
     })
     .toBuffer();
 
-  const newFilename = `${userId}/avatar${new Date().getTime()}.webp`;
+  const newFilename = `${userId}/avatar${new Date().getTime()}.png`;
   const { data, error: uploadError } = await supabase.storage
     .from('profiles')
     .upload(newFilename, compressedFile, {
       upsert: true,
-      contentType: 'image/webp',
+      contentType: 'image/png',
     });
 
   if (uploadError) {
