@@ -67,14 +67,16 @@ const UserOgp: React.FC<UserOgpProps> = ({ myBestSongs, user }) => {
           <img
             key={song.name}
             src={song.image}
-            alt={song.name}
+            alt=""
+            width={120}
+            height={120}
             style={songImageStyle}
             tw="shadow"
           />
         ))}
       </div>
       <div style={userStyle}>
-        <img src={user?.image ?? ''} style={avatarStyle} />
+        <img src={user?.image ?? ''} width={100} height={100} style={avatarStyle} alt="" />
         {user?.name}
       </div>
     </div>
