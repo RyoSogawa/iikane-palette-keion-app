@@ -110,6 +110,7 @@ const config = {
     ],
     'jsx-quotes': ['error', 'prefer-double'],
     'unused-imports/no-unused-imports': 'error',
+    '@next/next/no-img-element': 'off',
   },
   ignorePatterns: ['**/generated/**/*'],
 };
