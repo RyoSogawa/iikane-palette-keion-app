@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: '部員名簿',
 };
 
-export default async function Home({
+export default async function Members({
   searchParams,
 }: {
   searchParams: Record<string, string | string[] | undefined>;
