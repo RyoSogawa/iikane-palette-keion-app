@@ -1,7 +1,7 @@
 import React from 'react';
 
-import EditorViewer from '@/components/ui/EditorViewer';
 import { api } from '@/trpc/server';
+import EditorViewer from '@/ui/components/input/EditorViewer';
 
 export const revalidate = 3600;
 

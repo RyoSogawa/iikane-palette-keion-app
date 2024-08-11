@@ -5,11 +5,11 @@ import React from 'react';
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { Flex, Loader, SimpleGrid } from '@mantine/core';
 
-import DnDContext from '@/components/functional/DnDContext';
 import SortableMusicImage from '@/features/my-best-songs/components/MyBestSongsGridForEdit/parts/SortableMusicImage';
 // import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { useSortSong } from '@/features/my-best-songs/hooks/useSortSong';
+import DnDContext from '@/ui/components/functional/DnDContext';
 
 export type MyBestSongsGridForEditProps = {
   userId: string;

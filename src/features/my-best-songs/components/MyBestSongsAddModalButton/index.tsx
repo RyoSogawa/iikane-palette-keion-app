@@ -15,7 +15,7 @@ import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSong
 import { useSearchSpotify } from '@/features/my-best-songs/hooks/useSearchSpotify';
 import { type RouterOutputs } from '@/trpc/shared';
 import { type SongTypeType } from '@/types/generated/zod';
-import StickyBottomButton from 'src/components/ui/StickyBottomButton';
+import StickyBottomButton from 'src/ui/components/button/StickyBottomButton';
 
 import s from './style.module.css';
 

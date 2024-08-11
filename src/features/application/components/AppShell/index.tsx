@@ -14,9 +14,9 @@ import {
 } from '@mantine/core';
 import Link from 'next/link';
 
-import Footer from '@/components/application/Footer';
-import NavMenu from '@/components/application/NavMenu';
 import AccountMenuButton from '@/features/account/components/AccountMenuButton';
+import Footer from '@/features/application/components/Footer';
+import NavMenu from '@/features/application/components/NavMenu';
 
 import s from './style.module.css';
 

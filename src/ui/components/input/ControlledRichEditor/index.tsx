@@ -9,7 +9,7 @@ import { type Content, useEditor } from '@tiptap/react';
 import { StarterKit } from '@tiptap/starter-kit';
 import { type FieldValues, useController, type UseControllerProps } from 'react-hook-form';
 
-import { HEADER_HEIGHT } from '@/components/application/AppShell';
+import { HEADER_HEIGHT } from '@/features/application/components/AppShell';
 
 import s from './style.module.css';
 

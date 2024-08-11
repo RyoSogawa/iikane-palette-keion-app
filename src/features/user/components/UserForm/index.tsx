@@ -5,8 +5,8 @@ import React from 'react';
 import { Button, Fieldset, Flex, Space, Stack } from '@mantine/core';
 import { IconAt, IconCheck } from '@tabler/icons-react';
 
-import ControlledRichEditor from '@/components/ui/ControlledRichEditor';
-import ControlledTextInput from '@/components/ui/ControlledTextInput';
+import ControlledRichEditor from '@/ui/components/input/ControlledRichEditor';
+import ControlledTextInput from '@/ui/components/input/ControlledTextInput';
 
 import { type UserFormValues, useUserForm } from './logics';
 import AvatarInput, { type AvatarInputProps } from './parts/AvatarInput';

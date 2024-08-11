@@ -8,9 +8,9 @@ import React from 'react';
 import { ColorSchemeScript } from '@mantine/core';
 import { type Metadata, type Viewport } from 'next';
 
-import AppShell from '@/components/application/AppShell';
-import Providers from '@/components/functional/Providers';
 import { SITE_NAME } from '@/constants/site-info';
+import Providers from '@/ui/components/functional/Providers';
+import AppShell from 'src/features/application/components/AppShell';
 
 export const viewport: Viewport = {
   themeColor: '#242424',

@@ -1,10 +1,10 @@
 import { Container, Title } from '@mantine/core';
 
-import SearchParamController from '@/components/functional/SearchParamController';
 import OnboardingViewMyProfileModal from '@/features/account/components/OnboardingViewMyProfileModal';
 import UserCardList from '@/features/user/components/UserCardList';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
+import SearchParamController from '@/ui/components/functional/SearchParamController';
 
 import type { Metadata } from 'next';
 

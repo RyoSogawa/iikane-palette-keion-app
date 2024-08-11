@@ -6,12 +6,12 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { Flex, Loader } from '@mantine/core';
 import { type ItemContent, Virtuoso } from 'react-virtuoso';
 
-import DnDContext from '@/components/functional/DnDContext';
 import SortableMusicCard from '@/features/my-best-songs/components/MyBestSongsListForEdit/parts/SortableMusicCard';
 import { useDeleteSong } from '@/features/my-best-songs/hooks/useDeleteSong';
 import { useFindSongsByUserId } from '@/features/my-best-songs/hooks/useFindSongsByUserId';
 import { useSortSong } from '@/features/my-best-songs/hooks/useSortSong';
 import { type MyBestSong } from '@/types/generated/zod';
+import DnDContext from '@/ui/components/functional/DnDContext';
 
 export type MyBestSongsListProps = {
   userId: string;

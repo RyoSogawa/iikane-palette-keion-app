@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 
-import ListTypeSwitcher, { type ListType } from '@/components/ui/ListTypeSwitcher';
 import MusicInfoModal from '@/features/my-best-songs/components/MusicInfoModal';
 import { useMusicModal } from '@/features/my-best-songs/components/MyBestSongs/logics';
 import MyBestSongsGrid from '@/features/my-best-songs/components/MyBestSongsGrid';
 import MyBestSongsList from '@/features/my-best-songs/components/MyBestSongsList';
+import ListTypeSwitcher, { type ListType } from '@/ui/components/input/ListTypeSwitcher';
 
 import type { SongWithImage } from '@/types/types';
 
