@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     redirect: () => {
-      return '/?login-callback=true';
+      return '/members?login-callback=true';
     },
     session: async ({ session, user }) => {
       const payload = {
