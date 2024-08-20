@@ -10,6 +10,7 @@ import { api } from '@/trpc/react';
 import { type User } from '@/types/generated/zod';
 
 export type OnboardingViewMyProfileModalProps = {
+  autoOpen?: boolean;
   user: {
     id: User['id'];
     name?: User['name'] | null | undefined;
@@ -17,19 +18,23 @@ export type OnboardingViewMyProfileModalProps = {
   };
 };
 
-const OnboardingViewMyProfileModal: React.FC<OnboardingViewMyProfileModalProps> = ({ user }) => {
+const OnboardingViewMyProfileModal: React.FC<OnboardingViewMyProfileModalProps> = ({
+  autoOpen,
+  user,
+}) => {
   const hasOpened = useRef(false);
   const [opened, { open, close }] = useDisclosure();
   const { mutate } = api.onboarding.create.useMutation();
 
   useEffect(() => {
+    if (!autoOpen) return;
     if (hasOpened.current) return;
     open();
     mutate({
       step: 'VIEW_MY_PROFILE',
     });
     hasOpened.current = true;
-  }, [mutate, open]);
+  }, [autoOpen, mutate, open]);
 
   return (
     <Modal opened={opened} title="ようこそ！🎉" onClose={close}>

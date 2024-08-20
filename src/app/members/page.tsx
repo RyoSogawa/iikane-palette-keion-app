@@ -34,7 +34,9 @@ export default async function Members({
     <Container py={16}>
       <Title order={2}>部員名簿</Title>
       <UserCardList users={users} mt={32} />
-      {session && shouldShowOnboarding && <OnboardingViewMyProfileModal user={session.user} />}
+      {session && (
+        <OnboardingViewMyProfileModal user={session.user} autoOpen={shouldShowOnboarding} />
+      )}
       <SearchParamController paramsToRemove={['login-callback']} />
     </Container>
   );
