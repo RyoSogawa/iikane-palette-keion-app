@@ -92,6 +92,6 @@ export const update = protectedProcedure
       ]);
 
       revalidatePath(`/members/${input.id}/profile`);
-      revalidatePath(`/`);
+      revalidatePath(`/members`);
     });
   });
