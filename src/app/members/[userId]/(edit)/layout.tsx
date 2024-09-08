@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Button, Container, Space, Title } from '@mantine/core';
 import { IconArrowLeft } from '@tabler/icons-react';
-import Link from 'next/link';
 
 import UserProfileTab from '@/features/user/components/UserProfileTab';
 import { getServerAuthSession } from '@/server/auth';
@@ -40,7 +39,8 @@ export default async function MemberSingleLayout({ params, children }: Props) {
   return (
     <Container pt={16} pb={32}>
       <Button
-        component={Link}
+        // HACK:Linkコンポーネントで遷移させたときにUser情報のキャッシュが残りデータ更新が反映されないのでフルページリロードしている
+        component="a"
         href={`/members/${params.userId}/profile`}
         variant="default"
         color="gray"
