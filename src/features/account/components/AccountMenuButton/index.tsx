@@ -26,7 +26,7 @@ const AccountMenuButton: React.FC = () => {
     return (
       <Tooltip label="ログイン・新規登録" openDelay={500}>
         <UnstyledButton aria-label="ログイン・新規登録" onClick={handleSignIn}>
-          <Avatar>
+          <Avatar variant="filled" color="blue">
             <IconLogin />
           </Avatar>
         </UnstyledButton>
