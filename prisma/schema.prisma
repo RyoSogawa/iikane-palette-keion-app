@@ -67,6 +67,7 @@ model User {
   tags              UserOnUserTag[]
   Onboarding        Onboarding[]
   myBestSongs       MyBestSong[]
+  UserOnBand        UserOnBand[]
 }
 
 model VerificationToken {
@@ -124,4 +125,41 @@ model MyBestSong {
   artist    String   @default("")
   name      String
   order     Int      @default(0)
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String
+  description String?
+  dateFrom    DateTime
+  dateTo      DateTime
+  image       String?
+  movie       String?
+  driveLink   String?
+  Band        Band[]
+}
+
+model Band {
+  id          String       @id @default(cuid())
+  eventId     String?
+  event       Event?       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  liveOrder   Int
+  name        String
+  description String?
+  photo       String?
+  image       String?
+  typoImage   String?
+  movie       String?
+  UserOnBand  UserOnBand[]
+}
+
+model UserOnBand {
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bandId String
+  band   Band   @relation(fields: [bandId], references: [id], onDelete: Cascade)
+
+  @@id([userId, bandId])
 }
