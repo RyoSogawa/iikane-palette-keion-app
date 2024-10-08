@@ -7,11 +7,13 @@ import Link from 'next/link';
 import { LINK } from '@/constants/external-service';
 import IconLink from '@/features/application/components/Footer/parts/IconLink';
 import ImageLink from '@/features/application/components/Footer/parts/ImageLink';
+import LoginLink from '@/features/application/components/Footer/parts/LoginLink';
 
 const Footer: React.FC = () => {
   return (
     <Box component="footer" pt="xl" pb="md">
       <Container ta="center">
+        <LoginLink />
         <Box component={Link} href="/" display="inline-block">
           <Image
             src="/images/logo/keion-logo.webp"

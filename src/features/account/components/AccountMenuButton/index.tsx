@@ -24,8 +24,8 @@ const AccountMenuButton: React.FC = () => {
 
   if (!session) {
     return (
-      <Tooltip label="ログイン・新規登録" openDelay={500}>
-        <UnstyledButton aria-label="ログイン・新規登録" onClick={handleSignIn}>
+      <Tooltip label="ログイン / プロフィール作成" openDelay={500}>
+        <UnstyledButton aria-label="ログイン / プロフィール作成" onClick={handleSignIn}>
           <Avatar variant="filled" color="blue">
             <IconLogin />
           </Avatar>
