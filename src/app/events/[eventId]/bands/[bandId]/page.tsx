@@ -44,13 +44,13 @@ export default async function BandPage({ params }: Props) {
 
   return (
     <Container py={16}>
-      <Breadcrumbs>
+      <Breadcrumbs fz="xs">
         <Link href="/">
           <IconHome size={16} />
         </Link>
         <Link href="/events">イベント</Link>
         <Link href={`/events/${params.eventId}`}>{event.name}</Link>
-        <Text>{band.name}</Text>
+        <Text fz="xs">{band.name}</Text>
       </Breadcrumbs>
       <Title size="h2" mt="xl">
         No.{band.liveOrder} :「{band.name}」
@@ -130,6 +130,11 @@ export default async function BandPage({ params }: Props) {
             />
           </AspectRatio>
         </div>
+      )}
+      {band.description && (
+        <Text mt="lg" style={{ whiteSpace: 'pre-wrap' }}>
+          {band.description}
+        </Text>
       )}
     </Container>
   );

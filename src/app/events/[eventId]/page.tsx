@@ -28,12 +28,12 @@ export default async function EventPage({ params }: Props) {
 
   return (
     <Container py={16}>
-      <Breadcrumbs>
+      <Breadcrumbs fz="xs">
         <Link href="/">
           <IconHome size={16} />
         </Link>
         <Link href="/events">イベント</Link>
-        <Text>{event.name}</Text>
+        <Text fz="xs">{event.name}</Text>
       </Breadcrumbs>
       <Text c="dimmed" mt="xl">
         {format(new Date(event.dateFrom), 'yyyy/MM/dd')} -{' '}
@@ -90,6 +90,11 @@ export default async function EventPage({ params }: Props) {
             />
           </AspectRatio>
         </div>
+      )}
+      {event.description && (
+        <Text mt="lg" style={{ whiteSpace: 'pre-wrap' }}>
+          {event.description}
+        </Text>
       )}
     </Container>
   );
