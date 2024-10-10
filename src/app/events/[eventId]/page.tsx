@@ -1,6 +1,17 @@
 import React from 'react';
 
-import { AspectRatio, Breadcrumbs, Container, Image, SimpleGrid, Text, Title } from '@mantine/core';
+import {
+  AspectRatio,
+  Avatar,
+  Breadcrumbs,
+  Container,
+  Group,
+  Image,
+  SimpleGrid,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { IconHome } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
@@ -67,10 +78,28 @@ export default async function EventPage({ params }: Props) {
           </Link>
         ))}
       </SimpleGrid>
-      <Title order={2} size="h3" mt="xl">
-        👑レク王の方々👑
-      </Title>
-      🚧 準備中 🚧
+      {event.RecreationKingUserOnEvent.length && (
+        <div>
+          <Title order={2} size="h3" mt="xl">
+            レク王の方々
+          </Title>
+          <Stack mt="md">
+            {event.RecreationKingUserOnEvent.map(({ user }) => (
+              <Link key={user.id} href={`/members/${user.id}/profile`}>
+                <Group>
+                  <Avatar
+                    src={user.image}
+                    alt={user.name ?? ''}
+                    imageProps={{ loading: 'lazy' }}
+                    bg="gray"
+                  />
+                  <Text c="bright">👑 {user.name} 👑</Text>
+                </Group>
+              </Link>
+            ))}
+          </Stack>
+        </div>
+      )}
       {event.movie && (
         <div>
           <Title order={2} size="h3" mt="xl">

@@ -18,6 +18,17 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
       image: true,
       movie: true,
       driveLink: true,
+      RecreationKingUserOnEvent: {
+        select: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
       Band: {
         select: {
           id: true,
