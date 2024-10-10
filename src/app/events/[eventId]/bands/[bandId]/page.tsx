@@ -97,11 +97,12 @@ export default async function BandPage({ params }: Props) {
         メンバー
       </Title>
       <Stack mt="md">
-        {band.UserOnBand.map(({ user, userName, order }) =>
+        {band.UserOnBand.map(({ user, userName, order, part }) =>
           userName ? (
             <Group key={`${order}.${userName}`}>
               <Box w="38px" h="38px" />
               <Text c="bright">{userName}</Text>
+              <Text c="dimmed">({part})</Text>
             </Group>
           ) : (
             <Link key={user.id} href={`/members/${user.id}/profile`}>
@@ -113,6 +114,7 @@ export default async function BandPage({ params }: Props) {
                   bg="gray"
                 />
                 <Text c="bright">{user.name}</Text>
+                <Text c="dimmed">({part})</Text>
               </Group>
             </Link>
           ),

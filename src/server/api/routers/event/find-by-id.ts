@@ -32,6 +32,7 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
             select: {
               userName: true,
               order: true,
+              part: true,
               user: {
                 select: {
                   id: true,

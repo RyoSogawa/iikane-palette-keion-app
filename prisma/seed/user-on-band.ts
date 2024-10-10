@@ -12,6 +12,8 @@ const bandIds = [
   'zutt-kyun',
 ];
 
+const parts = ['Vo', 'Gt', 'Ba', 'Dr', 'Key', 'Vo&Gt', 'Vo&Ba'];
+
 export default async function seedUserOnBand(users: User[]) {
   const prisma = new PrismaClient();
   // usersとbandsを組み合わせてUserOnBandを作成する
@@ -27,6 +29,7 @@ export default async function seedUserOnBand(users: User[]) {
             bandId,
             order: index + 1,
             userName: Math.random() > 0.9 ? fakerJA.person.fullName() : null,
+            part: parts[Math.floor(Math.random() * parts.length)] ?? null,
           }) satisfies UserOnBand,
       );
     })
