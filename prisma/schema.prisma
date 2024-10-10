@@ -156,10 +156,13 @@ model Band {
 }
 
 model UserOnBand {
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bandId String
-  band   Band   @relation(fields: [bandId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userName String? // User未登録時にuserIdよりも優先的に使用する
+  bandId   String
+  band     Band    @relation(fields: [bandId], references: [id], onDelete: Cascade)
+  order    Int     @default(0)
+  part     String?
 
   @@id([userId, bandId])
 }
