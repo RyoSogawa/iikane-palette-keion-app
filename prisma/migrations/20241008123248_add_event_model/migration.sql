@@ -55,7 +55,7 @@ VALUES('202410-keion-gasshuku-4',
        '2024-10-08 00:00:00',
        '2024-10-09 00:00:00',
        '/images/event/202410/202410cover.webp',
-       'https://youtu.be/3--W9TLVxvM?si=Aiix_Tc-d17RkPCi',
+       'https://www.youtube.com/embed/3--W9TLVxvM?si=i_m3lsKC5J4o2B40',
        'https://drive.google.com/drive/folders/1-08zuezQhET6SZsIxlvgiva-bBw8hJIk'
       );
 
