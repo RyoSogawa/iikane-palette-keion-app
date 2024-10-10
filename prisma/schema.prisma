@@ -48,26 +48,27 @@ model Session {
 }
 
 model User {
-  id                String          @id @default(cuid())
-  createdAt         DateTime        @default(now())
-  name              String?
-  email             String?         @unique
-  emailVerified     DateTime?
-  image             String?
-  accounts          Account[]
-  sessions          Session[]
-  nickname          String          @default("")
-  residence         String          @default("")
-  introduction      String          @default("")
-  twitterUsername   String          @default("")
-  instagramUsername String          @default("")
-  musicLink         String          @default("")
-  podcastLink       String          @default("")
-  websiteLink       String          @default("")
-  tags              UserOnUserTag[]
-  Onboarding        Onboarding[]
-  myBestSongs       MyBestSong[]
-  UserOnBand        UserOnBand[]
+  id                        String                      @id @default(cuid())
+  createdAt                 DateTime                    @default(now())
+  name                      String?
+  email                     String?                     @unique
+  emailVerified             DateTime?
+  image                     String?
+  accounts                  Account[]
+  sessions                  Session[]
+  nickname                  String                      @default("")
+  residence                 String                      @default("")
+  introduction              String                      @default("")
+  twitterUsername           String                      @default("")
+  instagramUsername         String                      @default("")
+  musicLink                 String                      @default("")
+  podcastLink               String                      @default("")
+  websiteLink               String                      @default("")
+  tags                      UserOnUserTag[]
+  Onboarding                Onboarding[]
+  myBestSongs               MyBestSong[]
+  UserOnBand                UserOnBand[]
+  RecreationKingUserOnEvent RecreationKingUserOnEvent[]
 }
 
 model VerificationToken {
@@ -128,17 +129,18 @@ model MyBestSong {
 }
 
 model Event {
-  id          String   @id @default(cuid())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String
-  description String?
-  dateFrom    DateTime
-  dateTo      DateTime
-  image       String?
-  movie       String?
-  driveLink   String?
-  Band        Band[]
+  id                        String                      @id @default(cuid())
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  name                      String
+  description               String?
+  dateFrom                  DateTime
+  dateTo                    DateTime
+  image                     String?
+  movie                     String?
+  driveLink                 String?
+  Band                      Band[]
+  RecreationKingUserOnEvent RecreationKingUserOnEvent[]
 }
 
 model Band {
@@ -165,4 +167,13 @@ model UserOnBand {
   part     String?
 
   @@id([userId, bandId])
+}
+
+model RecreationKingUserOnEvent {
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@id([userId, eventId])
 }
