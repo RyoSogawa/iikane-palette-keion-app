@@ -9,7 +9,8 @@ import {
   Title,
   Box,
   Avatar,
-  SimpleGrid,
+  Stack,
+  Group,
 } from '@mantine/core';
 import { IconHome } from '@tabler/icons-react';
 import Link from 'next/link';
@@ -51,7 +52,7 @@ export default async function BandPage({ params }: Props) {
         <Link href={`/events/${params.eventId}`}>{event.name}</Link>
         <Text>{band.name}</Text>
       </Breadcrumbs>
-      <Title mt="xl">
+      <Title size="h2" mt="xl">
         No.{band.liveOrder} :「{band.name}」
       </Title>
       <Box pos="relative">
@@ -92,19 +93,27 @@ export default async function BandPage({ params }: Props) {
           />
         )}
       </Box>
-      <Title order={2} mt={80}>
+      <Title order={2} size="h3" mt="xl">
         メンバー
       </Title>
-      <SimpleGrid cols={{ base: 3, sm: 6 }} mt="md" spacing="lg">
+      <Stack mt="md">
         {band.UserOnBand.map(({ user }) => (
-          <Link key={user.id} href={`/members/${user.id}`}>
-            <Avatar src={user.image} alt={user.name ?? ''} />
+          <Link key={user.id} href={`/members/${user.id}/profile`}>
+            <Group>
+              <Avatar
+                src={user.image}
+                alt={user.name ?? ''}
+                imageProps={{ loading: 'lazy' }}
+                bg="gray"
+              />
+              <Text c="bright">{user.name}</Text>
+            </Group>
           </Link>
         ))}
-      </SimpleGrid>
+      </Stack>
       {band.movie && (
         <div>
-          <Title order={2} mt={80}>
+          <Title order={2} size="h3" mt="xl">
             ライブの様子
           </Title>
           <AspectRatio ratio={16 / 9} mt="md" bg="gray">

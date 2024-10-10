@@ -39,7 +39,9 @@ export default async function EventPage({ params }: Props) {
         {format(new Date(event.dateFrom), 'yyyy/MM/dd')} -{' '}
         {format(new Date(event.dateTo), 'yyyy/MM/dd')}
       </Text>
-      <Title mt="xs">{event.name}</Title>
+      <Title size="h2" mt="xs">
+        {event.name}
+      </Title>
       <Image
         src={event.image}
         alt=""
@@ -52,7 +54,7 @@ export default async function EventPage({ params }: Props) {
         fit="cover"
         bg="gray"
       />
-      <Title order={2} mt={80}>
+      <Title order={2} size="h3" mt="xl">
         出演バンド
       </Title>
       <SimpleGrid cols={{ base: 3, sm: 6 }} mt="lg" spacing="lg">
@@ -65,13 +67,13 @@ export default async function EventPage({ params }: Props) {
           </Link>
         ))}
       </SimpleGrid>
-      <Title order={2} mt={80}>
+      <Title order={2} size="h3" mt="xl">
         👑レク王の方々👑
       </Title>
       🚧 準備中 🚧
       {event.movie && (
         <div>
-          <Title order={2} mt={80}>
+          <Title order={2} size="h3" mt="xl">
             ダイジェスト動画
           </Title>
           <AspectRatio ratio={16 / 9} mt="md" bg="gray">
