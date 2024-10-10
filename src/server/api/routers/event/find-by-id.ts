@@ -30,6 +30,8 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
           movie: true,
           UserOnBand: {
             select: {
+              userName: true,
+              order: true,
               user: {
                 select: {
                   id: true,

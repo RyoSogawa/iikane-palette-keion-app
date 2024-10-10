@@ -97,19 +97,26 @@ export default async function BandPage({ params }: Props) {
         メンバー
       </Title>
       <Stack mt="md">
-        {band.UserOnBand.map(({ user }) => (
-          <Link key={user.id} href={`/members/${user.id}/profile`}>
-            <Group>
-              <Avatar
-                src={user.image}
-                alt={user.name ?? ''}
-                imageProps={{ loading: 'lazy' }}
-                bg="gray"
-              />
-              <Text c="bright">{user.name}</Text>
+        {band.UserOnBand.map(({ user, userName, order }) =>
+          userName ? (
+            <Group key={`${order}.${userName}`}>
+              <Box w="38px" h="38px" />
+              <Text c="bright">{userName}</Text>
             </Group>
-          </Link>
-        ))}
+          ) : (
+            <Link key={user.id} href={`/members/${user.id}/profile`}>
+              <Group>
+                <Avatar
+                  src={user.image}
+                  alt={user.name ?? ''}
+                  imageProps={{ loading: 'lazy' }}
+                  bg="gray"
+                />
+                <Text c="bright">{user.name}</Text>
+              </Group>
+            </Link>
+          ),
+        )}
       </Stack>
       {band.movie && (
         <div>
