@@ -38,6 +38,9 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
                 },
               },
             },
+            orderBy: {
+              order: 'asc',
+            },
           },
         },
         orderBy: {
