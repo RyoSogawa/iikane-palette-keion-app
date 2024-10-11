@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { Avatar, Box, Group, Paper, Text } from '@mantine/core';
-import { IconChevronRight } from '@tabler/icons-react';
+import { IconAwardFilled, IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 
 import type { UserTag } from '@/types/generated/zod';
@@ -14,14 +14,31 @@ export type UserCardProps = {
     tags: Array<{
       userTag: Pick<UserTag, 'name'>;
     }>;
+    recreationKingEvents: Array<{
+      eventId: string;
+    }>;
   };
 };
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
+  const hasRecreationKingEvents = user.recreationKingEvents.length > 0;
+
   return (
     <Paper component={Link} href={`/members/${user.id}/profile`} p="md" h="100%" bg="dark">
       <Group h="100%">
-        <Avatar src={user.image} alt={user.name ?? ''} imageProps={{ loading: 'lazy' }} bg="gray" />
+        <Box pos="relative">
+          <Avatar
+            src={user.image}
+            alt={user.name ?? ''}
+            imageProps={{ loading: 'lazy' }}
+            bg="gray"
+          />
+          {hasRecreationKingEvents && (
+            <Box pos="absolute" bottom={-2} right={-4} c="yellow" w={16} h={16}>
+              <IconAwardFilled size={16} />
+            </Box>
+          )}
+        </Box>
         <Box flex={1}>
           <Text size="sm" fw={500} c="bright" truncate="end">
             {user.name}
