@@ -3,10 +3,12 @@
 import React from 'react';
 
 import { Avatar, Box, Group, Paper, Text } from '@mantine/core';
-import { IconAwardFilled, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 
-import type { UserTag } from '@/types/generated/zod';
+import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
+
+import type { UserTag, Event } from '@/types/generated/zod';
 import type { User } from '@prisma/client';
 
 export type UserCardProps = {
@@ -15,14 +17,12 @@ export type UserCardProps = {
       userTag: Pick<UserTag, 'name'>;
     }>;
     recreationKingEvents: Array<{
-      eventId: string;
+      event: Pick<Event, 'id' | 'name'>;
     }>;
   };
 };
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
-  const hasRecreationKingEvents = user.recreationKingEvents.length > 0;
-
   return (
     <Paper component={Link} href={`/members/${user.id}/profile`} p="md" h="100%" bg="dark">
       <Group h="100%">
@@ -33,15 +33,19 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
             imageProps={{ loading: 'lazy' }}
             bg="gray"
           />
-          {hasRecreationKingEvents && (
-            <Box pos="absolute" bottom={-2} right={-4} c="yellow" w={16} h={16}>
-              <IconAwardFilled size={16} />
-            </Box>
-          )}
         </Box>
         <Box flex={1}>
           <Text size="sm" fw={500} c="bright" truncate="end">
             {user.name}
+            <RecreationKingBadge
+              recreationKingEvents={user.recreationKingEvents}
+              size={18}
+              ml={4}
+              mt={-4}
+              style={{
+                verticalAlign: 'middle',
+              }}
+            />
           </Text>
           <Text mt={4} lineClamp={1} c="dimmed" fz="xs">
             {user.tags?.map(({ userTag }) => (
