@@ -1,6 +1,8 @@
+'use client';
+
 import React, { type CSSProperties, useMemo } from 'react';
 
-import { Box, type BoxProps } from '@mantine/core';
+import { Box, type BoxProps, Tooltip } from '@mantine/core';
 import { IconAwardFilled, IconRosetteFilled } from '@tabler/icons-react';
 
 import type { Event } from '@/types/generated/zod';
@@ -59,16 +61,18 @@ const RecreationKingBadge: React.FC<RecreationKingBadgeProps> = ({
   if (!kingCount) return null;
 
   return (
-    <Box pos="relative" display="inline-block" w={size} h={size} lh={1} {...props}>
-      <IconRosetteFilled
-        style={{
-          width: '100%',
-          height: '100%',
-          color: 'var(--mantine-color-yellow-9)',
-        }}
-      />
-      {icon}
-    </Box>
+    <Tooltip label={`レク王×${kingCount}`}>
+      <Box pos="relative" display="inline-block" w={size} h={size} lh={1} {...props}>
+        <IconRosetteFilled
+          style={{
+            width: '100%',
+            height: '100%',
+            color: 'var(--mantine-color-yellow-9)',
+          }}
+        />
+        {icon}
+      </Box>
+    </Tooltip>
   );
 };
 
