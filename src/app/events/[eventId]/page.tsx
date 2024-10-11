@@ -78,13 +78,13 @@ export default async function EventPage({ params }: Props) {
           </Link>
         ))}
       </SimpleGrid>
-      {event.RecreationKingUserOnEvent.length && (
+      {event.recreationKingUsers.length && (
         <div>
           <Title order={2} size="h3" mt="xl">
             レク王の方々
           </Title>
           <Stack mt="md">
-            {event.RecreationKingUserOnEvent.map(({ user }) => (
+            {event.recreationKingUsers.map(({ user }) => (
               <Link key={user.id} href={`/members/${user.id}/profile`}>
                 <Group>
                   <Avatar

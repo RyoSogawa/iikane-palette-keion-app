@@ -31,7 +31,7 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
           },
         },
       },
-      RecreationKingUserOnEvent: {
+      recreationKingEvents: {
         select: {
           eventId: true,
           event: {

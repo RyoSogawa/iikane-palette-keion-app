@@ -16,7 +16,7 @@ export const getAll = publicProcedure.query(({ ctx }) => {
           },
         },
       },
-      RecreationKingUserOnEvent: {
+      recreationKingEvents: {
         select: {
           eventId: true,
         },

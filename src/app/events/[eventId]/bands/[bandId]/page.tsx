@@ -97,7 +97,7 @@ export default async function BandPage({ params }: Props) {
         メンバー
       </Title>
       <Stack mt="md">
-        {band.UserOnBand.map(({ user, userName, order, part }) =>
+        {band.members.map(({ user, userName, order, part }) =>
           userName ? (
             <Group key={`${order}.${userName}`}>
               <Box w="38px" h="38px" />

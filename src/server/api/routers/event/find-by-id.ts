@@ -18,7 +18,7 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
       image: true,
       movie: true,
       driveLink: true,
-      RecreationKingUserOnEvent: {
+      recreationKingUsers: {
         select: {
           user: {
             select: {
@@ -39,7 +39,7 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
           description: true,
           liveOrder: true,
           movie: true,
-          UserOnBand: {
+          members: {
             select: {
               userName: true,
               order: true,
