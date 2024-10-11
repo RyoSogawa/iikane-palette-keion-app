@@ -31,6 +31,16 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
           },
         },
       },
+      RecreationKingUserOnEvent: {
+        select: {
+          eventId: true,
+          event: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 });
