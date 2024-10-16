@@ -14,10 +14,10 @@ const LoginLink: React.FC = () => {
   if (status !== 'unauthenticated') return null;
 
   return (
-    <Paper ta="center" shadow="xs" p="xl" mb="xl" variant="" withBorder>
-      <Text size="md">Discordに参加済みの方はこちら</Text>
+    <Paper ta="center" shadow="xs" p="xl" mb="xl" variant="" bg="dark" withBorder>
+      <Text size="sm">Discordに参加済みの方はこちら</Text>
       <Space h={16} />
-      <Button size="md" leftSection={<IconLogin />} onClick={handleSignIn}>
+      <Button leftSection={<IconLogin size={18} />} onClick={handleSignIn}>
         ログイン / プロフィール作成
       </Button>
     </Paper>
