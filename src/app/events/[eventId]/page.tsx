@@ -16,6 +16,7 @@ import { IconHome } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
+import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
 import { api } from '@/trpc/server';
 
@@ -47,7 +48,8 @@ export default async function EventPage({ params }: Props) {
         <Link href="/events">イベント</Link>
         <Text fz="xs">{event.name}</Text>
       </Breadcrumbs>
-      <Text c="dimmed" mt="xl">
+      <EventStatusBadge eventStatus="archive" mt="lg" />
+      <Text c="dimmed" mt={4}>
         {format(new Date(event.dateFrom), 'yyyy/MM/dd')} -{' '}
         {format(new Date(event.dateTo), 'yyyy/MM/dd')}
       </Text>

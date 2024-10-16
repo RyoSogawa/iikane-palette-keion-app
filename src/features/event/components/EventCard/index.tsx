@@ -2,10 +2,11 @@
 
 import React from 'react';
 
-import { Card, Image, Text } from '@mantine/core';
+import { Card, Group, Image, Text } from '@mantine/core';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
+import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import { type Event } from '@/types/generated/zod';
 
 export type EventCardProps = {
@@ -14,16 +15,19 @@ export type EventCardProps = {
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
-    <Card shadow="sm" padding="xl" component={Link} href={`/events/${event.id}`}>
+    <Card shadow="sm" p="lg" component={Link} href={`/events/${event.id}`}>
       <Card.Section>
         <Image src={event.image} h={160} alt="" loading="lazy" />
       </Card.Section>
-      <Text mt="md" c="dimmed" size="sm">
+      <Group align="center" mt="md">
+        <Text fw={600} size="lg">
+          {event.name}
+        </Text>
+        <EventStatusBadge eventStatus="archive" />
+      </Group>
+      <Text mt="xs" c="dimmed" fz="sm">
         {format(new Date(event.dateFrom), 'yyyy/MM/dd')} -{' '}
         {format(new Date(event.dateTo), 'yyyy/MM/dd')}
-      </Text>
-      <Text fw={600} size="lg" mt="xs">
-        {event.name}
       </Text>
     </Card>
   );
