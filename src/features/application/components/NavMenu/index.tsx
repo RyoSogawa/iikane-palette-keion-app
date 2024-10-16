@@ -45,7 +45,7 @@ const NavMenu: React.FC = () => {
   }, [currentPath]);
 
   return (
-    <Menu position="bottom-start">
+    <Menu position="bottom-start" trigger="click-hover">
       <Menu.Target>
         <ActionIcon variant="light" color="gray" aria-label="ナビメニュー">
           {currentMenu?.icon ?? <IconCaretDownFilled size={14} />}
