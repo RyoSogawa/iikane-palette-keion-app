@@ -16,6 +16,7 @@ import { IconHome } from '@tabler/icons-react';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
+import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
 import { api } from '@/trpc/server';
 
 export const revalidate = 3600;
@@ -93,7 +94,18 @@ export default async function EventPage({ params }: Props) {
                     imageProps={{ loading: 'lazy' }}
                     bg="gray"
                   />
-                  <Text c="bright">👑 {user.name} 👑</Text>
+                  <Text c="bright">
+                    {user.name}
+                    <RecreationKingBadge
+                      kingCount={user.recreationKingEvents.length}
+                      size={16}
+                      ml={8}
+                      mt={-2}
+                      style={{
+                        verticalAlign: 'middle',
+                      }}
+                    />
+                  </Text>
                 </Group>
               </Link>
             ))}

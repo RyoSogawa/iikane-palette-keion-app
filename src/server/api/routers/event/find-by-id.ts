@@ -25,6 +25,11 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
               id: true,
               name: true,
               image: true,
+              recreationKingEvents: {
+                select: {
+                  eventId: true,
+                },
+              },
             },
           },
         },
