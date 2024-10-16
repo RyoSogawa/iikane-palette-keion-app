@@ -1,11 +1,19 @@
 'use client';
 
-import React, { type CSSProperties, useMemo } from 'react';
+import React from 'react';
 
 import { Box, type BoxProps, Tooltip } from '@mantine/core';
-import { IconAwardFilled, IconRosetteFilled } from '@tabler/icons-react';
 
+import IconCrown from '@/features/event/components/RecreationKingBadge/parts/IconCrown';
+
+import type { CrownColor } from '@/features/event/components/RecreationKingBadge/parts/IconCrown';
 import type { Event } from '@/types/generated/zod';
+
+const getClownColor = (kingCount: number): CrownColor => {
+  if (kingCount === 1) return 'bronze';
+  if (kingCount === 2) return 'silver';
+  return 'gold';
+};
 
 export type RecreationKingBadgeProps = Omit<BoxProps, 'children'> & {
   size?: number;
@@ -20,57 +28,12 @@ const RecreationKingBadge: React.FC<RecreationKingBadgeProps> = ({
   ...props
 }) => {
   const kingCount = recreationKingEvents.length;
-
-  const icon = useMemo(() => {
-    const commonStyle: CSSProperties = {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%,-50%)',
-      color: 'var(--mantine-color-white)',
-      width: size / 2,
-      height: size / 2,
-    };
-    if (kingCount < 3)
-      return (
-        <IconAwardFilled
-          style={{
-            ...commonStyle,
-          }}
-        />
-      );
-    // TODO
-    if (kingCount < 5)
-      return (
-        <IconAwardFilled
-          style={{
-            ...commonStyle,
-          }}
-        />
-      );
-    // TODO
-    return (
-      <IconAwardFilled
-        style={{
-          ...commonStyle,
-        }}
-      />
-    );
-  }, [kingCount, size]);
-
   if (!kingCount) return null;
 
   return (
     <Tooltip label={`レク王×${kingCount}`}>
-      <Box pos="relative" display="inline-block" w={size} h={size} lh={1} {...props}>
-        <IconRosetteFilled
-          style={{
-            width: '100%',
-            height: '100%',
-            color: 'var(--mantine-color-yellow-9)',
-          }}
-        />
-        {icon}
+      <Box component="span" fz={size} lh={1} {...props}>
+        <IconCrown crownColor={getClownColor(kingCount)} />
       </Box>
     </Tooltip>
   );

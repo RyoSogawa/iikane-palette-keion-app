@@ -39,9 +39,9 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
             {user.name}
             <RecreationKingBadge
               recreationKingEvents={user.recreationKingEvents}
-              size={18}
-              ml={4}
-              mt={-4}
+              size={14}
+              ml={8}
+              mt={-2}
               style={{
                 verticalAlign: 'middle',
               }}

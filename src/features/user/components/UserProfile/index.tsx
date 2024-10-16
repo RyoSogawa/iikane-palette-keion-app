@@ -39,7 +39,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
           {user.name}
           <RecreationKingBadge
             recreationKingEvents={user.recreationKingEvents}
-            ml={6}
+            size={20}
+            ml={8}
             mt={-4}
             style={{
               verticalAlign: 'middle',
