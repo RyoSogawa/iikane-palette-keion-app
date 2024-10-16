@@ -7,7 +7,6 @@ import { Box, type BoxProps, Tooltip } from '@mantine/core';
 import IconCrown from '@/features/event/components/RecreationKingBadge/parts/IconCrown';
 
 import type { CrownColor } from '@/features/event/components/RecreationKingBadge/parts/IconCrown';
-import type { Event } from '@/types/generated/zod';
 
 const getClownColor = (kingCount: number): CrownColor => {
   if (kingCount === 1) return 'bronze';
@@ -17,17 +16,14 @@ const getClownColor = (kingCount: number): CrownColor => {
 
 export type RecreationKingBadgeProps = Omit<BoxProps, 'children'> & {
   size?: number;
-  recreationKingEvents: Array<{
-    event: Pick<Event, 'id' | 'name'>;
-  }>;
+  kingCount: number;
 };
 
 const RecreationKingBadge: React.FC<RecreationKingBadgeProps> = ({
   size = 24,
-  recreationKingEvents,
+  kingCount,
   ...props
 }) => {
-  const kingCount = recreationKingEvents.length;
   if (!kingCount) return null;
 
   return (

@@ -38,7 +38,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
           <Text size="sm" fw={500} c="bright" truncate="end">
             {user.name}
             <RecreationKingBadge
-              recreationKingEvents={user.recreationKingEvents}
+              kingCount={user.recreationKingEvents.length}
               size={14}
               ml={8}
               mt={-2}
