@@ -34,16 +34,17 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
         imageProps={{ loading: 'lazy' }}
         bg="gray"
       />
-      <Box mt="md">
-        <Title order={1} size="h2" ta="center">
+      <Box mt="md" ta="center">
+        <Title order={1} size="h2" ta="center" pos="relative" display="inline-block">
           {user.name}
           <RecreationKingBadge
             kingCount={user.recreationKingEvents.length}
             size={20}
-            ml={8}
-            mt={-4}
+            pos="absolute"
+            top="50%"
+            right={-8}
             style={{
-              verticalAlign: 'middle',
+              transform: 'translate(100%, -50%)',
             }}
           />
         </Title>
