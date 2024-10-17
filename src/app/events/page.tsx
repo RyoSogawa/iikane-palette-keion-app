@@ -4,6 +4,14 @@ import { unstable_noStore } from 'next/cache';
 import EventCard from '@/features/event/components/EventCard';
 import { api } from '@/trpc/server';
 
+import type { Metadata } from 'next';
+
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: 'イベント',
+};
+
 export default async function Events() {
   /**
    * HACK: t3-qppのバグ対応

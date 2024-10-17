@@ -20,6 +20,8 @@ import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
 import { api } from '@/trpc/server';
 
+import type { Metadata } from 'next';
+
 export const revalidate = 3600;
 
 type Props = {
@@ -27,6 +29,16 @@ type Props = {
     eventId: string;
   };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const event = await api.event.findById.query({
+    id: params.eventId,
+  });
+
+  return {
+    title: `${event?.name}`,
+  };
+}
 
 export default async function EventPage({ params }: Props) {
   const [event] = await Promise.all([

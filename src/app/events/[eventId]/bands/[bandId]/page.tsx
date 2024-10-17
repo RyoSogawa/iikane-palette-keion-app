@@ -17,6 +17,8 @@ import Link from 'next/link';
 
 import { api } from '@/trpc/server';
 
+import type { Metadata } from 'next';
+
 export const revalidate = 3600;
 
 type Props = {
@@ -25,6 +27,20 @@ type Props = {
     bandId: string;
   };
 };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const event = await api.event.findById.query({
+    id: params.eventId,
+  });
+  if (!event) {
+    throw new Error('イベントが見つかりませんでした');
+  }
+  const band = event.Band.find((b) => b.id === params.bandId);
+
+  return {
+    title: `${band?.name}`,
+  };
+}
 
 export default async function BandPage({ params }: Props) {
   const [event] = await Promise.all([
