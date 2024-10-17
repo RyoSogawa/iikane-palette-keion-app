@@ -25,7 +25,7 @@ jobs:
         reporter: github-pr-review
         eslint_flags: 'src/**/*.{ts,js,tsx,jsx}'
     - name: Copy config files
-      run: cp .env.sample .env
+      run: cp .env.example .env
     - name: Eslint
       run: pnpm lint
     - name: Build test

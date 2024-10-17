@@ -16,6 +16,16 @@ export const getAll = publicProcedure.query(({ ctx }) => {
           },
         },
       },
+      recreationKingEvents: {
+        select: {
+          event: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       createdAt: 'desc',

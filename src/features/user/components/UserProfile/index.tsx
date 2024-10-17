@@ -4,8 +4,9 @@ import { Avatar, Box, Flex, Text, Title } from '@mantine/core';
 import { type User } from '@prisma/client';
 import { IconMapPin } from '@tabler/icons-react';
 
+import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
 import YourProfileAlert from '@/features/user/components/UserProfile/parts/YourProfileAlert';
-import { type UserTag } from '@/types/generated/zod';
+import { type UserTag, type Event } from '@/types/generated/zod';
 
 import SnsLinks from './parts/SnsLinks';
 
@@ -13,6 +14,9 @@ export type UserProfileProps = {
   user: Omit<User, 'createdAt' | 'email' | 'emailVerified'> & {
     tags: Array<{
       userTag: Pick<UserTag, 'name'>;
+    }>;
+    recreationKingEvents: Array<{
+      event: Pick<Event, 'id' | 'name'>;
     }>;
   };
   isCurrentUser?: boolean;
@@ -33,6 +37,15 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, isCurrentUser }) => {
       <Box mt="md">
         <Title order={1} size="h2" ta="center">
           {user.name}
+          <RecreationKingBadge
+            kingCount={user.recreationKingEvents.length}
+            size={20}
+            ml={8}
+            mt={-4}
+            style={{
+              verticalAlign: 'middle',
+            }}
+          />
         </Title>
         {user.nickname && (
           <Text c="dimmed" fz="xs" ta="center">

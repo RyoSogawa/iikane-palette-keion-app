@@ -11,7 +11,7 @@ import LoginLink from '@/features/application/components/Footer/parts/LoginLink'
 
 const Footer: React.FC = () => {
   return (
-    <Box component="footer" pt="xl" pb="md">
+    <Box component="footer" pt="xl" pb="md" bg="dark">
       <Container ta="center">
         <LoginLink />
         <Box component={Link} href="/" display="inline-block">

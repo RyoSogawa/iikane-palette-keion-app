@@ -1,3 +1,4 @@
+import { eventRouter } from '@/server/api/routers/event';
 import { myBestSongsRouter } from '@/server/api/routers/my-best-songs';
 import { onboardingRouter } from '@/server/api/routers/onboarding';
 import { userRouter } from '@/server/api/routers/user';
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   userTag: userTagRouter,
   onboarding: onboardingRouter,
   myBestSongs: myBestSongsRouter,
+  event: eventRouter,
 });
 
 // export type definition of API

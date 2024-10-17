@@ -3,7 +3,12 @@
 import React, { useMemo } from 'react';
 
 import { ActionIcon, Menu } from '@mantine/core';
-import { IconCaretDownFilled, IconHome, IconUsersGroup } from '@tabler/icons-react';
+import {
+  IconCaretDownFilled,
+  IconHome,
+  IconMicrophone2,
+  IconUsersGroup,
+} from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -15,6 +20,7 @@ type MenuItem = {
 
 const MenuMap: Record<string, MenuItem> = {
   home: { title: 'Home', icon: <IconHome size={14} />, pathname: '/' },
+  events: { title: 'イベント', icon: <IconMicrophone2 size={14} />, pathname: '/events' },
   users: { title: '部員名簿', icon: <IconUsersGroup size={14} />, pathname: '/members' },
 };
 
@@ -39,7 +45,7 @@ const NavMenu: React.FC = () => {
   }, [currentPath]);
 
   return (
-    <Menu position="bottom-start">
+    <Menu position="bottom-start" trigger="click-hover">
       <Menu.Target>
         <ActionIcon variant="light" color="gray" aria-label="ナビメニュー">
           {currentMenu?.icon ?? <IconCaretDownFilled size={14} />}

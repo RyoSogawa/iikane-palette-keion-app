@@ -30,7 +30,7 @@ const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId, isEdit }) => {
         router.push(`/members/${userId}/edit/${newValue}`);
         return;
       }
-      router.push(`/members/${userId}/${newValue}`);
+      router.replace(`/members/${userId}/${newValue}`);
     },
     [isEdit, router, userId],
   );

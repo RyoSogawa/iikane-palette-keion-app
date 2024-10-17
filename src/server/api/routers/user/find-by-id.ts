@@ -31,6 +31,16 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
           },
         },
       },
+      recreationKingEvents: {
+        select: {
+          event: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
     },
   });
 });

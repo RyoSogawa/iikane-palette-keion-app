@@ -29,7 +29,7 @@ export type AppShellProps = {
 const AppShell: React.FC<AppShellProps> = ({ children }) => {
   return (
     <MantineAppShell header={{ height: HEADER_HEIGHT }} padding="md">
-      <MantineAppShell.Header>
+      <MantineAppShell.Header bg="dark">
         <Container px={20} h="100%">
           <Flex align="center" h="100%" gap={8}>
             <Box component={Link} href="/" td="none">
