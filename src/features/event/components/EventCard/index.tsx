@@ -3,11 +3,11 @@
 import React from 'react';
 
 import { Card, Group, Image, Text } from '@mantine/core';
-import { format } from 'date-fns';
 import Link from 'next/link';
 
 import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import { type Event } from '@/types/generated/zod';
+import { formatDateString } from '@/utils/date';
 
 export type EventCardProps = {
   event: Pick<Event, 'id' | 'dateTo' | 'dateFrom' | 'name' | 'image'>;
@@ -26,8 +26,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
         <EventStatusBadge eventStatus="archive" />
       </Group>
       <Text mt="xs" c="dimmed" fz="sm">
-        {format(new Date(event.dateFrom), 'yyyy/MM/dd')} -{' '}
-        {format(new Date(event.dateTo), 'yyyy/MM/dd')}
+        {formatDateString(event.dateFrom)} - {formatDateString(event.dateTo)}
       </Text>
     </Card>
   );

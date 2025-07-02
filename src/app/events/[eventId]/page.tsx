@@ -13,12 +13,12 @@ import {
   Title,
 } from '@mantine/core';
 import { IconHome } from '@tabler/icons-react';
-import { format } from 'date-fns';
 import Link from 'next/link';
 
 import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
 import { api } from '@/trpc/server';
+import { formatDateString } from '@/utils/date';
 
 import type { Metadata } from 'next';
 
@@ -62,8 +62,7 @@ export default async function EventPage({ params }: Props) {
       </Breadcrumbs>
       <EventStatusBadge eventStatus="archive" mt="lg" />
       <Text c="dimmed" mt={4}>
-        {format(new Date(event.dateFrom), 'yyyy/MM/dd')} -{' '}
-        {format(new Date(event.dateTo), 'yyyy/MM/dd')}
+        {formatDateString(event.dateFrom)} - {formatDateString(event.dateTo)}
       </Text>
       <Title size="h2" mt="xs">
         {event.name}
