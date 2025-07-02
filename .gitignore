@@ -47,3 +47,7 @@ yarn-error.log*
 
 # generated
 /src/types/generated
+
+# claude code
+/tmp
+/.claude/command-log.txt
