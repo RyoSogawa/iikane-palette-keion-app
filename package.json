@@ -96,5 +96,8 @@
   "packageManager": "pnpm@8.6.3",
   "prisma": {
     "seed": "npx tsx prisma/seed/index.ts"
+  },
+  "volta": {
+    "node": "22.14.0"
   }
 }
