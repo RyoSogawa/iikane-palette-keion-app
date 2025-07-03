@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm dev)",
+      "Bash(pnpm test)",
+      "Bash(pnpm build)",
+      "Bash(supabase start)"
+    ],
+    "deny": [
+      "Bash(git push:*)",
+      "Bash(rm:*)",
+      "Bash(sudo:*)",
+      "Read(.env.*)",
+      "Bash(pnpm db:*)",
+      "Bash(prisma)"
+    ]
+  }
+}
