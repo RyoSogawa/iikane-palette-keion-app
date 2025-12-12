@@ -14,7 +14,7 @@ import type { MyBestSong } from '@/types/generated/zod';
 export const useAddSong = (userId: string) => {
   const queryClient = useQueryClient();
   const { data: session } = useSession();
-  const { mutateAsync, isLoading } = api.myBestSongs.create.useMutation();
+  const { mutateAsync, isPending } = api.myBestSongs.create.useMutation();
 
   const addSong = useCallback(
     (song: Pick<MyBestSong, 'spotifyId' | 'name' | 'artist' | 'type'>) => () => {
@@ -41,7 +41,7 @@ export const useAddSong = (userId: string) => {
           onError: (error) => {
             showNotification(NotificationOptions.error);
             console.error(error);
-            void queryClient.invalidateQueries(myBestSongsKey);
+            void queryClient.invalidateQueries({ queryKey: myBestSongsKey });
           },
         },
       );
@@ -50,7 +50,7 @@ export const useAddSong = (userId: string) => {
   );
 
   return {
-    isAdding: isLoading,
+    isAdding: isPending,
     addSong,
   };
 };

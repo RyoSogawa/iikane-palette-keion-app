@@ -30,7 +30,6 @@ export function TRPCReactProvider({ children }: { children: React.ReactNode }) {
 
   const [trpcClient] = useState(() =>
     api.createClient({
-      transformer,
       links: [
         loggerLink({
           enabled: (op) =>
@@ -38,6 +37,7 @@ export function TRPCReactProvider({ children }: { children: React.ReactNode }) {
             (op.direction === 'down' && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
+          transformer,
           url: getUrl(),
         }),
       ],

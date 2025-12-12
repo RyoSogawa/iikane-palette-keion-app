@@ -8,7 +8,7 @@ export const deleteMe = protectedProcedure.mutation(({ ctx }) => {
   return ctx.db.$transaction(async (tx) => {
     const userId = ctx.session.user.id;
 
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createSupabaseServerClient(cookieStore, ctx.session?.supabaseAccessToken);
 
     const { data, error } = await supabase.storage.from('profiles').list(userId);

@@ -14,7 +14,7 @@ import { api } from '@/trpc/react';
 const AccountDeleteModalButton: React.FC = () => {
   const { status } = useSession();
   const [opened, { open, close }] = useDisclosure(false);
-  const { mutateAsync, isLoading } = api.user.deleteMe.useMutation();
+  const { mutateAsync, isPending } = api.user.deleteMe.useMutation();
 
   const handleSubmit = useCallback(() => {
     mutateAsync()
@@ -50,7 +50,7 @@ const AccountDeleteModalButton: React.FC = () => {
           </Button>
           <Button
             color="red"
-            loading={isLoading}
+            loading={isPending}
             disabled={status !== 'authenticated'}
             fullWidth
             onClick={handleSubmit}

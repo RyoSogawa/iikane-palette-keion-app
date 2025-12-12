@@ -4,17 +4,19 @@ import UserForm from '@/features/user/components/UserForm';
 import { api } from '@/trpc/server';
 
 type Props = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 };
 
 export default async function MemberEditPage({ params }: Props) {
+  const { userId } = await params;
+  const trpc = await api();
   const [user, tags] = await Promise.all([
-    api.user.findById.query({
-      id: params.userId,
+    trpc.user.findById({
+      id: userId,
     }),
-    api.userTag.getAll.query(),
+    trpc.userTag.getAll(),
   ]);
 
   if (!user) {

@@ -12,7 +12,7 @@ export const updateUserAvatar = async (formData: FormData) => {
   const userId = formData.get('userId') as string;
   const file = formData.get('file') as File;
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const session = await getServerAuthSession();
   const supabase = createSupabaseServerClient(cookieStore, session?.supabaseAccessToken);
 
@@ -55,7 +55,8 @@ export const updateUserAvatar = async (formData: FormData) => {
 
   const imagePath = `${STORAGE_PATH}/profiles/${data.path}`;
 
-  await api.user.update.mutate({
+  const trpc = await api();
+  await trpc.user.update({
     id: userId,
     image: imagePath,
   });

@@ -11,7 +11,7 @@ import { type RouterOutputs } from '@/trpc/shared';
 
 export const useSortSong = (userId: string) => {
   const queryClient = useQueryClient();
-  const { mutateAsync, isLoading } = api.myBestSongs.sort.useMutation();
+  const { mutateAsync, isPending } = api.myBestSongs.sort.useMutation();
 
   const handleDragEnd = useCallback(
     async (e: DragEndEvent) => {
@@ -51,7 +51,7 @@ export const useSortSong = (userId: string) => {
           onError: (error) => {
             showNotification(NotificationOptions.error);
             console.error(error);
-            void queryClient.invalidateQueries(myBestSongsKey);
+            void queryClient.invalidateQueries({ queryKey: myBestSongsKey });
           },
         },
       );
@@ -60,7 +60,7 @@ export const useSortSong = (userId: string) => {
   );
 
   return {
-    isSorting: isLoading,
+    isSorting: isPending,
     handleDragEnd,
   };
 };

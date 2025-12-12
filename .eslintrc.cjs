@@ -6,14 +6,9 @@ const config = {
   },
   plugins: ['@typescript-eslint', 'jsx-a11y', 'react', 'react-hooks', 'unused-imports'],
   extends: [
-    'airbnb',
-    'airbnb-typescript',
-    'airbnb/hooks',
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
-    'plugin:@typescript-eslint/recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
     'prettier',
   ],
   rules: {

@@ -22,20 +22,22 @@ import type { Metadata } from 'next';
 export const revalidate = 3600;
 
 type Props = {
-  params: {
+  params: Promise<{
     eventId: string;
     bandId: string;
-  };
+  }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const event = await api.event.findById.query({
-    id: params.eventId,
+  const { eventId, bandId } = await params;
+  const trpc = await api();
+  const event = await trpc.event.findById({
+    id: eventId,
   });
   if (!event) {
     throw new Error('イベントが見つかりませんでした');
   }
-  const band = event.Band.find((b) => b.id === params.bandId);
+  const band = event.Band.find((b) => b.id === bandId);
 
   return {
     title: `${band?.name}`,
@@ -43,9 +45,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function BandPage({ params }: Props) {
+  const { eventId, bandId } = await params;
+  const trpc = await api();
   const [event] = await Promise.all([
-    api.event.findById.query({
-      id: params.eventId,
+    trpc.event.findById({
+      id: eventId,
     }),
   ]);
 
@@ -53,7 +57,7 @@ export default async function BandPage({ params }: Props) {
     throw new Error('イベントが見つかりませんでした');
   }
 
-  const band = event.Band.find((b) => b.id === params.bandId);
+  const band = event.Band.find((b) => b.id === bandId);
   if (!band) {
     throw new Error('バンドが見つかりませんでした');
   }
@@ -65,7 +69,7 @@ export default async function BandPage({ params }: Props) {
           <IconHome size={16} />
         </Link>
         <Link href="/events">イベント</Link>
-        <Link href={`/events/${params.eventId}`}>{event.name}</Link>
+        <Link href={`/events/${eventId}`}>{event.name}</Link>
         <Text fz="xs">{band.name}</Text>
       </Breadcrumbs>
       <Title size="h2" mt="xl">

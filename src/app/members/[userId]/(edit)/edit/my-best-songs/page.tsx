@@ -6,16 +6,17 @@ import MyBestSongsAddModalButton from '@/features/my-best-songs/components/MyBes
 import MyBestSongsListForEdit from '@/features/my-best-songs/components/MyBestSongsListForEdit';
 
 type Props = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 };
 
 export default async function MemberMyBestsPage({ params }: Props) {
+  const { userId } = await params;
   return (
     <Box>
-      <MyBestSongsListForEdit userId={params.userId} />
-      <MyBestSongsAddModalButton userId={params.userId} />
+      <MyBestSongsListForEdit userId={userId} />
+      <MyBestSongsAddModalButton userId={userId} />
     </Box>
   );
 }

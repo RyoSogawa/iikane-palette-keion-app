@@ -25,14 +25,16 @@ import type { Metadata } from 'next';
 export const revalidate = 3600;
 
 type Props = {
-  params: {
+  params: Promise<{
     eventId: string;
-  };
+  }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const event = await api.event.findById.query({
-    id: params.eventId,
+  const { eventId } = await params;
+  const trpc = await api();
+  const event = await trpc.event.findById({
+    id: eventId,
   });
 
   return {
@@ -41,9 +43,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function EventPage({ params }: Props) {
+  const { eventId } = await params;
+  const trpc = await api();
   const [event] = await Promise.all([
-    api.event.findById.query({
-      id: params.eventId,
+    trpc.event.findById({
+      id: eventId,
     }),
   ]);
 

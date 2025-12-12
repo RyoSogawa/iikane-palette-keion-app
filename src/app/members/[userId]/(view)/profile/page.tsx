@@ -6,15 +6,17 @@ import EditorViewer from '@/ui/components/input/EditorViewer';
 export const revalidate = 3600;
 
 type Props = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 };
 
 export default async function MemberProfilePage({ params }: Props) {
+  const { userId } = await params;
+  const trpc = await api();
   const [user] = await Promise.all([
-    api.user.findById.query({
-      id: params.userId,
+    trpc.user.findById({
+      id: userId,
     }),
   ]);
 

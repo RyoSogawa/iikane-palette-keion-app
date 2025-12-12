@@ -38,7 +38,7 @@ export const useDeleteSong = (userId: string) => {
           onError: (error) => {
             showNotification(NotificationOptions.error);
             console.error(error);
-            void queryClient.invalidateQueries(myBestSongsKey);
+            void queryClient.invalidateQueries({ queryKey: myBestSongsKey });
           },
         },
       );

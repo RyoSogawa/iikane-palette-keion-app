@@ -12,15 +12,17 @@ import type { Metadata } from 'next';
 export const revalidate = 3600;
 
 type Props = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
   children: React.ReactNode;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const user = await api.user.findById.query({
-    id: params.userId,
+  const { userId } = await params;
+  const trpc = await api();
+  const user = await trpc.user.findById({
+    id: userId,
   });
 
   return {
@@ -29,9 +31,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function MemberSingleLayout({ params, children }: Props) {
+  const { userId } = await params;
+  const trpc = await api();
   const [user, session] = await Promise.all([
-    api.user.findById.query({
-      id: params.userId,
+    trpc.user.findById({
+      id: userId,
     }),
     getServerAuthSession(),
   ]);
@@ -43,7 +47,7 @@ export default async function MemberSingleLayout({ params, children }: Props) {
   return (
     <Container py={32}>
       <UserProfile user={user} isCurrentUser={session?.user.id === user.id} />
-      <UserProfileTab userId={params.userId} />
+      <UserProfileTab userId={userId} />
       {children}
     </Container>
   );

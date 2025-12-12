@@ -5,7 +5,7 @@ import { env } from '@/env';
 import type { cookies } from 'next/headers';
 
 export const createSupabaseServerClient = (
-  cookieStore: ReturnType<typeof cookies>,
+  cookieStore: Awaited<ReturnType<typeof cookies>>,
   supabaseAccessToken?: string,
 ) => {
   return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_ANON_KEY, {

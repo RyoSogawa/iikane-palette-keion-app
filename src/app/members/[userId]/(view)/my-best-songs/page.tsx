@@ -6,15 +6,15 @@ import { api } from '@/trpc/server';
 export const revalidate = 3600;
 
 type Props = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
 };
 
 export default async function MemberMyBestsPage({ params }: Props) {
-  const [myBestSongs] = await Promise.all([
-    api.myBestSongs.findByUserId.query({ userId: params.userId }),
-  ]);
+  const { userId } = await params;
+  const trpc = await api();
+  const [myBestSongs] = await Promise.all([trpc.myBestSongs.findByUserId({ userId })]);
 
   if (!myBestSongs?.length) return null;
 

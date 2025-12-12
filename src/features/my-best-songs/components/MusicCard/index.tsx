@@ -21,8 +21,6 @@ const MusicCard = React.forwardRef<HTMLDivElement, MusicCardProps>(
   ({ artist, image, name, type, leftSlot, rightSlot, className, ...props }, forwardedRef) => {
     return (
       <Paper
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
         ref={forwardedRef}
         py={{ base: 8, sm: 'xs' }}
         px={{ base: 'xs', sm: 'lg' }}

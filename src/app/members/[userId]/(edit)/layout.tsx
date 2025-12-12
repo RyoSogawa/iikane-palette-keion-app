@@ -10,9 +10,9 @@ import { api } from '@/trpc/server';
 import type { Metadata } from 'next';
 
 type Props = {
-  params: {
+  params: Promise<{
     userId: string;
-  };
+  }>;
   children: React.ReactNode;
 };
 
@@ -21,9 +21,11 @@ export const metadata: Metadata = {
 };
 
 export default async function MemberSingleLayout({ params, children }: Props) {
+  const { userId } = await params;
+  const trpc = await api();
   const [user, session] = await Promise.all([
-    api.user.findById.query({
-      id: params.userId,
+    trpc.user.findById({
+      id: userId,
     }),
     getServerAuthSession(),
   ]);
@@ -41,7 +43,7 @@ export default async function MemberSingleLayout({ params, children }: Props) {
       <Button
         // HACK:Linkコンポーネントで遷移させたときにUser情報のキャッシュが残りデータ更新が反映されないのでフルページリロードしている
         component="a"
-        href={`/members/${params.userId}/profile`}
+        href={`/members/${userId}/profile`}
         variant="default"
         color="gray"
         size="xs"
@@ -53,7 +55,7 @@ export default async function MemberSingleLayout({ params, children }: Props) {
       <Title size="h2" mt={24}>
         プロフィール編集
       </Title>
-      <UserProfileTab userId={params.userId} isEdit />
+      <UserProfileTab userId={userId} isEdit />
       {children}
     </Container>
   );

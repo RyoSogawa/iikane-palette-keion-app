@@ -20,7 +20,8 @@ export default async function Events() {
    */
   unstable_noStore();
 
-  const [events] = await Promise.all([api.event.getAll.query()]);
+  const trpc = await api();
+  const [events] = await Promise.all([trpc.event.getAll()]);
 
   return (
     <Container py={16}>

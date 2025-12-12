@@ -17,14 +17,16 @@ export const metadata: Metadata = {
 export default async function Members({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [users, session] = await Promise.all([api.user.getAll.query(), getServerAuthSession()]);
+  const params = await searchParams;
+  const trpc = await api();
+  const [users, session] = await Promise.all([trpc.user.getAll(), getServerAuthSession()]);
 
   let shouldShowOnboarding = false;
   // ログイン後にTOPに飛ばされたときだけfetchさせる
-  if (searchParams['login-callback'] === 'true' && session) {
-    const onboarding = await api.onboarding.findByCurrentUser.query({
+  if (params['login-callback'] === 'true' && session) {
+    const onboarding = await trpc.onboarding.findByCurrentUser({
       step: 'VIEW_MY_PROFILE',
     });
     shouldShowOnboarding = !onboarding;
