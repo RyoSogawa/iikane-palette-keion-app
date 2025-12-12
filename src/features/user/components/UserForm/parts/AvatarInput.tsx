@@ -29,7 +29,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
           throw new Error('You must select an image to upload.');
         }
 
-        if (!file.type.match('image.*')) {
+        if (!/image.*/.exec(file.type)) {
           throw new Error('You must select an image to upload.');
         }
 

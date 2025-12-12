@@ -7,6 +7,8 @@ const config = {
   plugins: ['@typescript-eslint', 'jsx-a11y', 'react', 'react-hooks', 'unused-imports'],
   extends: [
     "next/core-web-vitals",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     'prettier',
@@ -54,6 +56,7 @@ const config = {
     ],
     'react/function-component-definition': 'off',
     'react/require-default-props': 'off',
+    'react/no-unknown-property': ['error', { ignore: ['tw'] }],
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/space-before-blocks': 'off',
