@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ja">
+    <html lang="ja" data-mantine-color-scheme="dark" suppressHydrationWarning>
       <head>
         <ColorSchemeScript defaultColorScheme="dark" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
