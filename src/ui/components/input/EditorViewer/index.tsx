@@ -17,6 +17,7 @@ const EditorViewer: React.FC<EditorViewerProps> = ({ value, className, ...props 
     extensions: [StarterKit, LinkExtension],
     content: value ? (JSON.parse(value) as Content) : undefined,
     editable: false,
+    immediatelyRender: false,
   });
 
   return (

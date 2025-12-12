@@ -43,6 +43,7 @@ const ControlledRichEditor = <T extends FieldValues>({
     extensions: [StarterKit, LinkExtension, Placeholder.configure({ placeholder })],
     content: value ? (JSON.parse(value) as Content) : undefined,
     editable: !disabled,
+    immediatelyRender: false,
     onBlur,
     onUpdate: (arg) => {
       onChange(JSON.stringify(arg.editor.getJSON()));
