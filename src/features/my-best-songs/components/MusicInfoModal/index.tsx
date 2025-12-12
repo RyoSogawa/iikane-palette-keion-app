@@ -4,12 +4,13 @@ import React from 'react';
 
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import { IconBrandSpotify } from '@tabler/icons-react';
-import Link from 'next/link';
+
 
 import MusicImage from '@/features/my-best-songs/components/MusicImage';
 import NextPrevButton from '@/features/my-best-songs/components/MusicInfoModal/parts/NextPrevButton';
 import MusicTypeBadge from '@/features/my-best-songs/components/MusicTypeBadge';
 import { type SongWithImage } from '@/types/types';
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export type MusicInfoModalProps = ModalProps & {
   song?: Pick<SongWithImage, 'id' | 'spotifyId' | 'type' | 'name' | 'artist' | 'image'>;
@@ -41,7 +42,7 @@ const MusicInfoModal: React.FC<MusicInfoModalProps> = ({
           </Text>
           <Group>
             <Button
-              component={Link}
+              component={LinkComponent}
               href={`https://open.spotify.com/intl-ja/${song.type}/${song.spotifyId}`}
               target="_blank"
               rel="noreferrer"

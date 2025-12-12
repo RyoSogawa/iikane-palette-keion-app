@@ -4,9 +4,10 @@ import React from 'react';
 
 import { Avatar, Box, Group, Paper, Text } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
-import Link from 'next/link';
 
 import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
+import LinkComponent from '@/ui/components/common/LinkComponent';
+
 
 import type { UserTag, Event } from '@/types/generated/zod';
 import type { User } from '@prisma/client';
@@ -24,7 +25,7 @@ export type UserCardProps = {
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   return (
-    <Paper component={Link} href={`/members/${user.id}/profile`} p="md" h="100%" bg="dark">
+    <Paper component={LinkComponent} href={`/members/${user.id}/profile`} p="md" h="100%" bg="dark">
       <Group h="100%">
         <Box pos="relative">
           <Avatar

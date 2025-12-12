@@ -12,11 +12,12 @@ import {
   Divider,
   Text,
 } from '@mantine/core';
-import Link from 'next/link';
+
 
 import AccountMenuButton from '@/features/account/components/AccountMenuButton';
 import Footer from '@/features/application/components/Footer';
 import NavMenu from '@/features/application/components/NavMenu';
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 import s from './style.module.css';
 
@@ -32,7 +33,7 @@ const AppShell: React.FC<AppShellProps> = ({ children }) => {
       <MantineAppShell.Header bg="dark">
         <Container px={20} h="100%">
           <Flex align="center" h="100%" gap={8}>
-            <Box component={Link} href="/" td="none">
+            <Box component={LinkComponent} href="/" td="none">
               <Title order={1} size="1rem" c="bright">
                 いいかねパレット軽音部
               </Title>

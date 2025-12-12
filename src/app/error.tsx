@@ -3,7 +3,8 @@
 import { useEffect } from 'react';
 
 import { Button, Container, Text, Title } from '@mantine/core';
-import Link from 'next/link';
+
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export default function Error({ error }: { error: Error & { digest?: string } }) {
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function Error({ error }: { error: Error & { digest?: string } })
       <Title size={18} mt={8}>
         {error.message}
       </Title>
-      <Button component={Link} href="/" variant="outline" mt={32}>
+      <Button component={LinkComponent} href="/" variant="outline" mt={32}>
         TOPへ
       </Button>
     </Container>

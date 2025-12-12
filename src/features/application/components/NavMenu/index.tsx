@@ -9,8 +9,9 @@ import {
   IconMicrophone2,
   IconUsersGroup,
 } from '@tabler/icons-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 type MenuItem = {
   title: string;
@@ -53,7 +54,7 @@ const NavMenu: React.FC = () => {
       </Menu.Target>
       <Menu.Dropdown>
         {Object.entries(MenuMap).map(([, { pathname, icon, title }]) => (
-          <Menu.Item key={title} component={Link} leftSection={icon} href={pathname}>
+          <Menu.Item key={title} component={LinkComponent} leftSection={icon} href={pathname}>
             {title}
           </Menu.Item>
         ))}

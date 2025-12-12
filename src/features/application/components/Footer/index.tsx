@@ -2,19 +2,20 @@ import React from 'react';
 
 import { Box, Container, Flex, Image, Text, VisuallyHidden } from '@mantine/core';
 import { IconBrandDiscordFilled, IconBrandGithubFilled } from '@tabler/icons-react';
-import Link from 'next/link';
+
 
 import { LINK } from '@/constants/external-service';
 import IconLink from '@/features/application/components/Footer/parts/IconLink';
 import ImageLink from '@/features/application/components/Footer/parts/ImageLink';
 import LoginLink from '@/features/application/components/Footer/parts/LoginLink';
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 const Footer: React.FC = () => {
   return (
     <Box component="footer" pt="xl" pb="md" bg="dark">
       <Container ta="center">
         <LoginLink />
-        <Box component={Link} href="/" display="inline-block">
+        <Box component={LinkComponent} href="/" display="inline-block">
           <Image
             src="/images/logo/keion-logo.webp"
             alt="ロゴ"

@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { ActionIcon } from '@mantine/core';
-import Link from 'next/link';
+
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export type SnsLinkProps = {
   href: string;
@@ -12,7 +13,7 @@ export type SnsLinkProps = {
 const SnsLink: React.FC<SnsLinkProps> = ({ children, href, 'aria-label': ariaLabel }) => {
   return (
     <ActionIcon
-      component={Link}
+      component={LinkComponent}
       variant="subtle"
       href={href}
       target="_blank"

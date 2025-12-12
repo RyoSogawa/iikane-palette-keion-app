@@ -4,10 +4,11 @@ import React, { useEffect, useRef } from 'react';
 
 import { Avatar, Button, Group, Modal, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import Link from 'next/link';
+
 
 import { api } from '@/trpc/react';
 import { type User } from '@/types/generated/zod';
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export type OnboardingViewMyProfileModalProps = {
   autoOpen?: boolean;
@@ -72,7 +73,7 @@ const OnboardingViewMyProfileModal: React.FC<OnboardingViewMyProfileModalProps> 
         <Button variant="outline" color="gray" onClick={close}>
           あとで
         </Button>
-        <Button component={Link} href={`/members/${user.id}/profile`} onClick={close}>
+        <Button component={LinkComponent} href={`/members/${user.id}/profile`} onClick={close}>
           プロフィールを見る
         </Button>
       </Group>

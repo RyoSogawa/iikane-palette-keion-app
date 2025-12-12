@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { ActionIcon, type ActionIconProps } from '@mantine/core';
-import Link from 'next/link';
+
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export type IconLinkProps = ActionIconProps & {
   href: string;
@@ -11,7 +12,7 @@ export type IconLinkProps = ActionIconProps & {
 const IconLink: React.FC<IconLinkProps> = ({ href, title, children, ...props }) => {
   return (
     <ActionIcon
-      component={Link}
+      component={LinkComponent}
       target="_blank"
       rel="noreferrer"
       variant="filled"

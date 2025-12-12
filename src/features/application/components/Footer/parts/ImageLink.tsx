@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { Flex, type FlexProps, Image } from '@mantine/core';
-import Link from 'next/link';
+
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export type ImageLinkProps = FlexProps & {
   href: string;
@@ -14,7 +15,7 @@ export type ImageLinkProps = FlexProps & {
 const ImageLink: React.FC<ImageLinkProps> = ({ href, src, title, imageW, imageH, ...props }) => {
   return (
     <Flex
-      component={Link}
+      component={LinkComponent}
       href={href}
       target="_blank"
       rel="noreferrer"

@@ -3,10 +3,11 @@
 import React from 'react';
 
 import { Card, Group, Image, Text } from '@mantine/core';
-import Link from 'next/link';
+
 
 import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import { type Event } from '@/types/generated/zod';
+import LinkComponent from '@/ui/components/common/LinkComponent';
 import { formatDateString } from '@/utils/date';
 
 export type EventCardProps = {
@@ -15,7 +16,7 @@ export type EventCardProps = {
 
 const EventCard: React.FC<EventCardProps> = ({ event }) => {
   return (
-    <Card shadow="sm" p="lg" component={Link} href={`/events/${event.id}`}>
+    <Card shadow="sm" p="lg" component={LinkComponent} href={`/events/${event.id}`}>
       <Card.Section>
         <Image src={event.image} h={160} alt="" loading="lazy" />
       </Card.Section>

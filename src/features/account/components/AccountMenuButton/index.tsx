@@ -4,8 +4,9 @@ import React, { useCallback } from 'react';
 
 import { Avatar, Menu, Skeleton, Tooltip, UnstyledButton } from '@mantine/core';
 import { IconLogin, IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
-import Link from 'next/link';
 import { signIn, signOut, useSession } from 'next-auth/react';
+
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 const AccountMenuButton: React.FC = () => {
   const { data: session, status } = useSession();
@@ -47,14 +48,14 @@ const AccountMenuButton: React.FC = () => {
       </Menu.Target>
       <Menu.Dropdown>
         <Menu.Item
-          component={Link}
+          component={LinkComponent}
           href={`/members/${session.user.id}/profile`}
           leftSection={<IconUser size={14} />}
         >
           プロフィール
         </Menu.Item>
         <Menu.Item
-          component={Link}
+          component={LinkComponent}
           href="/settings/account"
           leftSection={<IconSettings size={14} />}
         >

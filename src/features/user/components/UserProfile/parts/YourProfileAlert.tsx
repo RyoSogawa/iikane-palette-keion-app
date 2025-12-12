@@ -2,7 +2,8 @@ import React from 'react';
 
 import { Alert, Button } from '@mantine/core';
 import { IconInfoCircle } from '@tabler/icons-react';
-import Link from 'next/link';
+
+import LinkComponent from '@/ui/components/common/LinkComponent';
 
 import s from '../style.module.css';
 
@@ -27,7 +28,12 @@ const YourProfileAlert: React.FC<YourProfileAlertProps> = ({ userId }) => {
       icon={<IconInfoCircle />}
     >
       あなたのプロフィールです
-      <Button component={Link} href={`/members/${userId}/edit/profile`} variant="subtle" px="xs">
+      <Button
+        component={LinkComponent}
+        href={`/members/${userId}/edit/profile`}
+        variant="subtle"
+        px="xs"
+      >
         編集
       </Button>
     </Alert>

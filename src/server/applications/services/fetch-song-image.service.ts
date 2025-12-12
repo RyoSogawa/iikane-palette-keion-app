@@ -8,7 +8,13 @@ export class FetchSongImageService {
   constructor(private readonly spotifyApiService: SpotifyApiService = new SpotifyApiService()) {}
 
   public async invoke(songs: MyBestSong[]): Promise<SongWithImage[]> {
+    if (songs.length === 0) return [];
+
     const { albumIdsChunks, trackIds } = FetchSongImageService.convertToSpotifyIds(songs);
+
+    // If no valid spotifyIds exist, return songs without images
+    const hasValidIds = trackIds.length > 0 || albumIdsChunks.some((chunk) => chunk.length > 0);
+    if (!hasValidIds) return songs;
 
     const { tracks, albums } = await this.fetchSongImages(trackIds, albumIdsChunks);
 
@@ -32,9 +38,13 @@ export class FetchSongImageService {
   }
 
   private static convertToSpotifyIds(songs: Array<Pick<MyBestSong, 'spotifyId' | 'type'>>) {
-    const albumIds = songs.filter((song) => song.type === 'album').map((song) => song.spotifyId);
+    const albumIds = songs
+      .filter((song) => song.type === 'album' && song.spotifyId)
+      .map((song) => song.spotifyId);
     const albumIdsChunks = split(albumIds, 20); // albumsの取得は20件ずつに分割して取得しないといけないので
-    const trackIds = songs.filter((song) => song.type === 'track').map((song) => song.spotifyId);
+    const trackIds = songs
+      .filter((song) => song.type === 'track' && song.spotifyId)
+      .map((song) => song.spotifyId);
 
     return { albumIdsChunks, trackIds };
   }
@@ -42,9 +52,11 @@ export class FetchSongImageService {
   private async fetchSongImages(trackIds: string[], albumIdsChunks: string[][]) {
     await this.spotifyApiService.setAccessToken();
 
+    const validAlbumChunks = albumIdsChunks.filter((ids) => ids.length > 0);
+
     const [tracks, ...albums] = await Promise.all([
-      this.spotifyApiService.getSeveralTracks(trackIds),
-      ...albumIdsChunks.map((ids) => this.spotifyApiService.getSeveralAlbums(ids)),
+      trackIds.length > 0 ? this.spotifyApiService.getSeveralTracks(trackIds) : undefined,
+      ...validAlbumChunks.map((ids) => this.spotifyApiService.getSeveralAlbums(ids)),
     ]);
 
     // albumsのデータを1次元の配列にまとめる
