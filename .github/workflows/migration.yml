@@ -1,16 +1,15 @@
 name: Prisma Migrate
 
 on:
-  push:
-    branches:
-      - 'main'
-    paths:
-      - 'prisma/**'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   migrate:
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
 
