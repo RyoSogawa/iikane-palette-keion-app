@@ -4,8 +4,11 @@ import { env } from '@/env';
 
 import type { cookies } from 'next/headers';
 
+type CookieStore = Awaited<ReturnType<typeof cookies>>;
+type CookieSetArgs = Parameters<CookieStore['set']>;
+
 export const createSupabaseServerClient = (
-  cookieStore: Awaited<ReturnType<typeof cookies>>,
+  cookieStore: CookieStore,
   supabaseAccessToken?: string,
 ) => {
   return createServerClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_ANON_KEY, {
@@ -20,7 +23,7 @@ export const createSupabaseServerClient = (
       },
       set(name: string, value: string, options: CookieOptions) {
         try {
-          cookieStore.set({ name, value, ...options });
+          cookieStore.set(...([{ name, value, ...options }] as CookieSetArgs));
         } catch {
           // The `set` method was called from a Server Component.
           // This can be ignored if you have middleware refreshing
@@ -29,7 +32,7 @@ export const createSupabaseServerClient = (
       },
       remove(name: string, options: CookieOptions) {
         try {
-          cookieStore.set({ name, value: '', ...options });
+          cookieStore.set(...([{ name, value: '', ...options }] as CookieSetArgs));
         } catch {
           // The `delete` method was called from a Server Component.
           // This can be ignored if you have middleware refreshing
