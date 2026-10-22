@@ -96,7 +96,7 @@
     "seed": "npx tsx prisma/seed/index.ts"
   },
   "volta": {
-    "node": "22.14.0",
+    "node": "24.22.1",
     "pnpm": "9.15.4"
   }
 }
