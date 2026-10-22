@@ -92,6 +92,9 @@
     "initVersion": "7.27.0"
   },
   "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": "24.x"
+  },
   "prisma": {
     "seed": "npx tsx prisma/seed/index.ts"
   },
