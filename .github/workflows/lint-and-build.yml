@@ -33,3 +33,9 @@ jobs:
       run: pnpm lint
     - name: Build test
       run: pnpm build
+      env:
+        NEXTAUTH_SECRET: dummy
+        DISCORD_CLIENT_ID: dummy
+        DISCORD_CLIENT_SECRET: dummy
+        SPOTIFY_CLIENT_ID: dummy
+        SPOTIFY_CLIENT_SECRET: dummy
