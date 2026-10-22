@@ -34,7 +34,6 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         }
 
         const formData = new FormData();
-        formData.append('userId', user.id);
         formData.append('file', file);
         const imagePath = await updateUserAvatar(formData);
 
@@ -52,7 +51,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         setIsUploading(false);
       }
     },
-    [update, user.id],
+    [update],
   );
 
   return (
