@@ -51,6 +51,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(db),
   providers: [
     Discord({
+      // Discord がコールバックに iss=https://discord.com を付けるようになった。
+      // issuer を指定しないと Auth.js が仮の https://authjs.dev と比較して CallbackRouteError になる
+      issuer: 'https://discord.com',
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
       authorization: {
