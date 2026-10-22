@@ -1,0 +1,29 @@
+packages:
+  - '.'
+
+minimumReleaseAge: 10080
+trustPolicy: no-downgrade
+trustPolicyExclude:
+  # next-auth@5.0.0-beta.32: provenance 付きなのは 2025-10 の手動プレリリース
+  #   0.0.0-manual.2824fa11 だけで、beta.29〜32 / 4.24.x の正規リリースはすべて
+  #   provenance なし。beta.31 と同じメンテナが公開しており、乗っ取りの兆候ではない。
+  - 'next-auth@5.0.0-beta.32'
+  # semver@6.3.1: 2023-07 に公開された 6.x 系のバックポート。provenance があるのは
+  #   先に出た 7.x 系だけで、系統違いによる判定。広く使われており低リスク。
+  - 'semver@6.3.1'
+  # undici-types@6.21.0: 2024-11 公開。6.19.x にあった provenance が外れたのは
+  #   2 年前からの状態で、新しい変化ではない。Node.js の undici チームが公開。
+  - 'undici-types@6.21.0'
+  # eslint-import-resolver-typescript@3.10.1: 2025-04 公開の 3.x 系バックポート。
+  #   provenance があるのは先に出た 4.x 系だけ。dev 依存のみ。
+  - 'eslint-import-resolver-typescript@3.10.1'
+
+# Prisma のエンジンはルートの postinstall (prisma generate) が必要に応じて取得し、
+# esbuild / unrs-resolver は optionalDependencies のバイナリで動くため、
+# 依存パッケージ側のスクリプトは実行しない。
+allowBuilds:
+  '@prisma/client': false
+  '@prisma/engines': false
+  esbuild: false
+  prisma: false
+  unrs-resolver: false
