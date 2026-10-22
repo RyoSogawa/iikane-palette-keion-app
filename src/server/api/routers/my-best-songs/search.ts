@@ -14,7 +14,8 @@ const songSchema = MyBestSongSchema.pick({
   spotifyId: true,
   artist: true,
   name: true,
-  image: true,
+}).extend({
+  image: z.string(),
 });
 
 export const search = protectedProcedure

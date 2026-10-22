@@ -7,12 +7,18 @@
       "Bash(supabase start)"
     ],
     "deny": [
-      "Bash(git push:*)",
-      "Bash(rm:*)",
-      "Bash(sudo:*)",
+      "Bash(rm *)",
+      "Bash(sudo *)",
+      "Read(.env)",
       "Read(.env.*)",
-      "Bash(pnpm db:*)",
+      "Bash(pnpm db *)",
       "Bash(prisma)"
     ]
-  }
+  },
+  "enabledPlugins": {
+    "agent-skills@hey-now-jp": true,
+    "code-simplifier@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true
+  },
+  "includeCoAuthoredBy": false
 }
