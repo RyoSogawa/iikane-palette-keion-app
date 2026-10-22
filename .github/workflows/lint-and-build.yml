@@ -31,6 +31,8 @@ jobs:
       run: cp .env.example .env
     - name: Eslint
       run: pnpm lint
+    - name: Unit test
+      run: pnpm test
     - name: Build test
       run: pnpm build
       env:
