@@ -22,7 +22,17 @@ export default async function globalSetup(config: FullConfig) {
 
   const db = new PrismaClient();
   try {
-    const userFields = { image: null, nickname: '', introduction: '' };
+    const userFields = {
+      image: null,
+      nickname: '',
+      residence: '',
+      introduction: '',
+      twitterUsername: '',
+      instagramUsername: '',
+      musicLink: '',
+      podcastLink: '',
+      websiteLink: '',
+    };
     await db.user.upsert({
       where: { id: LOGIN_USER.id },
       create: { id: LOGIN_USER.id, name: LOGIN_USER.name, email: LOGIN_USER.email, ...userFields },
