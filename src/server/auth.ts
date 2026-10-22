@@ -8,11 +8,10 @@ import { AvatarStorageService } from '@/server/applications/services/avatar-stor
 import { ImportDiscordAvatarService } from '@/server/applications/services/import-discord-avatar.service';
 import { db } from '@/server/db';
 import { isJoiningGuild } from '@/utils/discord';
-import { createSupabaseClientForUser, signSupabaseAccessToken } from '@/utils/supabase';
+import { createSupabaseClientForUser } from '@/utils/supabase';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
-    supabaseAccessToken: string;
     user: {
       id: string;
     } & DefaultSession['user'];
@@ -28,10 +27,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return '/members?login-callback=true';
     },
     session: async ({ session, user }) => {
-      const supabaseAccessToken = signSupabaseAccessToken(user, new Date(session.expires));
       return {
         ...session,
-        supabaseAccessToken,
         user: {
           ...session.user,
           id: user.id,
