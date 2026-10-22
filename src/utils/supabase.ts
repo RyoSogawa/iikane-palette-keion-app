@@ -27,9 +27,8 @@ export const createSupabaseServerClient = (
             cookieStore.set(...([{ name, value, ...options }] as CookieSetArgs));
           });
         } catch {
-          // The `setAll` method was called from a Server Component.
-          // This can be ignored if you have middleware refreshing
-          // user sessions.
+          // supabase.auth を使わず NextAuth の JWT を Authorization ヘッダーで渡しているため、
+          // setAll は auth のセッション更新時にしか呼ばれず、失敗しても影響しない。
         }
       },
     },
