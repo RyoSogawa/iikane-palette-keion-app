@@ -18,23 +18,16 @@ export const createSupabaseServerClient = (
       },
     },
     cookies: {
-      get(name: string) {
-        return cookieStore.get(name)?.value;
+      getAll() {
+        return cookieStore.getAll();
       },
-      set(name: string, value: string, options: CookieOptions) {
+      setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
         try {
-          cookieStore.set(...([{ name, value, ...options }] as CookieSetArgs));
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(...([{ name, value, ...options }] as CookieSetArgs));
+          });
         } catch {
-          // The `set` method was called from a Server Component.
-          // This can be ignored if you have middleware refreshing
-          // user sessions.
-        }
-      },
-      remove(name: string, options: CookieOptions) {
-        try {
-          cookieStore.set(...([{ name, value: '', ...options }] as CookieSetArgs));
-        } catch {
-          // The `delete` method was called from a Server Component.
+          // The `setAll` method was called from a Server Component.
           // This can be ignored if you have middleware refreshing
           // user sessions.
         }
