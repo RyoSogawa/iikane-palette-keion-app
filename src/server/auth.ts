@@ -1,12 +1,14 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { sign } from 'jsonwebtoken';
 import NextAuth, { type DefaultSession } from 'next-auth';
 import Discord from 'next-auth/providers/discord';
 
 import { IIKANE_GUILD_ID } from '@/constants/external-service';
 import { env } from '@/env';
+import { AvatarStorageService } from '@/server/applications/services/avatar-storage.service';
+import { ImportDiscordAvatarService } from '@/server/applications/services/import-discord-avatar.service';
 import { db } from '@/server/db';
 import { isJoiningGuild } from '@/utils/discord';
+import { createSupabaseClientForUser, signSupabaseAccessToken } from '@/utils/supabase';
 
 declare module 'next-auth' {
   interface Session extends DefaultSession {
@@ -26,14 +28,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return '/members?login-callback=true';
     },
     session: async ({ session, user }) => {
-      const payload = {
-        aud: 'authenticated',
-        exp: Math.floor(new Date(session.expires).getTime() / 1000),
-        sub: user.id,
-        email: user.email,
-        role: 'authenticated',
-      };
-      const supabaseAccessToken = sign(payload, env.SUPABASE_JWT_SECRET);
+      const supabaseAccessToken = signSupabaseAccessToken(user, new Date(session.expires));
       return {
         ...session,
         supabaseAccessToken,
@@ -46,6 +41,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: async ({ account }) => {
       if (account?.access_token == null) return false;
       return isJoiningGuild(account.access_token, IIKANE_GUILD_ID);
+    },
+  },
+  events: {
+    createUser: async ({ user }) => {
+      if (!user.id) return;
+      const avatarStorage = new AvatarStorageService(
+        createSupabaseClientForUser({ id: user.id, email: user.email }),
+      );
+      const importDiscordAvatar = new ImportDiscordAvatarService(avatarStorage, (id, image) =>
+        db.user.update({ where: { id }, data: { image } }),
+      );
+      try {
+        await importDiscordAvatar.invoke({ id: user.id, image: user.image ?? null });
+      } catch (error) {
+        // コピーに失敗しても Discord の URL のままサインアップは続ける。ここで投げるとログインできなくなる
+        console.error('Failed to import Discord avatar on sign-up:', error);
+      }
     },
   },
   adapter: PrismaAdapter(db),

@@ -1,4 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createClient } from '@supabase/supabase-js';
+import jwt from 'jsonwebtoken';
 
 import { env } from '@/env';
 
@@ -31,6 +33,44 @@ export const createSupabaseServerClient = (
           // setAll は auth のセッション更新時にしか呼ばれず、失敗しても影響しない。
         }
       },
+    },
+  });
+};
+
+type SupabaseUser = { id: string; email?: string | null };
+
+/**
+ * Supabase の RLS で authenticated ロールとして扱われる JWT を、NextAuth のユーザーに対して発行する。
+ * supabase.auth は使っていないので、Supabase 側にこのユーザーのアカウントは無い。
+ */
+export const signSupabaseAccessToken = (user: SupabaseUser, expires: Date) => {
+  const payload = {
+    aud: 'authenticated',
+    exp: Math.floor(expires.getTime() / 1000),
+    sub: user.id,
+    email: user.email,
+    role: 'authenticated',
+  };
+  return jwt.sign(payload, env.SUPABASE_JWT_SECRET);
+};
+
+const SHORT_LIVED_TOKEN_MS = 5 * 60 * 1000;
+
+/**
+ * リクエストの Cookie もセッションも無いところ（サインアップ時のイベントや移行スクリプト）から、
+ * 指定したユーザーとして Storage を操作するためのクライアント。トークンは 5 分で切れる。
+ */
+export const createSupabaseClientForUser = (user: SupabaseUser) => {
+  const accessToken = signSupabaseAccessToken(user, new Date(Date.now() + SHORT_LIVED_TOKEN_MS));
+  return createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
     },
   });
 };
