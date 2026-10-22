@@ -70,7 +70,7 @@ describe('AvatarStorageService.save', () => {
 });
 
 describe('AvatarStorageService.copyFromDiscord', () => {
-  it('Discord の CDN から画像を取得して Supabase に保存する', async () => {
+  it('Discord の CDN から size=1024 で画像を取得して Supabase に保存する', async () => {
     const { supabase, bucket } = createSupabaseMock();
     const image = await createPng(128, 128);
     const fetcher = vi.fn().mockResolvedValue(new Response(new Uint8Array(image)));
@@ -81,7 +81,9 @@ describe('AvatarStorageService.copyFromDiscord', () => {
       'https://cdn.discordapp.com/avatars/123/abc.png',
     );
 
-    expect(fetcher).toHaveBeenCalledWith('https://cdn.discordapp.com/avatars/123/abc.png');
+    expect(fetcher).toHaveBeenCalledWith(
+      'https://cdn.discordapp.com/avatars/123/abc.png?size=1024',
+    );
     expect(bucket.upload).toHaveBeenCalledOnce();
     expect(url).toContain('/profiles/user-1/avatar');
   });

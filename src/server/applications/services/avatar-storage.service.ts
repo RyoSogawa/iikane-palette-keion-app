@@ -68,7 +68,10 @@ export class AvatarStorageService {
       throw new Error('Discord の CDN 以外の URL は取得しません');
     }
 
-    const res = await this.fetcher(imageUrl);
+    // size を付けないと 128px が返る。元画像より大きくはならないが、取れる中で一番大きいものを取る
+    const sizedUrl = new URL(imageUrl);
+    sizedUrl.searchParams.set('size', '1024');
+    const res = await this.fetcher(sizedUrl.toString());
     if (!res.ok) {
       throw new Error(`Discord のアバター画像を取得できませんでした: ${res.status} ${imageUrl}`);
     }
