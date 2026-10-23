@@ -104,3 +104,14 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
  * @see https://trpc.io/docs/server/server-side-calls
  */
 export const createCallerFactory = t.createCallerFactory;
+
+/**
+ * 管理者だけが呼べる procedure。管理画面の API はすべてこれで作る。
+ * isAdmin は DB セッションからリクエストごとに読み直した値なので、ここでの判定で足りる。
+ */
+export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (!ctx.session.user.isAdmin) {
+    throw new TRPCError({ code: 'FORBIDDEN' });
+  }
+  return next();
+});

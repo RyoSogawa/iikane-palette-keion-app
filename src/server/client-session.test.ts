@@ -8,6 +8,7 @@ const user = {
   email: 'user-1@example.com',
   emailVerified: null,
   image: 'http://supabase.test/storage/v1/object/public/profiles/user-1/avatar1.png',
+  isAdmin: false,
 };
 const expires = new Date('2026-11-22T00:00:00.000Z');
 
@@ -38,5 +39,18 @@ describe('toClientSession', () => {
       expires: expires.toISOString(),
       user: { ...user, id: 'user-1' },
     });
+  });
+
+  it('管理者フラグは session.user ではなく DB の User 行から取る', () => {
+    const session = {
+      sessionToken: 'secret-token',
+      userId: 'user-1',
+      expires,
+      user: { ...user, isAdmin: false },
+    };
+
+    const result = toClientSession({ session, user: { ...user, isAdmin: true } });
+
+    expect(result.user.isAdmin).toBe(true);
   });
 });
