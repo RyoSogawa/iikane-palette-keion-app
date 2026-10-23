@@ -2,6 +2,11 @@ packages:
   - '.'
 
 minimumReleaseAge: 10080
+# 間接依存が git リポジトリや tarball の URL を指していたら解決しない。
+# そうした取得元はレジストリでのマルウェア検査を通らないため。
+blockExoticSubdeps: true
+# allowBuilds に載っていないパッケージがビルドスクリプトを持っていたら、警告で済ませずインストールを失敗させる
+strictDepBuilds: true
 trustPolicy: no-downgrade
 trustPolicyExclude:
   # next-auth@5.0.0-beta.32: provenance 付きなのは 2025-10 の手動プレリリース
