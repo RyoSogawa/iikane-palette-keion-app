@@ -36,8 +36,6 @@ export const eventInputSchema = z
     path: ['dateTo'],
   });
 
-export type EventInput = z.input<typeof eventInputSchema>;
-
 /** 管理画面で編集するバンドの情報。画像はアップロード用の Server Action で別に扱う */
 export const bandInputSchema = z.object({
   name: z.string().trim().min(1, '名前を入力してください').max(100),
@@ -81,5 +79,3 @@ export const membersInputSchema = z
       }
     });
   });
-
-export type MembersInput = z.input<typeof membersInputSchema>;
