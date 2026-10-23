@@ -6,6 +6,7 @@ import { IIKANE_GUILD_ID } from '@/constants/external-service';
 import { env } from '@/env';
 import { AvatarStorageService } from '@/server/applications/services/avatar-storage.service';
 import { ImportDiscordAvatarService } from '@/server/applications/services/import-discord-avatar.service';
+import { toClientSession } from '@/server/client-session';
 import { db } from '@/server/db';
 import { isJoiningGuild } from '@/utils/discord';
 import { createSupabaseClientForUser } from '@/utils/supabase';
@@ -26,15 +27,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     redirect: () => {
       return '/members?login-callback=true';
     },
-    session: async ({ session, user }) => {
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          id: user.id,
-        },
-      };
-    },
+    session: async ({ session, user }) => toClientSession({ session, user }),
     signIn: async ({ account }) => {
       if (account?.access_token == null) return false;
       return isJoiningGuild(account.access_token, IIKANE_GUILD_ID);
