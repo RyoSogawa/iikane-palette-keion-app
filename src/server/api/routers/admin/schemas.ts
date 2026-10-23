@@ -49,12 +49,16 @@ export type BandInput = z.input<typeof bandInputSchema>;
 
 /**
  * バンドメンバーの一覧。配列の順番がそのまま表示順になる。
- * 重複はフォームで該当の行に出せるよう、2 回目以降の行のユーザー欄のエラーにする。
+ * Discord に未登録の人はユーザーを選ばず表示名だけで入れるので、行ごとにユーザーか表示名のどちらかを必須にする。
+ * エラーはフォームで該当の行に出せるよう、行のユーザー欄に付ける。
  */
 export const membersInputSchema = z
   .array(
     z.object({
-      userId: z.string().min(1, 'ユーザーを選んでください'),
+      userId: z
+        .string()
+        .nullable()
+        .transform((value) => (value === '' ? null : value)),
       userName: optionalText(50),
       part: optionalText(50),
     }),
@@ -62,7 +66,13 @@ export const membersInputSchema = z
   .max(50)
   .superRefine((members, ctx) => {
     members.forEach((member, index) => {
-      if (members.findIndex((m) => m.userId === member.userId) < index) {
+      if (!member.userId && !member.userName) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'ユーザーを選ぶか、表示名を入力してください',
+          path: [index, 'userId'],
+        });
+      } else if (member.userId && members.findIndex((m) => m.userId === member.userId) < index) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: 'ほかの行と同じユーザーです',

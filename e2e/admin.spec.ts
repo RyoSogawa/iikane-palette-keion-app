@@ -86,7 +86,7 @@ test.describe('管理者によるイベント作成と公開', () => {
     await expect(page.getByRole('heading', { name: '出演バンド' })).toBeVisible();
   });
 
-  test('バンドメンバーは行ごとにエラーを出し、選んだユーザーはほかの行で選べない', async ({
+  test('バンドメンバーは行ごとにエラーを出し、選んだユーザーはほかの行で選べず、未登録の人は表示名だけで入れられる', async ({
     page,
   }) => {
     // 行の id は useFieldArray が乱数で振るので、サーバーとブラウザで描画がずれていないか見る
@@ -97,17 +97,18 @@ test.describe('管理者によるイベント作成と公開', () => {
       }
     });
     await page.goto(bandPath);
-    const userSelects = page.getByLabel('ユーザー', { exact: true });
+    const userSelects = page.getByLabel('ユーザー（任意）', { exact: true });
+    const nameInputs = page.getByLabel('表示名（任意）', { exact: true });
     const addButton = page.getByRole('button', { name: 'メンバーを追加' });
     const saveButton = page.getByRole('button', { name: 'メンバーを保存' });
 
     await addButton.click();
     await saveButton.click();
-    await expect(page.getByText('ユーザーを選んでください')).toBeVisible();
+    await expect(page.getByText('ユーザーを選ぶか、表示名を入力してください')).toBeVisible();
 
     await userSelects.nth(0).click();
     await page.getByRole('option', { name: ADMIN_USER.name }).click();
-    await expect(page.getByText('ユーザーを選んでください')).toHaveCount(0);
+    await expect(page.getByText('ユーザーを選ぶか、表示名を入力してください')).toHaveCount(0);
     await page.getByLabel('パート', { exact: true }).nth(0).fill('Vo');
 
     await addButton.click();
@@ -118,6 +119,10 @@ test.describe('管理者によるイベント作成と公開', () => {
     );
     await page.getByRole('option', { name: LOGIN_USER.name }).click();
 
+    // Discord 未登録の人はユーザーを選ばず表示名だけで入れる
+    await addButton.click();
+    await nameInputs.nth(2).fill('未登録の人');
+
     await saveButton.click();
     await expect(page.getByText('メンバーを保存しました')).toBeVisible();
     expect(hydrationErrors).toEqual([]);
@@ -127,15 +132,22 @@ test.describe('管理者によるイベント作成と公開', () => {
       const members = await db.userOnBand.findMany({
         where: { bandId: bandPath.split('/').pop() },
         orderBy: { order: 'asc' },
-        select: { userId: true, part: true },
+        select: { userId: true, userName: true, part: true },
       });
       expect(members).toEqual([
-        { userId: ADMIN_USER.id, part: 'Vo' },
-        { userId: LOGIN_USER.id, part: null },
+        { userId: ADMIN_USER.id, userName: null, part: 'Vo' },
+        { userId: LOGIN_USER.id, userName: null, part: null },
+        { userId: null, userName: '未登録の人', part: null },
       ]);
     } finally {
       await db.$disconnect();
     }
+
+    await page.goto(`/admin/events/${eventId}/preview/bands/${bandPath.split('/').pop()}`);
+    await expect(
+      page.getByText('未登録の人', { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name: ADMIN_USER.name })).toBeVisible();
   });
 
   test('イベント画像をアップロードすると events バケットに保存される', async ({ page }) => {

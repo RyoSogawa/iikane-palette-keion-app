@@ -61,7 +61,8 @@ const BandDetail: React.FC<BandDetailProps> = ({ band }) => {
       </Title>
       <Stack mt="md">
         {band.members.map(({ user, userName, order, part }) =>
-          userName ? (
+          // 表示名があるときと、Discord 未登録で User がないときは、プロフィールへのリンクなしで名前だけ出す
+          userName || !user ? (
             <Group key={`${order}.${userName}`}>
               <Box w="38px" h="38px" />
               <Text c="bright">{userName}</Text>

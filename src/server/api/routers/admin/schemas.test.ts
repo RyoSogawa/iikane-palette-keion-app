@@ -63,11 +63,34 @@ describe('membersInputSchema', () => {
     ]);
   });
 
-  it('ユーザーを選んでいない行は、その行のユーザー欄のエラーにする', () => {
-    const result = membersInputSchema.safeParse([{ userId: '', userName: '', part: '' }]);
-    expect(result.error?.issues).toEqual([
-      expect.objectContaining({ path: [0, 'userId'], message: 'ユーザーを選んでください' }),
+  it('ユーザー未登録の人は、ユーザーなしで表示名だけ入れられる', () => {
+    expect(membersInputSchema.parse([{ userId: null, userName: '山田', part: 'Dr' }])).toEqual([
+      { userId: null, userName: '山田', part: 'Dr' },
     ]);
+  });
+
+  it('ユーザー欄の空文字は未選択として null にする', () => {
+    expect(membersInputSchema.parse([{ userId: '', userName: '山田', part: '' }])).toEqual([
+      { userId: null, userName: '山田', part: null },
+    ]);
+  });
+
+  it('ユーザーも表示名もない行は、その行のユーザー欄のエラーにする', () => {
+    const result = membersInputSchema.safeParse([{ userId: null, userName: ' ', part: 'Vo' }]);
+    expect(result.error?.issues).toEqual([
+      expect.objectContaining({
+        path: [0, 'userId'],
+        message: 'ユーザーを選ぶか、表示名を入力してください',
+      }),
+    ]);
+  });
+
+  it('ユーザーなしの行どうしは重複として扱わない', () => {
+    const result = membersInputSchema.safeParse([
+      { userId: null, userName: '山田', part: '' },
+      { userId: null, userName: '佐藤', part: '' },
+    ]);
+    expect(result.success).toBe(true);
   });
 
   it('表示名とパートの空文字は null にする', () => {

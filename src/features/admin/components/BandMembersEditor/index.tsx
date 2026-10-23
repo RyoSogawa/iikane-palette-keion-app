@@ -40,7 +40,7 @@ type MembersFormValues = { members: MemberRow[] };
 
 export type BandMembersEditorProps = {
   bandId: string;
-  members: Array<{ userId: string; userName: string | null; part: string | null }>;
+  members: Array<{ userId: string | null; userName: string | null; part: string | null }>;
   users: UserOptionSource[];
 };
 
@@ -102,7 +102,7 @@ const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
           name={`members.${index}.userId`}
           render={({ field, fieldState }) => (
             <Select
-              label="ユーザー"
+              label="ユーザー（任意）"
               placeholder="名前で検索"
               data={userOptions}
               renderOption={renderUserOption}
@@ -110,6 +110,7 @@ const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
               error={fieldState.error?.message}
               flex={2}
               searchable
+              clearable
               onChange={(userId) => {
                 field.onChange(userId);
                 clearErrors(`members.${index}.userId`);
@@ -124,10 +125,15 @@ const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
           render={({ field, fieldState }) => (
             <TextInput
               label="表示名（任意）"
-              description="ユーザー名の代わりに表示する"
+              placeholder="ユーザーの代わりに表示"
               {...field}
               error={fieldState.error?.message}
               flex={2}
+              onChange={(event) => {
+                field.onChange(event);
+                // 「ユーザーか表示名のどちらか」のエラーはユーザー欄に出しているので、こちらの入力でも消す
+                clearErrors(`members.${index}.userId`);
+              }}
             />
           )}
         />

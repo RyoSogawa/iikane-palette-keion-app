@@ -107,7 +107,7 @@ export default async function AdminBandPage({ params }: Props) {
           <BandMembersEditor
             bandId={band.id}
             members={band.members.map((member) => ({
-              userId: member.user.id,
+              userId: member.user?.id ?? null,
               userName: member.userName,
               part: member.part,
             }))}

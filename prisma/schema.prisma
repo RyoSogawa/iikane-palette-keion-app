@@ -163,15 +163,18 @@ model Band {
 }
 
 model UserOnBand {
-  userId   String
-  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id       String  @id @default(cuid())
+  // Discord 未登録の人は User がないので null にし、userName だけで表示する
+  userId   String?
+  user     User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userName String? // User未登録時にuserIdよりも優先的に使用する
   bandId   String
   band     Band    @relation(fields: [bandId], references: [id], onDelete: Cascade)
   order    Int     @default(0)
   part     String?
 
-  @@id([userId, bandId])
+  // userId が null の行どうしは重複にならないので、未登録の人は何人でも入れられる
+  @@unique([userId, bandId])
 }
 
 model RecreationKingUserOnEvent {

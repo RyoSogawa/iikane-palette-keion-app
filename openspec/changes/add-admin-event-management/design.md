@@ -10,7 +10,7 @@
 
 ## Goals / Non-Goals
 - Goals: 管理者だけがイベント関連データを CRUD できる。下書きは公開ルートから漏れない。管理画面で公開後の見た目をプレビューできる
-- Non-Goals: 管理者の付与 UI、監査ログ、未登録ユーザーのバンドメンバー登録、細かいロール（編集者/閲覧者など）
+- Non-Goals: 管理者の付与 UI、監査ログ、細かいロール（編集者/閲覧者など）
 
 ## Decisions
 
@@ -53,8 +53,11 @@
 - 差し替え時は古いファイルを消す
 - 代替案: service role キーでの書き込み。RLS を素通りするため、既存方針（ユーザー JWT + RLS）に揃える
 
-### 7. バンドメンバーは登録ユーザーから選ぶ
-- `UserOnBand.userId` は必須 FK かつ `@@id([userId, bandId])` なので、メンバーは登録ユーザーの中から選ぶ。`userName` は表示名の上書きとして任意入力にする
+### 7. バンドメンバーは登録ユーザーか、未登録の人の表示名で入れる
+- Discord 未登録の人もメンバーに入れられるよう、`UserOnBand` の主キーを `(userId, bandId)` から新しい `id` に替え、`userId` を null 許容にする
+- 同じ登録ユーザーの重複は `@@unique([userId, bandId])` で防ぐ。Postgres では null どうしは重複にならないので、未登録の人は何人でも入れられる
+- 行ごとに「ユーザーか表示名のどちらか」を必須にする。両方あるときは従来どおり表示名を優先し、プロフィールへのリンクは出さない
+- 既存の行は id を `gen_random_uuid()` で埋めてから主キーを替える（Prisma の `@default(cuid())` は DB 側の既定値にならないため）
 - 並び順（`order`）と出演順（`liveOrder`）は管理画面で並び替え、保存時に連番で振り直す。並び替え UI は既存の `@dnd-kit` を使う
 
 ### 8. 日時は JST に固定する
@@ -72,10 +75,10 @@
 - 管理者が 1 人もいない状態ではイベントを作れない → 付与 SQL を proposal と README に記載する
 
 ## Migration Plan
-1. Prisma マイグレーションで `User.isAdmin` と `Event.isDraft` を追加（どちらも default false なので既存データはそのまま）
+1. Prisma マイグレーションで `User.isAdmin` と `Event.isDraft` を追加（どちらも default false なので既存データはそのまま）し、`UserOnBand` の主キーを `id` に替えて `userId` を null 許容にする
 2. Supabase マイグレーションで `events` バケットと RLS を追加
 3. デプロイ後に運営メンバーへ SQL で `isAdmin = true` を付与
-- ロールバック: カラムは default 付きの追加のみなので、コードを戻せば旧動作に戻る
+- ロールバック: `isAdmin` / `isDraft` は default 付きの追加のみなので、コードを戻せば旧動作に戻る。`UserOnBand` は userId が null の行（未登録の人）を消すか User を割り当ててから、主キーを `(userId, bandId)` に戻す必要がある。旧コードは `user` が必ずある前提で描画するため
 
 ## Open Questions
-- なし（未登録メンバーの扱いは Out of Scope とした）
+- なし

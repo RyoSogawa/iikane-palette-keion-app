@@ -1,7 +1,5 @@
 import { fakerJA } from '@faker-js/faker';
-import { PrismaClient, type User } from '@prisma/client';
-
-import { type UserOnBand } from '@/types/generated/zod';
+import { type Prisma, PrismaClient, type User } from '@prisma/client';
 
 const bandIds = [
   'oretachi-recchiri',
@@ -18,7 +16,7 @@ export default async function seedUserOnBand(users: User[]) {
   const prisma = new PrismaClient();
   // usersとbandsを組み合わせてUserOnBandを作成する
   // 1つのbandに対してuserを4~12人ランダムに割り当てる
-  const data: UserOnBand[] = bandIds
+  const data: Prisma.UserOnBandCreateManyInput[] = bandIds
     .map((bandId) => {
       const userCount = Math.floor(Math.random() * 9) + 4;
       const usersInBand = users.sort(() => Math.random() - 0.5).slice(0, userCount);
@@ -30,7 +28,7 @@ export default async function seedUserOnBand(users: User[]) {
             order: index + 1,
             userName: Math.random() > 0.9 ? fakerJA.person.fullName() : null,
             part: parts[Math.floor(Math.random() * parts.length)] ?? null,
-          }) satisfies UserOnBand,
+          }) satisfies Prisma.UserOnBandCreateManyInput,
       );
     })
     .flat();
