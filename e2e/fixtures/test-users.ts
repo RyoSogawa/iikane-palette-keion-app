@@ -14,3 +14,13 @@ export const OTHER_USER = {
   name: 'E2E 別ユーザー',
   email: 'e2e-other-user@example.com',
 } as const;
+
+export const ADMIN_STORAGE_STATE = 'e2e/.auth/admin.json';
+
+/** 管理画面を操作する E2E 用の管理者 */
+export const ADMIN_USER = {
+  id: 'e2e-admin-user',
+  name: 'E2E 管理者',
+  email: 'e2e-admin-user@example.com',
+  sessionToken: 'e2e-admin-user-session-token',
+} as const;

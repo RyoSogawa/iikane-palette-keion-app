@@ -3,7 +3,13 @@ import { dirname } from 'node:path';
 
 import { PrismaClient } from '@prisma/client';
 
-import { LOGIN_USER, OTHER_USER, STORAGE_STATE } from './fixtures/test-users';
+import {
+  ADMIN_STORAGE_STATE,
+  ADMIN_USER,
+  LOGIN_USER,
+  OTHER_USER,
+  STORAGE_STATE,
+} from './fixtures/test-users';
 
 import type { FullConfig } from '@playwright/test';
 
@@ -43,12 +49,28 @@ export default async function globalSetup(config: FullConfig) {
       create: { id: OTHER_USER.id, name: OTHER_USER.name, email: OTHER_USER.email, ...userFields },
       update: { name: OTHER_USER.name, ...userFields },
     });
+    await db.user.upsert({
+      where: { id: ADMIN_USER.id },
+      create: {
+        id: ADMIN_USER.id,
+        name: ADMIN_USER.name,
+        email: ADMIN_USER.email,
+        ...userFields,
+        isAdmin: true,
+      },
+      update: { name: ADMIN_USER.name, ...userFields, isAdmin: true },
+    });
 
     const expires = new Date('2099-12-31T00:00:00Z');
     await db.session.upsert({
       where: { sessionToken: LOGIN_USER.sessionToken },
       create: { sessionToken: LOGIN_USER.sessionToken, userId: LOGIN_USER.id, expires },
       update: { userId: LOGIN_USER.id, expires },
+    });
+    await db.session.upsert({
+      where: { sessionToken: ADMIN_USER.sessionToken },
+      create: { sessionToken: ADMIN_USER.sessionToken, userId: ADMIN_USER.id, expires },
+      update: { userId: ADMIN_USER.id, expires },
     });
   } finally {
     await db.$disconnect();
@@ -58,12 +80,12 @@ export default async function globalSetup(config: FullConfig) {
   if (!baseURL) {
     throw new Error('playwright.config.ts に baseURL がありません');
   }
-  const storageState = {
+  const storageStateOf = (sessionToken: string) => ({
     cookies: [
       {
         // http の localhost では __Secure- の付かない名前になる
         name: 'authjs.session-token',
-        value: LOGIN_USER.sessionToken,
+        value: sessionToken,
         domain: new URL(baseURL).hostname,
         path: '/',
         expires: -1,
@@ -73,7 +95,11 @@ export default async function globalSetup(config: FullConfig) {
       },
     ],
     origins: [],
-  };
+  });
   mkdirSync(dirname(STORAGE_STATE), { recursive: true });
-  writeFileSync(STORAGE_STATE, JSON.stringify(storageState, null, 2));
+  writeFileSync(STORAGE_STATE, JSON.stringify(storageStateOf(LOGIN_USER.sessionToken), null, 2));
+  writeFileSync(
+    ADMIN_STORAGE_STATE,
+    JSON.stringify(storageStateOf(ADMIN_USER.sessionToken), null, 2),
+  );
 }
