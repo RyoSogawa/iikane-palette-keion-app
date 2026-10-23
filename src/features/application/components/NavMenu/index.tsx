@@ -7,9 +7,11 @@ import {
   IconCaretDownFilled,
   IconHome,
   IconMicrophone2,
+  IconSettings,
   IconUsersGroup,
 } from '@tabler/icons-react';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 import LinkComponent from '@/ui/components/common/LinkComponent';
 
@@ -25,11 +27,23 @@ const MenuMap: Record<string, MenuItem> = {
   users: { title: '部員名簿', icon: <IconUsersGroup size={14} />, pathname: '/members' },
 };
 
+const AdminMenu: MenuItem = {
+  title: '管理画面',
+  icon: <IconSettings size={14} />,
+  pathname: '/admin',
+};
+
 const NavMenu: React.FC = () => {
   const currentPath = usePathname();
+  const { data: session } = useSession();
+
+  const menus = useMemo(
+    () => (session?.user.isAdmin ? { ...MenuMap, admin: AdminMenu } : MenuMap),
+    [session?.user.isAdmin],
+  );
 
   const currentMenu = useMemo(() => {
-    return Object.entries(MenuMap)
+    return Object.entries(menus)
       .slice()
       .sort(([, a], [, b]) => {
         // パターンマッチをなるべく厳格にするために長いpathnameから優先的にfindする
@@ -43,7 +57,7 @@ const NavMenu: React.FC = () => {
         // その他のページはサブディレクトリも含めて判定
         return currentPath.startsWith(pathname);
       })?.[1];
-  }, [currentPath]);
+  }, [currentPath, menus]);
 
   return (
     <Menu position="bottom-start" trigger="click-hover">
@@ -53,7 +67,7 @@ const NavMenu: React.FC = () => {
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown>
-        {Object.entries(MenuMap).map(([, { pathname, icon, title }]) => (
+        {Object.entries(menus).map(([, { pathname, icon, title }]) => (
           <Menu.Item key={title} component={LinkComponent} leftSection={icon} href={pathname}>
             {title}
           </Menu.Item>
