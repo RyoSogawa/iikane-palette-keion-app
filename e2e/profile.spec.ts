@@ -32,7 +32,7 @@ test.describe('プロフィール編集', () => {
     await context.close();
   });
 
-  test('アバター画像をアップロードすると Supabase Storage に保存され、User.image が更新される', async ({
+  test('アバター画像をアップロードすると 300x300 の WebP で Supabase Storage に保存され、User.image が更新される', async ({
     page,
   }) => {
     const image = await sharp({
@@ -53,12 +53,14 @@ test.describe('プロフィール編集', () => {
     try {
       const user = await db.user.findUniqueOrThrow({ where: { id: LOGIN_USER.id } });
       expect(user.image).toMatch(
-        new RegExp(`/storage/v1/object/public/profiles/${LOGIN_USER.id}/avatar\\d+\\.png$`),
+        new RegExp(`/storage/v1/object/public/profiles/${LOGIN_USER.id}/avatar\\d+\\.webp$`),
       );
 
       const response = await page.request.get(user.image ?? '');
       expect(response.ok()).toBe(true);
-      expect(response.headers()['content-type']).toBe('image/png');
+      expect(response.headers()['content-type']).toBe('image/webp');
+      const { width, height } = await sharp(await response.body()).metadata();
+      expect({ width, height }).toEqual({ width: 300, height: 300 });
     } finally {
       await db.$disconnect();
     }
