@@ -16,6 +16,7 @@ import { notFound } from 'next/navigation';
 
 import BandForm from '@/features/admin/components/BandForm';
 import BandMembersEditor from '@/features/admin/components/BandMembersEditor';
+import DeleteBandButton from '@/features/admin/components/DeleteBandButton';
 import EventImageInput from '@/features/admin/components/EventImageInput';
 import { api } from '@/trpc/server';
 import LinkComponent from '@/ui/components/common/LinkComponent';
@@ -67,7 +68,6 @@ export default async function AdminBandPage({ params }: Props) {
             基本情報
           </Title>
           <BandForm
-            eventId={event.id}
             band={{
               id: band.id,
               name: band.name,
@@ -114,6 +114,10 @@ export default async function AdminBandPage({ params }: Props) {
             users={users}
           />
         </section>
+        <Divider />
+        <Group justify="center">
+          <DeleteBandButton eventId={event.id} band={{ id: band.id, name: band.name }} />
+        </Group>
       </Stack>
     </>
   );

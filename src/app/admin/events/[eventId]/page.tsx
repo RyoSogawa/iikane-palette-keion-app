@@ -124,7 +124,7 @@ export default async function AdminEventPage({ params }: Props) {
           />
         </section>
         <Divider />
-        <Group justify="flex-end">
+        <Group justify="center">
           <DeleteEventButton event={{ id: event.id, name: event.name }} />
         </Group>
       </Stack>

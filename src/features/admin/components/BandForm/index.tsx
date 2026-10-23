@@ -2,24 +2,22 @@
 
 import React, { useCallback } from 'react';
 
-import { Button, Group, Stack, Textarea, TextInput } from '@mantine/core';
-import { IconCheck, IconTrash } from '@tabler/icons-react';
+import { Button, Stack, Textarea, TextInput } from '@mantine/core';
+import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
-import ConfirmButton from '@/features/admin/components/ConfirmButton';
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { notifyError, notifySaved, setSchemaErrors } from '@/features/admin/logics/form-errors';
 import { bandInputSchema, type BandInput } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
 
 export type BandFormProps = {
-  eventId: string;
   band: { id: string; name: string; description: string | null; movie: string | null };
 };
 
-/** バンドの基本情報のフォーム。削除もここから行う */
-const BandForm: React.FC<BandFormProps> = ({ eventId, band }) => {
+/** バンドの基本情報のフォーム */
+const BandForm: React.FC<BandFormProps> = ({ band }) => {
   const router = useRouter();
   const {
     register,
@@ -36,7 +34,6 @@ const BandForm: React.FC<BandFormProps> = ({ eventId, band }) => {
   });
   useUnsavedChanges(isDirty);
   const update = api.admin.band.update.useMutation();
-  const remove = api.admin.band.remove.useMutation();
 
   const onSubmit = useCallback(
     async (data: BandInput) => {
@@ -57,16 +54,6 @@ const BandForm: React.FC<BandFormProps> = ({ eventId, band }) => {
     [band.id, reset, router, setError, update],
   );
 
-  const handleRemove = useCallback(async () => {
-    try {
-      await remove.mutateAsync({ id: band.id });
-      notifySaved('バンドを削除しました');
-      router.push(`/admin/events/${eventId}`);
-    } catch (error) {
-      notifyError(error);
-    }
-  }, [band.id, eventId, remove, router]);
-
   return (
     <form noValidate onSubmit={handleSubmit(onSubmit)}>
       <Stack>
@@ -85,22 +72,16 @@ const BandForm: React.FC<BandFormProps> = ({ eventId, band }) => {
           {...register('movie')}
           error={errors.movie?.message}
         />
-        <Group justify="space-between">
-          <ConfirmButton
-            color="red"
-            variant="subtle"
-            leftSection={<IconTrash size={16} />}
-            title="バンドを削除する"
-            message={`「${band.name}」とそのメンバー情報を削除します。元に戻せません。`}
-            confirmLabel="削除する"
-            onConfirm={handleRemove}
-          >
-            バンドを削除
-          </ConfirmButton>
-          <Button type="submit" loading={isSubmitting} leftSection={<IconCheck size={18} />}>
-            保存
-          </Button>
-        </Group>
+        <Button
+          type="submit"
+          loading={isSubmitting}
+          leftSection={<IconCheck size={18} />}
+          maw={400}
+          mx="auto"
+          fullWidth
+        >
+          保存
+        </Button>
       </Stack>
     </form>
   );
