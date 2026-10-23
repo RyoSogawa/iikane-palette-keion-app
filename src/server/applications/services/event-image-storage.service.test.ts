@@ -32,7 +32,7 @@ const uploadedBody = (bucket: ReturnType<typeof createSupabaseMock>['bucket']) =
   (bucket.upload.mock.calls[0] as unknown as [string, Buffer])[1];
 
 describe('EventImageStorageService.save', () => {
-  it('イベント画像は長い辺 1200px 以内の WebP にして events/{eventId}/ に保存する', async () => {
+  it('イベント画像は幅 1200px 以内の WebP にして events/{eventId}/ に保存する', async () => {
     const { supabase, bucket, from } = createSupabaseMock();
 
     const url = await new EventImageStorageService(supabase).save(
@@ -49,6 +49,20 @@ describe('EventImageStorageService.save', () => {
     });
   });
 
+  it('縦長のイベント画像は幅いっぱいに表示されるので、高さ 1800px まで残す', async () => {
+    const { supabase, bucket } = createSupabaseMock();
+
+    await new EventImageStorageService(supabase).save(
+      { kind: 'event', eventId: 'event-1' },
+      await createPng(1200, 2400),
+    );
+
+    expect(await sharp(uploadedBody(bucket)).metadata()).toMatchObject({
+      width: 900,
+      height: 1800,
+    });
+  });
+
   it('小さい画像は引き伸ばさない', async () => {
     const { supabase, bucket } = createSupabaseMock();
 
@@ -60,7 +74,7 @@ describe('EventImageStorageService.save', () => {
     expect(await sharp(uploadedBody(bucket)).metadata()).toMatchObject({ width: 600, height: 400 });
   });
 
-  it('バンドのアイコン画像は 400x400 に切り抜く', async () => {
+  it('バンドのアイコン画像は 480x480 に切り抜く', async () => {
     const { supabase, bucket } = createSupabaseMock();
 
     const url = await new EventImageStorageService(supabase).save(
@@ -69,7 +83,21 @@ describe('EventImageStorageService.save', () => {
     );
 
     expect(url).toMatch(/\/events\/event-1\/band-1-bandImage-\d+\.webp$/);
-    expect(await sharp(uploadedBody(bucket)).metadata()).toMatchObject({ width: 400, height: 400 });
+    expect(await sharp(uploadedBody(bucket)).metadata()).toMatchObject({ width: 480, height: 480 });
+  });
+
+  it.each([
+    ['横長', [2000, 200], { width: 960, height: 96 }],
+    ['正方形に近い', [1000, 1000], { width: 480, height: 480 }],
+  ] as const)('%s のタイポ画像は 960x480 以内に縮める', async (_, [width, height], expected) => {
+    const { supabase, bucket } = createSupabaseMock();
+
+    await new EventImageStorageService(supabase).save(
+      { kind: 'bandTypoImage', eventId: 'event-1', bandId: 'band-1' },
+      await createPng(width, height),
+    );
+
+    expect(await sharp(uploadedBody(bucket)).metadata()).toMatchObject(expected);
   });
 
   it('タイポ画像は透過を残す', async () => {

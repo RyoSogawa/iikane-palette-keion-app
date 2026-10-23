@@ -1,4 +1,4 @@
-import sharp, { type ResizeOptions } from 'sharp';
+import sharp, { type ResizeOptions, type WebpOptions } from 'sharp';
 
 import { STORAGE_PATH } from '@/constants/supabase';
 
@@ -13,12 +13,30 @@ export type EventImageTarget =
 
 export type EventImageKind = EventImageTarget['kind'];
 
-// bandImage は公開ページで正方形のアイコンとして出すので切り抜く。それ以外は縦横比を保って縮めるだけ
-const RESIZE_OPTIONS: Record<EventImageKind, ResizeOptions> = {
-  event: { width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true },
-  bandPhoto: { width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true },
-  bandImage: { width: 400, height: 400, fit: 'cover' },
-  bandTypoImage: { width: 800, height: 800, fit: 'inside', withoutEnlargement: true },
+type ImageFormat = { resize: ResizeOptions; webp: WebpOptions };
+
+// 寸法は公開ページでの最大の表示幅から決める。本文の幅は最大 928px（Container md 960px から余白を引いた値）で、
+// スマホは幅 430px 前後を 3 倍の解像度で描くので、全幅の写真は幅 1200px あれば足りる。
+// 写真は画質を少し落としても目立たないが、タイポ画像は文字の輪郭が崩れやすいので画質を上げ、色のにじみも抑える。
+const PHOTO: ImageFormat = {
+  // 縦長のフライヤーも幅いっぱいに出すので、高さは幅より大きく残す
+  resize: { width: 1200, height: 1800, fit: 'inside', withoutEnlargement: true },
+  webp: { quality: 75, effort: 6 },
+};
+
+const IMAGE_FORMATS: Record<EventImageKind, ImageFormat> = {
+  event: PHOTO,
+  bandPhoto: PHOTO,
+  // バンド一覧の正方形のアイコン。一番大きく出るのはタブレット幅の 3 列表示で約 232px、2 倍で約 464px
+  bandImage: {
+    resize: { width: 480, height: 480, fit: 'cover' },
+    webp: { quality: 80, effort: 6 },
+  },
+  // バンド一覧ではアイコンと同じ幅（2 倍で約 464px）、バンドページでは高さ 50px（3 倍で 150px）の横長で出る
+  bandTypoImage: {
+    resize: { width: 960, height: 480, fit: 'inside', withoutEnlargement: true },
+    webp: { quality: 85, effort: 6, smartSubsample: true },
+  },
 };
 
 const fileNameOf = (target: EventImageTarget) =>
@@ -33,11 +51,8 @@ export class EventImageStorageService {
 
   /** 用途ごとの大きさの WebP に変換して保存し、公開 URL を返す */
   public async save(target: EventImageTarget, image: ArrayBuffer | Buffer): Promise<string> {
-    const webp = await sharp(image)
-      .rotate()
-      .resize(RESIZE_OPTIONS[target.kind])
-      .webp({ quality: 80 })
-      .toBuffer();
+    const format = IMAGE_FORMATS[target.kind];
+    const webp = await sharp(image).rotate().resize(format.resize).webp(format.webp).toBuffer();
 
     const { data, error } = await this.supabase.storage
       .from(BUCKET)

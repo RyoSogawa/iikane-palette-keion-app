@@ -45,8 +45,11 @@
 - パス: `events/<eventId>/<kind>-<timestamp>.webp`（kind = `event` / `band-<bandId>-photo` など）
 - RLS: 書き込み（insert / update / delete）は `bucket_id = 'events' and auth.jwt() ->> 'app_role' = 'admin'`、読み取りは public
 - サーバーで管理者確認を済ませたあとだけ、`app_role: 'admin'` を含む短命 JWT のクライアント（`createSupabaseClientForAdmin`）を作る。ブラウザには渡さない
-- クライアントでの縮小は既存の `resizeImageForUpload`（長辺 1200px の WebP）を `src/utils/` に移して共有する。公開ページの表示幅には 1200px で足り、Server Action の 1MB 制限にも収まるので `bodySizeLimit` は変えない
-- サーバーで用途ごとの寸法の WebP に変換する（アバターの 300x300 は使わない）: イベント画像・バンド写真は長辺 1200px 以内、バンドのアイコン画像は 400x400 に切り抜き、タイポ画像は長辺 800px 以内で透過を残す
+- クライアントでの縮小は既存の `resizeImageForUpload` を `src/utils/` に移して共有し、長辺の上限を引数で渡す（イベント画像・バンド写真は 1800px、それ以外は 1200px）。Server Action の 1MB 制限を超えるときは画質を下げて書き出し直すので、`bodySizeLimit` は変えない
+- サーバーで用途ごとの寸法と画質の WebP に変換する（アバターの 300x300 は使わない）。寸法は公開ページでの最大の表示サイズから決める。本文の幅は最大 928px、スマホは幅 430px 前後を 3 倍で描く
+  - イベント画像・バンド写真: 幅いっぱいに出るので幅 1200px 以内。縦長のフライヤーのため高さは 1800px まで残す。quality 75
+  - バンドのアイコン画像: 最大でタブレット幅の 3 列表示の約 232px（2 倍で約 464px）なので 480x480 に切り抜く。quality 80
+  - タイポ画像: 一覧ではアイコンと同じ幅、バンドページでは高さ 50px の横長で出るので 960x480 以内。文字の輪郭が崩れないよう quality 85 と smartSubsample を使い、透過を残す
 - 差し替え時は古いファイルを消す
 - 代替案: service role キーでの書き込み。RLS を素通りするため、既存方針（ユーザー JWT + RLS）に揃える
 

@@ -10,12 +10,23 @@ import { removeEventImage, uploadEventImage } from '@/features/admin/actions/eve
 import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
 import { resizeImageForUpload } from '@/utils/resize-image';
 
-import type { EventImageTarget } from '@/server/applications/services/event-image-storage.service';
+import type {
+  EventImageKind,
+  EventImageTarget,
+} from '@/server/applications/services/event-image-storage.service';
 
 export type EventImageInputProps = {
   label: string;
   target: EventImageTarget;
   src: string | null;
+};
+
+// サーバーで縮める先（縦長の写真は高さ 1800px）より小さく送ると、縦長の写真がぼやける
+const UPLOAD_MAX_EDGE: Record<EventImageKind, number> = {
+  event: 1800,
+  bandPhoto: 1800,
+  bandImage: 1200,
+  bandTypoImage: 1200,
 };
 
 const toFormData = (target: EventImageTarget, file?: File) => {
@@ -50,7 +61,10 @@ const EventImageInput: React.FC<EventImageInputProps> = ({ label, target, src })
     async (file: File | null) => {
       if (!file) return;
       await run(
-        async () => uploadEventImage(toFormData(target, await resizeImageForUpload(file))),
+        async () =>
+          uploadEventImage(
+            toFormData(target, await resizeImageForUpload(file, UPLOAD_MAX_EDGE[target.kind])),
+          ),
         `${label}を更新しました`,
       );
     },
