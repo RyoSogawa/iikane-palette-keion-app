@@ -55,6 +55,11 @@ test.describe('管理者によるイベント作成と公開', () => {
     await expect(page.getByRole('heading', { name: eventName })).toBeVisible();
     await expect(page.getByText('下書き', { exact: true })).toBeVisible();
 
+    await page.goto('/admin/events');
+    const row = page.getByRole('row').filter({ hasText: eventName });
+    await expect(row.getByRole('link', { name: eventName })).toBeVisible();
+    await expect(row.getByText('下書き', { exact: true })).toBeVisible();
+
     await page.goto('/events');
     await expect(page.getByText(eventName)).toHaveCount(0);
 
