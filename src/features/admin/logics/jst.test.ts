@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatJst, fromDateTimeLocal, toDateTimeLocal } from './datetime-local';
+import { formatJst, fromDateTimeLocal, toDateTimeLocal } from './jst';
 
 describe('toDateTimeLocal', () => {
   it('実行環境のタイムゾーンによらず JST の yyyy-MM-ddTHH:mm にする', () => {

@@ -20,7 +20,7 @@ import EventForm from '@/features/admin/components/EventForm';
 import EventImageInput from '@/features/admin/components/EventImageInput';
 import PublishToggle from '@/features/admin/components/PublishToggle';
 import RecreationKingSelect from '@/features/admin/components/RecreationKingSelect';
-import { formatJst } from '@/features/admin/logics/datetime-local';
+import { formatJst } from '@/features/admin/logics/jst';
 import { api } from '@/trpc/server';
 import LinkComponent from '@/ui/components/common/LinkComponent';
 

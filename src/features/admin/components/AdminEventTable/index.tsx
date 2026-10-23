@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Anchor, Badge, Table, Text } from '@mantine/core';
 
-import { formatJst } from '@/features/admin/logics/datetime-local';
+import { formatJst } from '@/features/admin/logics/jst';
 import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export type AdminEventTableProps = {

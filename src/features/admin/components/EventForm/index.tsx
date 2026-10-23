@@ -8,8 +8,8 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
-import { fromDateTimeLocal, toDateTimeLocal } from '@/features/admin/logics/datetime-local';
 import { setSchemaErrors } from '@/features/admin/logics/form-errors';
+import { fromDateTimeLocal, toDateTimeLocal } from '@/features/admin/logics/jst';
 import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { eventInputSchema } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
