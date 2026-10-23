@@ -24,6 +24,7 @@ import {
 import { IconCheck, IconGripVertical, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
+import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
 import { membersInputSchema } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
@@ -109,6 +110,10 @@ const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
   );
 };
 
+// 行のキーは描画用なので、変更があるかの判定には含めない
+const toComparable = (rows: MemberRow[]) =>
+  JSON.stringify(rows.map(({ userId, userName, part }) => [userId, userName, part]));
+
 /** バンドメンバーの編集。並べた順がそのまま表示順になり、保存で一覧ごと置き換える */
 const BandMembersEditor: React.FC<BandMembersEditorProps> = ({ bandId, members, users }) => {
   const router = useRouter();
@@ -122,6 +127,8 @@ const BandMembersEditor: React.FC<BandMembersEditorProps> = ({ bandId, members, 
       part: member.part ?? '',
     })),
   );
+  const [savedRows, setSavedRows] = useState(rows);
+  useUnsavedChanges(toComparable(rows) !== toComparable(savedRows));
   const setMembers = api.admin.band.setMembers.useMutation();
 
   const userOptions = useMemo(
@@ -172,6 +179,7 @@ const BandMembersEditor: React.FC<BandMembersEditorProps> = ({ bandId, members, 
     }
     try {
       await setMembers.mutateAsync({ bandId, members: input });
+      setSavedRows(rows);
       notifySaved('メンバーを保存しました');
       router.refresh();
     } catch (error) {

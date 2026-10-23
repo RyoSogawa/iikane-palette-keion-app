@@ -112,6 +112,43 @@ test.describe('管理者によるイベント作成と公開', () => {
     }
   });
 
+  test('未保存の変更があるまま別ページへ移ろうとすると確認する', async ({ page }) => {
+    await page.goto(`/admin/events/${eventId}`);
+    const leaveLink = page.getByRole('link', { name: 'イベント管理', exact: true });
+    const dialog = page.getByRole('dialog', { name: '保存していない変更があります' });
+
+    // 変更がなければ確認せずに移動する
+    await leaveLink.click();
+    await page.waitForURL('**/admin/events');
+    await page.goto(`/admin/events/${eventId}`);
+
+    await page.getByRole('textbox', { name: '説明' }).fill('編集中の説明');
+    await leaveLink.click();
+    await expect(dialog).toBeVisible();
+
+    await dialog.getByRole('button', { name: '編集を続ける' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(page).toHaveURL(new RegExp(`/admin/events/${eventId}$`));
+    await expect(page.getByRole('textbox', { name: '説明' })).toHaveValue('編集中の説明');
+
+    await leaveLink.click();
+    await dialog.getByRole('button', { name: '破棄して移動' }).click();
+    await page.waitForURL('**/admin/events');
+  });
+
+  test('保存すると確認せずに別ページへ移れる', async ({ page }) => {
+    await page.goto(`/admin/events/${eventId}`);
+    const eventForm = page
+      .locator('form')
+      .filter({ has: page.getByRole('textbox', { name: '説明' }) });
+    await eventForm.getByRole('textbox', { name: '説明' }).fill('保存した説明');
+    await eventForm.getByRole('button', { name: '保存', exact: true }).click();
+    await expect(page.getByText('保存しました')).toBeVisible();
+
+    await page.getByRole('link', { name: 'イベント管理', exact: true }).click();
+    await page.waitForURL('**/admin/events');
+  });
+
   test('公開するとイベント一覧に出る', async ({ page }) => {
     await page.goto(`/admin/events/${eventId}`);
     await page.getByRole('button', { name: '公開する' }).click();

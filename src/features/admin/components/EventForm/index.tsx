@@ -7,6 +7,7 @@ import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
+import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { fromDateTimeLocal, toDateTimeLocal } from '@/features/admin/logics/datetime-local';
 import { notifyError, notifySaved, setSchemaErrors } from '@/features/admin/logics/form-errors';
 import { eventInputSchema } from '@/server/api/routers/admin/schemas';
@@ -52,8 +53,10 @@ const EventForm: React.FC<EventFormProps> = ({ event }) => {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<EventFormValues>({ defaultValues: toFormValues(event) });
+  useUnsavedChanges(isDirty);
   const create = api.admin.event.create.useMutation();
   const update = api.admin.event.update.useMutation();
 
@@ -80,6 +83,7 @@ const EventForm: React.FC<EventFormProps> = ({ event }) => {
       try {
         if (event) {
           await update.mutateAsync({ id: event.id, data });
+          reset(values);
           notifySaved();
           router.refresh();
         } else {
@@ -91,7 +95,7 @@ const EventForm: React.FC<EventFormProps> = ({ event }) => {
         notifyError(error);
       }
     },
-    [create, event, router, setError, update],
+    [create, event, reset, router, setError, update],
   );
 
   return (

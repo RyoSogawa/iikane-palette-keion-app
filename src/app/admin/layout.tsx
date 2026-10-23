@@ -3,6 +3,7 @@ import React from 'react';
 import { Container } from '@mantine/core';
 import { notFound } from 'next/navigation';
 
+import UnsavedChangesGuard from '@/features/admin/components/UnsavedChangesGuard';
 import { getServerAuthSession } from '@/server/auth';
 
 import type { Metadata } from 'next';
@@ -24,5 +25,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     notFound();
   }
 
-  return <Container py={16}>{children}</Container>;
+  return (
+    <Container py={16}>
+      <UnsavedChangesGuard>{children}</UnsavedChangesGuard>
+    </Container>
+  );
 }

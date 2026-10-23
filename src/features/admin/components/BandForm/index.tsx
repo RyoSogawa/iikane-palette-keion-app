@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import ConfirmButton from '@/features/admin/components/ConfirmButton';
+import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { notifyError, notifySaved, setSchemaErrors } from '@/features/admin/logics/form-errors';
 import { bandInputSchema, type BandInput } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
@@ -24,7 +25,8 @@ const BandForm: React.FC<BandFormProps> = ({ eventId, band }) => {
     register,
     handleSubmit,
     setError,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<BandInput>({
     defaultValues: {
       name: band.name,
@@ -32,6 +34,7 @@ const BandForm: React.FC<BandFormProps> = ({ eventId, band }) => {
       movie: band.movie ?? '',
     },
   });
+  useUnsavedChanges(isDirty);
   const update = api.admin.band.update.useMutation();
   const remove = api.admin.band.remove.useMutation();
 
@@ -44,13 +47,14 @@ const BandForm: React.FC<BandFormProps> = ({ eventId, band }) => {
       }
       try {
         await update.mutateAsync({ id: band.id, data });
+        reset(data);
         notifySaved();
         router.refresh();
       } catch (error) {
         notifyError(error);
       }
     },
-    [band.id, router, setError, update],
+    [band.id, reset, router, setError, update],
   );
 
   const handleRemove = useCallback(async () => {
