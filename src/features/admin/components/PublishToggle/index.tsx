@@ -5,7 +5,7 @@ import React, { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 import ConfirmButton from '@/features/admin/components/ConfirmButton';
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { api } from '@/trpc/react';
 
 export type PublishToggleProps = {
@@ -21,7 +21,7 @@ const PublishToggle: React.FC<PublishToggleProps> = ({ eventId, isDraft }) => {
   const handleConfirm = useCallback(async () => {
     try {
       await setDraft.mutateAsync({ id: eventId, isDraft: !isDraft });
-      notifySaved(isDraft ? '公開しました' : '下書きに戻しました');
+      notifySuccess(isDraft ? '公開しました' : '下書きに戻しました');
       router.refresh();
     } catch (error) {
       notifyError(error);

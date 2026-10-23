@@ -6,7 +6,7 @@ import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 import ConfirmButton from '@/features/admin/components/ConfirmButton';
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { api } from '@/trpc/react';
 
 export type DeleteEventButtonProps = {
@@ -21,7 +21,7 @@ const DeleteEventButton: React.FC<DeleteEventButtonProps> = ({ event }) => {
   const handleConfirm = useCallback(async () => {
     try {
       await remove.mutateAsync({ id: event.id });
-      notifySaved('イベントを削除しました');
+      notifySuccess('イベントを削除しました');
       router.push('/admin/events');
     } catch (error) {
       notifyError(error);

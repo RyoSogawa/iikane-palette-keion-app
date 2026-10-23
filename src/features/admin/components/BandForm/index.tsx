@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { setSchemaErrors } from '@/features/admin/logics/form-errors';
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { bandInputSchema, type BandInput } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
 
@@ -46,7 +46,7 @@ const BandForm: React.FC<BandFormProps> = ({ band }) => {
       try {
         await update.mutateAsync({ id: band.id, data });
         reset(data);
-        notifySaved();
+        notifySuccess();
         router.refresh();
       } catch (error) {
         notifyError(error);

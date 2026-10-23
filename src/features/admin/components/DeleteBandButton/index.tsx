@@ -6,7 +6,7 @@ import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 import ConfirmButton from '@/features/admin/components/ConfirmButton';
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { api } from '@/trpc/react';
 
 export type DeleteBandButtonProps = {
@@ -22,7 +22,7 @@ const DeleteBandButton: React.FC<DeleteBandButtonProps> = ({ eventId, band }) =>
   const handleConfirm = useCallback(async () => {
     try {
       await remove.mutateAsync({ id: band.id });
-      notifySaved('バンドを削除しました');
+      notifySuccess('バンドを削除しました');
       router.push(`/admin/events/${eventId}`);
     } catch (error) {
       notifyError(error);

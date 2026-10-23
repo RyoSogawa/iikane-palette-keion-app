@@ -12,6 +12,6 @@ export const notifyError = (error: unknown) => {
   });
 };
 
-export const notifySaved = (message = '保存しました') => {
+export const notifySuccess = (message = '保存しました') => {
   showNotification({ ...NotificationOptions.success, message });
 };

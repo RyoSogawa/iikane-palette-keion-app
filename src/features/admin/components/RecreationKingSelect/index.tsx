@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { createUserOptionRenderer } from '@/features/admin/components/UserOption';
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { toUserOptions, type UserOptionSource } from '@/features/admin/logics/user-options';
 import { api } from '@/trpc/react';
 
@@ -36,7 +36,7 @@ const RecreationKingSelect: React.FC<RecreationKingSelectProps> = ({ eventId, us
     try {
       await setRecreationKings.mutateAsync({ eventId, userIds: selected });
       setSavedIds(selected);
-      notifySaved('レク王を保存しました');
+      notifySuccess('レク王を保存しました');
       router.refresh();
     } catch (error) {
       notifyError(error);

@@ -14,7 +14,7 @@ import { Anchor, Button, Group, Paper, Stack, Text, TextInput } from '@mantine/c
 import { IconGripVertical, IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { api } from '@/trpc/react';
 import LinkComponent from '@/ui/components/common/LinkComponent';
 import DnDContext from '@/ui/components/functional/DnDContext';
@@ -87,7 +87,7 @@ const BandSortableList: React.FC<BandSortableListProps> = ({ eventId, bands: ini
       setBands(next);
       try {
         await reorder.mutateAsync({ eventId, bandIds: next.map((band) => band.id) });
-        notifySaved('出演順を保存しました');
+        notifySuccess('出演順を保存しました');
       } catch (error) {
         setBands(previous);
         notifyError(error);

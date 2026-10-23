@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { fromDateTimeLocal, toDateTimeLocal } from '@/features/admin/logics/datetime-local';
 import { setSchemaErrors } from '@/features/admin/logics/form-errors';
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { eventInputSchema } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
 
@@ -85,11 +85,11 @@ const EventForm: React.FC<EventFormProps> = ({ event }) => {
         if (event) {
           await update.mutateAsync({ id: event.id, data });
           reset(values);
-          notifySaved();
+          notifySuccess();
           router.refresh();
         } else {
           const created = await create.mutateAsync(data);
-          notifySaved('下書きを作成しました');
+          notifySuccess('下書きを作成しました');
           router.push(`/admin/events/${created.id}`);
         }
       } catch (error) {

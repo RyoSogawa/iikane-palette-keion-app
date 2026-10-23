@@ -30,7 +30,7 @@ import {
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { createUserOptionRenderer, UserAvatar } from '@/features/admin/components/UserOption';
 import { setSchemaErrors } from '@/features/admin/logics/form-errors';
-import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
+import { notifyError, notifySuccess } from '@/features/admin/logics/notifications';
 import { toUserOptions, type UserOptionSource } from '@/features/admin/logics/user-options';
 import { membersInputSchema } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
@@ -223,7 +223,7 @@ const BandMembersEditor: React.FC<BandMembersEditorProps> = ({ bandId, members, 
       await setMembers.mutateAsync({ bandId, members: input });
       // 保存した値を新しい基準にして、未保存の変更なしに戻す
       reset(values);
-      notifySaved('メンバーを保存しました');
+      notifySuccess('メンバーを保存しました');
       router.refresh();
     } catch (error) {
       notifyError(error);
