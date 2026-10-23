@@ -14,7 +14,7 @@ import { Anchor, Button, Group, Paper, Stack, Text, TextInput } from '@mantine/c
 import { IconGripVertical, IconPlus } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
-import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
+import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
 import { api } from '@/trpc/react';
 import LinkComponent from '@/ui/components/common/LinkComponent';
 import DnDContext from '@/ui/components/functional/DnDContext';

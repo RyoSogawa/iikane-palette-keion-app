@@ -6,7 +6,7 @@ import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 import ConfirmButton from '@/features/admin/components/ConfirmButton';
-import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
+import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
 import { api } from '@/trpc/react';
 
 export type DeleteBandButtonProps = {

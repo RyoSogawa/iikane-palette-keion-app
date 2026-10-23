@@ -7,7 +7,7 @@ import { IconPhotoUp, IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 import { removeEventImage, uploadEventImage } from '@/features/admin/actions/event-image';
-import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
+import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
 import { resizeImageForUpload } from '@/utils/resize-image';
 
 import type {

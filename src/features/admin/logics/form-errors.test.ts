@@ -3,8 +3,6 @@ import { z } from 'zod';
 
 import { setSchemaErrors } from './form-errors';
 
-vi.mock('@mantine/notifications', () => ({ showNotification: vi.fn() }));
-
 const errorOf = (schema: z.ZodTypeAny, value: unknown) => {
   const result = schema.safeParse(value);
   if (result.success) throw new Error('検証が通ってしまった');

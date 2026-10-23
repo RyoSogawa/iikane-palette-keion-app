@@ -9,7 +9,8 @@ import { useForm } from 'react-hook-form';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { fromDateTimeLocal, toDateTimeLocal } from '@/features/admin/logics/datetime-local';
-import { notifyError, notifySaved, setSchemaErrors } from '@/features/admin/logics/form-errors';
+import { setSchemaErrors } from '@/features/admin/logics/form-errors';
+import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
 import { eventInputSchema } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
 

@@ -29,7 +29,8 @@ import {
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { createUserOptionRenderer, UserAvatar } from '@/features/admin/components/UserOption';
-import { notifyError, notifySaved, setSchemaErrors } from '@/features/admin/logics/form-errors';
+import { setSchemaErrors } from '@/features/admin/logics/form-errors';
+import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
 import { toUserOptions, type UserOptionSource } from '@/features/admin/logics/user-options';
 import { membersInputSchema } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';

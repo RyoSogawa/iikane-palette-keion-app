@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
 import { createUserOptionRenderer } from '@/features/admin/components/UserOption';
-import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
+import { notifyError, notifySaved } from '@/features/admin/logics/notifications';
 import { toUserOptions, type UserOptionSource } from '@/features/admin/logics/user-options';
 import { api } from '@/trpc/react';
 
