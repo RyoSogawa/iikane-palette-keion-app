@@ -65,6 +65,8 @@ model User {
   musicLink            String                      @default("")
   podcastLink          String                      @default("")
   websiteLink          String                      @default("")
+  // 付与は DB を直接更新して行う。画面からは変更できない
+  isAdmin              Boolean                     @default(false)
   tags                 UserOnUserTag[]
   Onboarding           Onboarding[]
   myBestSongs          MyBestSong[]
@@ -140,6 +142,8 @@ model Event {
   image               String?
   movie               String?
   driveLink           String?
+  // 管理画面から作るときは true で作成する。既存のイベントを公開のまま残すため既定値は false
+  isDraft             Boolean                     @default(false)
   Band                Band[]
   recreationKingUsers RecreationKingUserOnEvent[]
 }
