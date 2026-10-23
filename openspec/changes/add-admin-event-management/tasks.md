@@ -29,7 +29,7 @@
 ## 6. 画像アップロード
 - [x] 6.1 Supabase マイグレーションで `events` バケットと管理者のみ書き込める RLS を追加する
 - [x] 6.2 `createSupabaseClientForAdmin`（`app_role: admin` を含む短命 JWT）を追加する
-- [x] 6.3 `resizeImageForUpload` を共有ユーティリティに移す（長辺 1200px のままで足りるので引数化はしない）
+- [x] 6.3 `resizeImageForUpload` を共有ユーティリティに移し、長辺の上限を引数で渡す（イベント画像・バンド写真は 1800px、それ以外は 1200px）
 - [x] 6.4 イベント / バンド画像の保存サービス（WebP 変換、古いファイルの削除）とテスト
 - [x] 6.5 管理者を再確認する Server Action を追加する
 
