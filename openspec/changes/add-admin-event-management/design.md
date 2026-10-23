@@ -42,7 +42,7 @@
 - 呼び出しは 1 か所の関数（`revalidateEventPages(eventId)`）にまとめる
 
 ### 6. 画像は新しい `events` バケットに管理者だけが書き込む
-- パス: `events/<eventId>/<kind>-<timestamp>.webp`（kind = `event` / `band-<bandId>-photo` など）
+- パス: `events/<eventId>/<name>-<timestamp>.webp`（name = `event`、バンドなら `<bandId>-bandPhoto` / `<bandId>-bandImage` / `<bandId>-bandTypoImage`）
 - RLS: 書き込み（insert / update / delete）は `bucket_id = 'events' and auth.jwt() ->> 'app_role' = 'admin'`、読み取りは public
 - サーバーで管理者確認を済ませたあとだけ、`app_role: 'admin'` を含む短命 JWT のクライアント（`createSupabaseClientForAdmin`）を作る。ブラウザには渡さない
 - クライアントでの縮小は既存の `resizeImageForUpload` を `src/utils/` に移して共有し、長辺の上限を引数で渡す（イベント画像・バンド写真は 1800px、それ以外は 1200px）。Server Action の 1MB 制限を超えるときは画質を下げて書き出し直すので、`bodySizeLimit` は変えない
