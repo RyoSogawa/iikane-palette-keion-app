@@ -1,6 +1,6 @@
 import { type Prisma } from '@prisma/client';
 
-import { onPublishedEvent } from '@/server/api/routers/event/published';
+import { publishedEventRelationWhere } from '@/server/api/routers/event/published';
 
 /**
  * イベント詳細ページとバンド詳細ページが表示する項目。
@@ -23,7 +23,7 @@ export const eventDetailSelect = {
           name: true,
           image: true,
           recreationKingEvents: {
-            where: onPublishedEvent,
+            where: publishedEventRelationWhere,
             select: {
               eventId: true,
             },

@@ -1,4 +1,4 @@
-import { onPublishedEvent } from '@/server/api/routers/event/published';
+import { publishedEventRelationWhere } from '@/server/api/routers/event/published';
 import { publicProcedure } from '@/server/api/trpc';
 
 export const getAll = publicProcedure.query(({ ctx }) => {
@@ -18,7 +18,7 @@ export const getAll = publicProcedure.query(({ ctx }) => {
         },
       },
       recreationKingEvents: {
-        where: onPublishedEvent,
+        where: publishedEventRelationWhere,
         select: {
           event: {
             select: {

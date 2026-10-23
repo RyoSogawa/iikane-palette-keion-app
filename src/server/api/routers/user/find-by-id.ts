@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { onPublishedEvent } from '@/server/api/routers/event/published';
+import { publishedEventRelationWhere } from '@/server/api/routers/event/published';
 import { publicProcedure } from '@/server/api/trpc';
 
 const inputSchema = z.object({ id: z.string() });
@@ -33,7 +33,7 @@ export const findById = publicProcedure.input(inputSchema).query(({ ctx, input }
         },
       },
       recreationKingEvents: {
-        where: onPublishedEvent,
+        where: publishedEventRelationWhere,
         select: {
           event: {
             select: {

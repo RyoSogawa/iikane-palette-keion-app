@@ -4,6 +4,6 @@ import { type Prisma } from '@prisma/client';
 export const publishedEventWhere = { isDraft: false } satisfies Prisma.EventWhereInput;
 
 /** イベントとの中間テーブル（レク王など）を、公開イベントのものだけに絞る条件 */
-export const onPublishedEvent = { event: publishedEventWhere } satisfies {
+export const publishedEventRelationWhere = { event: publishedEventWhere } satisfies {
   event: Prisma.EventWhereInput;
 };
