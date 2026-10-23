@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { revalidateEventPages } from '@/server/api/routers/admin/revalidate-event-pages';
 import { adminProcedure } from '@/server/api/trpc';
+import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 
 /** レク王を指定したユーザーの一覧で置き換える */
 export const setRecreationKings = adminProcedure

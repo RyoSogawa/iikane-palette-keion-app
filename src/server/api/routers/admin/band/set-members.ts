@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { revalidateEventPages } from '@/server/api/routers/admin/revalidate-event-pages';
 import { membersInputSchema } from '@/server/api/routers/admin/schemas';
 import { adminProcedure } from '@/server/api/trpc';
+import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 
 /** バンドのメンバーを、渡された一覧で置き換える。配列の順番がそのまま表示順になる */
 export const setMembers = adminProcedure

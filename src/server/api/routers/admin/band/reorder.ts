@@ -1,8 +1,8 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
-import { revalidateEventPages } from '@/server/api/routers/admin/revalidate-event-pages';
 import { adminProcedure } from '@/server/api/trpc';
+import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 
 /** 出演順を、渡されたバンド ID の並びどおりに 1 から振り直す */
 export const reorder = adminProcedure

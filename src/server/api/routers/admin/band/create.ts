@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { revalidateEventPages } from '@/server/api/routers/admin/revalidate-event-pages';
 import { bandInputSchema } from '@/server/api/routers/admin/schemas';
 import { adminProcedure } from '@/server/api/trpc';
+import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 
 /** バンドを出演順の最後に追加する */
 export const create = adminProcedure

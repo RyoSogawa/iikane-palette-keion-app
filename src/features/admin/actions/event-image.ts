@@ -2,11 +2,11 @@
 
 import { z } from 'zod';
 
-import { revalidateEventPages } from '@/server/api/routers/admin/revalidate-event-pages';
 import {
   EventImageStorageService,
   type EventImageTarget,
 } from '@/server/applications/services/event-image-storage.service';
+import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
 import { createSupabaseClientForAdmin } from '@/utils/supabase';

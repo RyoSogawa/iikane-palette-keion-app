@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { revalidateEventPages } from '@/server/api/routers/admin/revalidate-event-pages';
 import { adminProcedure } from '@/server/api/trpc';
+import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 
 /** 公開・非公開（下書き）を切り替える */
 export const setDraft = adminProcedure

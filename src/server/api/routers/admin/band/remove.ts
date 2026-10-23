@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { revalidateEventPages } from '@/server/api/routers/admin/revalidate-event-pages';
 import { adminProcedure } from '@/server/api/trpc';
+import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 
 /** バンドを削除する。メンバーは DB の Cascade で一緒に消える */
 export const remove = adminProcedure
