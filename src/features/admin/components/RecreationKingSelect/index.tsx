@@ -7,13 +7,15 @@ import { IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
+import { createUserOptionRenderer } from '@/features/admin/components/UserOption';
 import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
+import { toUserOptions, type UserOptionSource } from '@/features/admin/logics/user-options';
 import { api } from '@/trpc/react';
 
 export type RecreationKingSelectProps = {
   eventId: string;
   userIds: string[];
-  users: Array<{ id: string; name: string | null }>;
+  users: UserOptionSource[];
 };
 
 // 選んだ順は保存結果に関係しないので、並びを揃えてから比べる
@@ -27,10 +29,8 @@ const RecreationKingSelect: React.FC<RecreationKingSelectProps> = ({ eventId, us
   useUnsavedChanges(toKey(selected) !== toKey(savedIds));
   const setRecreationKings = api.admin.event.setRecreationKings.useMutation();
 
-  const options = useMemo(
-    () => users.map((user) => ({ value: user.id, label: user.name ?? user.id })),
-    [users],
-  );
+  const options = useMemo(() => toUserOptions(users), [users]);
+  const renderUserOption = useMemo(() => createUserOptionRenderer(users), [users]);
 
   const handleSave = useCallback(async () => {
     try {
@@ -49,6 +49,7 @@ const RecreationKingSelect: React.FC<RecreationKingSelectProps> = ({ eventId, us
         label="レク王"
         placeholder="名前で検索"
         data={options}
+        renderOption={renderUserOption}
         value={selected}
         flex={1}
         searchable

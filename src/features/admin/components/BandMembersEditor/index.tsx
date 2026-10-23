@@ -1,14 +1,9 @@
 'use client';
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { type DragEndEvent } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
   ActionIcon,
@@ -23,35 +18,64 @@ import {
 } from '@mantine/core';
 import { IconCheck, IconGripVertical, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
+import {
+  type Control,
+  Controller,
+  useFieldArray,
+  useForm,
+  type UseFormClearErrors,
+  useWatch,
+} from 'react-hook-form';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
-import { notifyError, notifySaved } from '@/features/admin/logics/form-errors';
+import { createUserOptionRenderer } from '@/features/admin/components/UserOption';
+import { notifyError, notifySaved, setSchemaErrors } from '@/features/admin/logics/form-errors';
+import { toUserOptions, type UserOptionSource } from '@/features/admin/logics/user-options';
 import { membersInputSchema } from '@/server/api/routers/admin/schemas';
 import { api } from '@/trpc/react';
 import DnDContext from '@/ui/components/functional/DnDContext';
 
-type MemberRow = { key: string; userId: string | null; userName: string; part: string };
+type MemberRow = { userId: string | null; userName: string; part: string };
+type MembersFormValues = { members: MemberRow[] };
 
 export type BandMembersEditorProps = {
   bandId: string;
   members: Array<{ userId: string; userName: string | null; part: string | null }>;
-  users: Array<{ id: string; name: string | null }>;
+  users: UserOptionSource[];
 };
 
 type MemberRowEditorProps = {
-  row: MemberRow;
-  userOptions: Array<{ value: string; label: string }>;
-  onChange: (row: MemberRow) => void;
+  sortableId: string;
+  index: number;
+  control: Control<MembersFormValues>;
+  users: UserOptionSource[];
+  renderUserOption: ReturnType<typeof createUserOptionRenderer>;
+  clearErrors: UseFormClearErrors<MembersFormValues>;
   onRemove: () => void;
 };
 
 const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
-  row,
-  userOptions,
-  onChange,
+  sortableId,
+  index,
+  control,
+  users,
+  renderUserOption,
+  clearErrors,
   onRemove,
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: row.key });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: sortableId,
+  });
+  const members = useWatch({ control, name: 'members' });
+  // 同じ人を 2 行に入れられないよう、ほかの行で選ばれているユーザーは選べなくする
+  const userOptions = useMemo(
+    () =>
+      toUserOptions(
+        users,
+        members.flatMap((member, i) => (i !== index && member.userId ? [member.userId] : [])),
+      ),
+    [index, members, users],
+  );
 
   return (
     <Paper
@@ -63,44 +87,68 @@ const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
     >
       <Flex
         gap="sm"
-        align={{ base: 'stretch', sm: 'flex-end' }}
+        align={{ base: 'stretch', sm: 'flex-start' }}
         direction={{ base: 'column', sm: 'row' }}
       >
         <IconGripVertical
           aria-label="ドラッグアンドドロップで並び替える"
           size={20}
           cursor="grab"
-          style={{ touchAction: 'none', flexShrink: 0 }}
+          style={{ touchAction: 'none', flexShrink: 0, marginTop: 30 }}
           {...listeners}
         />
-        <Select
-          label="ユーザー"
-          placeholder="名前で検索"
-          data={userOptions}
-          value={row.userId}
-          flex={2}
-          searchable
-          onChange={(userId) => onChange({ ...row, userId })}
+        <Controller
+          control={control}
+          name={`members.${index}.userId`}
+          render={({ field, fieldState }) => (
+            <Select
+              label="ユーザー"
+              placeholder="名前で検索"
+              data={userOptions}
+              renderOption={renderUserOption}
+              value={field.value}
+              error={fieldState.error?.message}
+              flex={2}
+              searchable
+              onChange={(userId) => {
+                field.onChange(userId);
+                clearErrors(`members.${index}.userId`);
+              }}
+              onBlur={field.onBlur}
+            />
+          )}
         />
-        <TextInput
-          label="表示名（任意）"
-          description="ユーザー名の代わりに表示する"
-          value={row.userName}
-          flex={2}
-          onChange={(e) => onChange({ ...row, userName: e.currentTarget.value })}
+        <Controller
+          control={control}
+          name={`members.${index}.userName`}
+          render={({ field, fieldState }) => (
+            <TextInput
+              label="表示名（任意）"
+              description="ユーザー名の代わりに表示する"
+              {...field}
+              error={fieldState.error?.message}
+              flex={2}
+            />
+          )}
         />
-        <TextInput
-          label="パート"
-          placeholder="Vo, Gt など"
-          value={row.part}
-          flex={1}
-          onChange={(e) => onChange({ ...row, part: e.currentTarget.value })}
+        <Controller
+          control={control}
+          name={`members.${index}.part`}
+          render={({ field, fieldState }) => (
+            <TextInput
+              label="パート"
+              placeholder="Vo, Gt など"
+              {...field}
+              error={fieldState.error?.message}
+              flex={1}
+            />
+          )}
         />
         <ActionIcon
           variant="subtle"
           color="red"
           aria-label="メンバーを外す"
-          mb={4}
+          mt={{ base: 0, sm: 28 }}
           onClick={onRemove}
         >
           <IconTrash size={18} />
@@ -110,103 +158,101 @@ const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
   );
 };
 
-// 行のキーは描画用なので、変更があるかの判定には含めない
-const toComparable = (rows: MemberRow[]) =>
-  JSON.stringify(rows.map(({ userId, userName, part }) => [userId, userName, part]));
+const toFormValues = (members: BandMembersEditorProps['members']): MembersFormValues => ({
+  members: members.map((member) => ({
+    userId: member.userId,
+    userName: member.userName ?? '',
+    part: member.part ?? '',
+  })),
+});
 
 /** バンドメンバーの編集。並べた順がそのまま表示順になり、保存で一覧ごと置き換える */
 const BandMembersEditor: React.FC<BandMembersEditorProps> = ({ bandId, members, users }) => {
   const router = useRouter();
-  // 行のキーはサーバーとブラウザで同じ値になるよう連番にする（乱数だとハイドレーションでずれる）
-  const nextKey = useRef(members.length);
-  const [rows, setRows] = useState<MemberRow[]>(() =>
-    members.map((member, index) => ({
-      key: `member-${index}`,
-      userId: member.userId,
-      userName: member.userName ?? '',
-      part: member.part ?? '',
-    })),
-  );
-  const [savedRows, setSavedRows] = useState(rows);
-  useUnsavedChanges(toComparable(rows) !== toComparable(savedRows));
+  const {
+    control,
+    getValues,
+    reset,
+    setError,
+    clearErrors,
+    formState: { errors, isDirty },
+  } = useForm<MembersFormValues>({ defaultValues: toFormValues(members) });
+  const { fields, append, remove, move } = useFieldArray({ control, name: 'members' });
+  useUnsavedChanges(isDirty);
   const setMembers = api.admin.band.setMembers.useMutation();
+  const renderUserOption = useMemo(() => createUserOptionRenderer(users), [users]);
 
-  const userOptions = useMemo(
-    () => users.map((user) => ({ value: user.id, label: user.name ?? user.id })),
-    [users],
+  const handleDragEnd = useCallback(
+    ({ active, over }: DragEndEvent) => {
+      if (!over || active.id === over.id) return;
+      move(
+        fields.findIndex((field) => field.id === active.id),
+        fields.findIndex((field) => field.id === over.id),
+      );
+    },
+    [fields, move],
   );
 
-  const updateRow = useCallback(
-    (key: string) => (row: MemberRow) =>
-      setRows((current) => current.map((r) => (r.key === key ? row : r))),
-    [],
-  );
-  const removeRow = useCallback(
-    (key: string) => () => setRows((current) => current.filter((r) => r.key !== key)),
-    [],
-  );
-  const addRow = useCallback(() => {
-    const key = `member-${nextKey.current}`;
-    nextKey.current += 1;
-    setRows((current) => [...current, { key, userId: null, userName: '', part: '' }]);
-  }, []);
-
-  const handleDragEnd = useCallback(({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) return;
-    setRows((current) =>
-      arrayMove(
-        current,
-        current.findIndex((r) => r.key === active.id),
-        current.findIndex((r) => r.key === over.id),
-      ),
-    );
-  }, []);
-
+  // handleSubmit は setError で付けた配列全体へのエラーが残ると送信しないので、自前で検証する
   const handleSave = useCallback(async () => {
-    if (rows.some((row) => !row.userId)) {
-      notifyError(new Error('ユーザーを選んでいない行があります'));
-      return;
-    }
-    const input = rows.map(({ userId, userName, part }) => ({
+    clearErrors();
+    const values = getValues();
+    const input = values.members.map(({ userId, userName, part }) => ({
       userId: userId ?? '',
       userName,
       part,
     }));
     const parsed = membersInputSchema.safeParse(input);
     if (!parsed.success) {
-      notifyError(new Error(parsed.error.issues[0]?.message));
+      setSchemaErrors(parsed.error, setError, 'members');
       return;
     }
     try {
       await setMembers.mutateAsync({ bandId, members: input });
-      setSavedRows(rows);
+      // 保存した値を新しい基準にして、未保存の変更なしに戻す
+      reset(values);
       notifySaved('メンバーを保存しました');
       router.refresh();
     } catch (error) {
       notifyError(error);
     }
-  }, [bandId, router, rows, setMembers]);
+  }, [bandId, clearErrors, getValues, reset, router, setError, setMembers]);
 
   return (
     <Stack>
-      {rows.length === 0 && <Text c="dimmed">メンバーはまだいません</Text>}
+      {fields.length === 0 && <Text c="dimmed">メンバーはまだいません</Text>}
       <DnDContext onDragEnd={handleDragEnd}>
-        <SortableContext items={rows.map((row) => row.key)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={fields.map((field) => field.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <Stack gap="xs">
-            {rows.map((row) => (
+            {fields.map((field, index) => (
               <MemberRowEditor
-                key={row.key}
-                row={row}
-                userOptions={userOptions}
-                onChange={updateRow(row.key)}
-                onRemove={removeRow(row.key)}
+                key={field.id}
+                sortableId={field.id}
+                index={index}
+                control={control}
+                users={users}
+                renderUserOption={renderUserOption}
+                clearErrors={clearErrors}
+                onRemove={() => remove(index)}
               />
             ))}
           </Stack>
         </SortableContext>
       </DnDContext>
+      {errors.members?.root?.message && (
+        <Text c="red" size="sm">
+          {errors.members.root.message}
+        </Text>
+      )}
       <Group justify="space-between">
-        <Button variant="light" leftSection={<IconPlus size={16} />} onClick={addRow}>
+        <Button
+          variant="light"
+          leftSection={<IconPlus size={16} />}
+          onClick={() => append({ userId: null, userName: '', part: '' })}
+        >
           メンバーを追加
         </Button>
         <Button

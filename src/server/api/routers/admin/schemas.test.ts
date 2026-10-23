@@ -52,12 +52,22 @@ describe('bandInputSchema', () => {
 });
 
 describe('membersInputSchema', () => {
-  it('同じユーザーを 2 回入れたら弾く', () => {
+  it('同じユーザーを 2 回入れたら、2 回目の行のユーザー欄のエラーにする', () => {
     const result = membersInputSchema.safeParse([
       { userId: 'user-1', userName: '', part: 'Vo' },
+      { userId: 'user-2', userName: '', part: 'Ba' },
       { userId: 'user-1', userName: '', part: 'Gt' },
     ]);
-    expect(result.success).toBe(false);
+    expect(result.error?.issues).toEqual([
+      expect.objectContaining({ path: [2, 'userId'], message: 'ほかの行と同じユーザーです' }),
+    ]);
+  });
+
+  it('ユーザーを選んでいない行は、その行のユーザー欄のエラーにする', () => {
+    const result = membersInputSchema.safeParse([{ userId: '', userName: '', part: '' }]);
+    expect(result.error?.issues).toEqual([
+      expect.objectContaining({ path: [0, 'userId'], message: 'ユーザーを選んでください' }),
+    ]);
   });
 
   it('表示名とパートの空文字は null にする', () => {

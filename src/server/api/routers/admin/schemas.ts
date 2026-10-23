@@ -47,18 +47,29 @@ export const bandInputSchema = z.object({
 
 export type BandInput = z.input<typeof bandInputSchema>;
 
-/** バンドメンバーの一覧。配列の順番がそのまま表示順になる */
+/**
+ * バンドメンバーの一覧。配列の順番がそのまま表示順になる。
+ * 重複はフォームで該当の行に出せるよう、2 回目以降の行のユーザー欄のエラーにする。
+ */
 export const membersInputSchema = z
   .array(
     z.object({
-      userId: z.string().min(1),
+      userId: z.string().min(1, 'ユーザーを選んでください'),
       userName: optionalText(50),
       part: optionalText(50),
     }),
   )
   .max(50)
-  .refine((members) => new Set(members.map((m) => m.userId)).size === members.length, {
-    message: '同じメンバーが重複しています',
+  .superRefine((members, ctx) => {
+    members.forEach((member, index) => {
+      if (members.findIndex((m) => m.userId === member.userId) < index) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'ほかの行と同じユーザーです',
+          path: [index, 'userId'],
+        });
+      }
+    });
   });
 
 export type MembersInput = z.input<typeof membersInputSchema>;

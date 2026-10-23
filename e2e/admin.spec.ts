@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { PrismaClient } from '@prisma/client';
 import sharp from 'sharp';
 
-import { ADMIN_STORAGE_STATE } from './fixtures/test-users';
+import { ADMIN_STORAGE_STATE, ADMIN_USER, LOGIN_USER } from './fixtures/test-users';
 
 const NOT_FOUND_TEXT = 'This page could not be found.';
 
@@ -31,6 +31,7 @@ test.describe('管理者によるイベント作成と公開', () => {
 
   const eventName = `E2E イベント ${Date.now()}`;
   let eventId = '';
+  let bandPath = '';
 
   test.afterAll(async () => {
     if (!eventId) return;
@@ -73,6 +74,7 @@ test.describe('管理者によるイベント作成と公開', () => {
     await page.getByRole('button', { name: '追加' }).click();
 
     await page.waitForURL(new RegExp(`/admin/events/${eventId}/bands/[^/]+$`));
+    bandPath = new URL(page.url()).pathname;
     await expect(page.getByRole('heading', { name: 'No.1 E2E バンド' })).toBeVisible();
 
     await page.goto(`/admin/events/${eventId}/preview`);
@@ -82,6 +84,58 @@ test.describe('管理者によるイベント作成と公開', () => {
     ).toBeVisible();
     await expect(page.getByRole('heading', { name: eventName })).toBeVisible();
     await expect(page.getByRole('heading', { name: '出演バンド' })).toBeVisible();
+  });
+
+  test('バンドメンバーは行ごとにエラーを出し、選んだユーザーはほかの行で選べない', async ({
+    page,
+  }) => {
+    // 行の id は useFieldArray が乱数で振るので、サーバーとブラウザで描画がずれていないか見る
+    const hydrationErrors: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error' && /hydrat/i.test(message.text())) {
+        hydrationErrors.push(message.text());
+      }
+    });
+    await page.goto(bandPath);
+    const userSelects = page.getByLabel('ユーザー', { exact: true });
+    const addButton = page.getByRole('button', { name: 'メンバーを追加' });
+    const saveButton = page.getByRole('button', { name: 'メンバーを保存' });
+
+    await addButton.click();
+    await saveButton.click();
+    await expect(page.getByText('ユーザーを選んでください')).toBeVisible();
+
+    await userSelects.nth(0).click();
+    await page.getByRole('option', { name: ADMIN_USER.name }).click();
+    await expect(page.getByText('ユーザーを選んでください')).toHaveCount(0);
+    await page.getByLabel('パート', { exact: true }).nth(0).fill('Vo');
+
+    await addButton.click();
+    await userSelects.nth(1).click();
+    await expect(page.getByRole('option', { name: ADMIN_USER.name })).toHaveAttribute(
+      'data-combobox-disabled',
+      'true',
+    );
+    await page.getByRole('option', { name: LOGIN_USER.name }).click();
+
+    await saveButton.click();
+    await expect(page.getByText('メンバーを保存しました')).toBeVisible();
+    expect(hydrationErrors).toEqual([]);
+
+    const db = new PrismaClient();
+    try {
+      const members = await db.userOnBand.findMany({
+        where: { bandId: bandPath.split('/').pop() },
+        orderBy: { order: 'asc' },
+        select: { userId: true, part: true },
+      });
+      expect(members).toEqual([
+        { userId: ADMIN_USER.id, part: 'Vo' },
+        { userId: LOGIN_USER.id, part: null },
+      ]);
+    } finally {
+      await db.$disconnect();
+    }
   });
 
   test('イベント画像をアップロードすると events バケットに保存される', async ({ page }) => {
