@@ -18,28 +18,27 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { eventId } = await params;
+const findEvent = async (eventId: string) => {
   const trpc = await api();
   const event = await trpc.event.findById({
     id: eventId,
   });
+  if (!event) {
+    notFound();
+  }
+  return event;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const event = await findEvent((await params).eventId);
 
   return {
-    title: `${event?.name}`,
+    title: event.name,
   };
 }
 
 export default async function EventPage({ params }: Props) {
-  const { eventId } = await params;
-  const trpc = await api();
-  const event = await trpc.event.findById({
-    id: eventId,
-  });
-
-  if (!event) {
-    notFound();
-  }
+  const event = await findEvent((await params).eventId);
 
   return (
     <Container py={16}>
