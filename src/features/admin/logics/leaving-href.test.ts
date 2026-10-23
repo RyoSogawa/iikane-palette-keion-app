@@ -20,6 +20,10 @@ describe('toLeavingHref', () => {
   });
 
   it('URL として解釈できない値は null を返す', () => {
+    expect(toLeavingHref('http://[', CURRENT)).toBeNull();
+  });
+
+  it('javascript: などオリジンを持たない URL は null を返す', () => {
     expect(toLeavingHref('javascript:void(0)', CURRENT)).toBeNull();
   });
 });
