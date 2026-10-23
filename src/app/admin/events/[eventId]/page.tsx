@@ -33,7 +33,7 @@ export default async function AdminEventPage({ params }: Props) {
   const trpc = await api();
   const [event, users] = await Promise.all([
     trpc.admin.event.findById({ id: eventId }),
-    trpc.admin.user.list(),
+    trpc.admin.user.getAll(),
   ]);
   if (!event) {
     notFound();

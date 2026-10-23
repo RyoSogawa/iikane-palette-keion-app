@@ -30,7 +30,7 @@ export default async function AdminBandPage({ params }: Props) {
   const trpc = await api();
   const [event, users] = await Promise.all([
     trpc.admin.event.findById({ id: eventId }),
-    trpc.admin.user.list(),
+    trpc.admin.user.getAll(),
   ]);
   const band = event?.Band.find((b) => b.id === bandId);
   if (!event || !band) {

@@ -1,6 +1,6 @@
 import { adminProcedure } from '@/server/api/trpc';
 
-export const list = adminProcedure.query(({ ctx }) => {
+export const getAll = adminProcedure.query(({ ctx }) => {
   return ctx.db.event.findMany({
     select: {
       id: true,

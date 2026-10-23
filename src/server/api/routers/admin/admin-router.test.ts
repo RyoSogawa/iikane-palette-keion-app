@@ -76,7 +76,7 @@ describe('admin ルーター', () => {
     createCallerFactory(appRouter)({ db: {} as never, session, headers: new Headers() });
 
   it('admin 配下の手続きを一覧として取れている', () => {
-    expect(adminPaths).toContain('admin.event.list');
+    expect(adminPaths).toContain('admin.event.getAll');
     expect(adminPaths).toContain('admin.band.setMembers');
   });
 

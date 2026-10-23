@@ -9,7 +9,7 @@ import LinkComponent from '@/ui/components/common/LinkComponent';
 
 export default async function AdminEventsPage() {
   const trpc = await api();
-  const events = await trpc.admin.event.list();
+  const events = await trpc.admin.event.getAll();
 
   return (
     <>
