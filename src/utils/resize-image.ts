@@ -17,7 +17,7 @@ const toBlob = (canvas: HTMLCanvasElement, type: string) =>
 /**
  * アップロード前に、長い辺を 1200px に縮めた WebP にする。
  * server action は 1MB を超えるリクエストを 413 で弾くので、スマホの写真をそのまま送れない。
- * 300x300 への変換はサーバーで行うので、ここでは送れる大きさにするだけ。
+ * 用途ごとの大きさへの変換はサーバーで行うので、ここでは送れる大きさにするだけ。
  */
 export const resizeImageForUpload = async (file: File): Promise<File> => {
   // createImageBitmap は EXIF の向きを反映するので、スマホの写真が横倒しにならない
@@ -37,5 +37,5 @@ export const resizeImageForUpload = async (file: File): Promise<File> => {
   }
 
   const extension = blob.type === 'image/webp' ? 'webp' : 'jpg';
-  return new File([blob], `avatar.${extension}`, { type: blob.type });
+  return new File([blob], `image.${extension}`, { type: blob.type });
 };
