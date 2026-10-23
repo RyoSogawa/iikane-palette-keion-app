@@ -52,5 +52,10 @@ yarn-error.log*
 /tmp
 /.claude/command-log.txt
 
+# playwright
+/test-results
+/playwright-report
+/e2e/.auth
+
 # next dev が生成する
 /AGENTS.md
