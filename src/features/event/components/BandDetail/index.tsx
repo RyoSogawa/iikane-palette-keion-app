@@ -3,10 +3,10 @@ import React from 'react';
 import { AspectRatio, Avatar, Box, Group, Image, Stack, Text, Title } from '@mantine/core';
 import Link from 'next/link';
 
-import type { EventDetail } from '@/server/api/routers/event/event-detail-select';
+import type { EventDetailPayload } from '@/server/api/routers/event/event-detail-select';
 
 export type BandDetailProps = {
-  band: EventDetail['Band'][number];
+  band: EventDetailPayload['Band'][number];
 };
 
 /**

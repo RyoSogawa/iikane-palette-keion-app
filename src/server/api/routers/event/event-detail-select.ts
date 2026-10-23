@@ -66,4 +66,4 @@ export const eventDetailSelect = {
   },
 } satisfies Prisma.EventSelect;
 
-export type EventDetail = Prisma.EventGetPayload<{ select: typeof eventDetailSelect }>;
+export type EventDetailPayload = Prisma.EventGetPayload<{ select: typeof eventDetailSelect }>;

@@ -7,10 +7,10 @@ import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
 import { formatDateString } from '@/utils/date';
 
-import type { EventDetail as EventDetailData } from '@/server/api/routers/event/event-detail-select';
+import type { EventDetailPayload } from '@/server/api/routers/event/event-detail-select';
 
 export type EventDetailProps = {
-  event: EventDetailData;
+  event: EventDetailPayload;
   /** 公開ページとプレビューでリンク先が違うので、バンドページの URL は呼び出し側が決める */
   bandHref: (bandId: string) => string;
 };
