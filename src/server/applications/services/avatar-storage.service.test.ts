@@ -30,24 +30,39 @@ const createSupabaseMock = (options: { existing?: string[]; uploadError?: Error 
 };
 
 describe('AvatarStorageService.save', () => {
-  it('画像を 600x600 の PNG にして profiles/{userId}/ に保存し、公開 URL を返す', async () => {
+  it('画像を 300x300 の WebP にして profiles/{userId}/ に保存し、公開 URL を返す', async () => {
     const { supabase, bucket } = createSupabaseMock();
     const service = new AvatarStorageService(supabase);
 
     const url = await service.save('user-1', await createPng(1200, 800));
 
     expect(url).toMatch(
-      /^http:\/\/supabase\.test\/storage\/v1\/object\/public\/profiles\/user-1\/avatar\d+\.png$/,
+      /^http:\/\/supabase\.test\/storage\/v1\/object\/public\/profiles\/user-1\/avatar\d+\.webp$/,
     );
     const [path, body, options] = bucket.upload.mock.calls[0] as unknown as [
       string,
       Buffer,
       { contentType: string },
     ];
-    expect(path).toMatch(/^user-1\/avatar\d+\.png$/);
-    expect(options.contentType).toBe('image/png');
+    expect(path).toMatch(/^user-1\/avatar\d+\.webp$/);
+    expect(options.contentType).toBe('image/webp');
     const metadata = await sharp(body).metadata();
-    expect(metadata).toMatchObject({ format: 'png', width: 600, height: 600 });
+    expect(metadata).toMatchObject({ format: 'webp', width: 300, height: 300 });
+  });
+
+  it('透過している画像は透過したまま保存する', async () => {
+    const { supabase, bucket } = createSupabaseMock();
+    const service = new AvatarStorageService(supabase);
+    const transparent = await sharp({
+      create: { width: 400, height: 400, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+    })
+      .png()
+      .toBuffer();
+
+    await service.save('user-1', transparent);
+
+    const [, body] = bucket.upload.mock.calls[0] as unknown as [string, Buffer];
+    expect(await sharp(body).metadata()).toMatchObject({ format: 'webp', hasAlpha: true });
   });
 
   it('保存する前に、そのユーザーの古いアバター画像を消す', async () => {

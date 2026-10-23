@@ -27,7 +27,10 @@ export class AvatarStorageService {
     private readonly fetcher: typeof fetch = fetch,
   ) {}
 
-  /** 600x600 の PNG に変換して保存し、公開 URL を返す。そのユーザーの古いアバターは消す */
+  /**
+   * 300x300 の WebP に変換して保存し、公開 URL を返す。そのユーザーの古いアバターは消す。
+   * 表示は最大 100px なので、3 倍の画面でも足りる 300px にしている
+   */
   public async save(userId: string, image: ArrayBuffer | Buffer): Promise<string> {
     const bucket = this.supabase.storage.from(BUCKET);
 
@@ -36,23 +39,18 @@ export class AvatarStorageService {
       await bucket.remove(existing.map((file) => `${userId}/${file.name}`));
     }
 
-    const png = await sharp(image)
-      .png({
-        quality: 90,
-        compressionLevel: 9,
-        adaptiveFiltering: true,
-        progressive: true,
-      })
+    const webp = await sharp(image)
       .resize({
-        width: 600,
-        height: 600,
+        width: 300,
+        height: 300,
         fit: 'cover',
       })
+      .webp({ quality: 80 })
       .toBuffer();
 
-    const { data, error } = await bucket.upload(`${userId}/avatar${Date.now()}.png`, png, {
+    const { data, error } = await bucket.upload(`${userId}/avatar${Date.now()}.webp`, webp, {
       upsert: true,
-      contentType: 'image/png',
+      contentType: 'image/webp',
     });
     if (error) {
       throw error;

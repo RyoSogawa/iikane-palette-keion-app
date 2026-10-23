@@ -17,7 +17,7 @@ const toBlob = (canvas: HTMLCanvasElement, type: string) =>
 /**
  * アップロード前に、長い辺を 1200px に縮めた WebP にする。
  * server action は 1MB を超えるリクエストを 413 で弾くので、スマホの写真をそのまま送れない。
- * 600x600 への変換はサーバーで行うので、ここでは送れる大きさにするだけ。
+ * 300x300 への変換はサーバーで行うので、ここでは送れる大きさにするだけ。
  */
 export const resizeImageForUpload = async (file: File): Promise<File> => {
   // createImageBitmap は EXIF の向きを反映するので、スマホの写真が横倒しにならない
