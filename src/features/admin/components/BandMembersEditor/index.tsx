@@ -28,7 +28,7 @@ import {
 } from 'react-hook-form';
 
 import { useUnsavedChanges } from '@/features/admin/components/UnsavedChangesGuard';
-import { createUserOptionRenderer } from '@/features/admin/components/UserOption';
+import { createUserOptionRenderer, UserAvatar } from '@/features/admin/components/UserOption';
 import { notifyError, notifySaved, setSchemaErrors } from '@/features/admin/logics/form-errors';
 import { toUserOptions, type UserOptionSource } from '@/features/admin/logics/user-options';
 import { membersInputSchema } from '@/server/api/routers/admin/schemas';
@@ -106,6 +106,11 @@ const MemberRowEditor: React.FC<MemberRowEditorProps> = ({
               placeholder="名前で検索"
               data={userOptions}
               renderOption={renderUserOption}
+              leftSection={
+                field.value ? (
+                  <UserAvatar src={users.find((user) => user.id === field.value)?.image} />
+                ) : undefined
+              }
               value={field.value}
               error={fieldState.error?.message}
               flex={2}

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator, test } from '@playwright/test';
 import { PrismaClient } from '@prisma/client';
 import sharp from 'sharp';
 
@@ -108,6 +108,10 @@ test.describe('管理者によるイベント作成と公開', () => {
 
     await userSelects.nth(0).click();
     await page.getByRole('option', { name: ADMIN_USER.name }).click();
+    // 選んだあともアバターで誰か見分けられるよう、入力欄の左にアイコンを出す
+    const leftSection = (select: Locator) =>
+      select.locator('xpath=..').locator('[data-position="left"]');
+    await expect(leftSection(userSelects.nth(0)).locator('.mantine-Avatar-root')).toBeVisible();
     await expect(page.getByText('ユーザーを選ぶか、表示名を入力してください')).toHaveCount(0);
     await page.getByLabel('パート', { exact: true }).nth(0).fill('Vo');
 
