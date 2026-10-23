@@ -51,3 +51,6 @@ yarn-error.log*
 # claude code
 /tmp
 /.claude/command-log.txt
+
+# next dev が生成する
+/AGENTS.md
