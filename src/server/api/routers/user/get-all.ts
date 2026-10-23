@@ -1,3 +1,4 @@
+import { onPublishedEvent } from '@/server/api/routers/event/published';
 import { publicProcedure } from '@/server/api/trpc';
 
 export const getAll = publicProcedure.query(({ ctx }) => {
@@ -17,6 +18,7 @@ export const getAll = publicProcedure.query(({ ctx }) => {
         },
       },
       recreationKingEvents: {
+        where: onPublishedEvent,
         select: {
           event: {
             select: {
