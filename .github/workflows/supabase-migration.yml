@@ -1,0 +1,40 @@
+name: Supabase Migrate
+
+# supabase/migrations/ (Storage の RLS など) を本番に流す。
+# prisma/migrations/ は migration.yml (Prisma Migrate) が担当する。
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 流す予定の migration を表示するだけで、適用しない
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.121.0
+
+      - name: Push migrations
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            supabase db push --db-url "$SUPABASE_DB_URL" --dry-run
+          else
+            supabase db push --db-url "$SUPABASE_DB_URL" --yes
+          fi
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          SUPABASE_DB_URL: ${{ secrets.PROD_SUPABASE_DB_URL }}

@@ -1,15 +1,13 @@
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
 
 import { protectedProcedure } from '@/server/api/trpc';
-import { createSupabaseServerClient } from '@/utils/supabase';
+import { createSupabaseClientForUser } from '@/utils/supabase';
 
 export const deleteMe = protectedProcedure.mutation(({ ctx }) => {
   return ctx.db.$transaction(async (tx) => {
     const userId = ctx.session.user.id;
 
-    const cookieStore = await cookies();
-    const supabase = createSupabaseServerClient(cookieStore, ctx.session?.supabaseAccessToken);
+    const supabase = createSupabaseClientForUser(ctx.session.user);
 
     const { data, error } = await supabase.storage.from('profiles').list(userId);
     if (error) {

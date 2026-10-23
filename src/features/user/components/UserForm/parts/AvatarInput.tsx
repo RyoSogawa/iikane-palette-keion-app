@@ -11,6 +11,7 @@ import { NotificationOptions } from '@/constants/notification';
 import { type User } from '@/types/generated/zod';
 
 import { updateUserAvatar } from '../actions';
+import { resizeImageForUpload } from './resize-image';
 
 export type AvatarInputProps = {
   user: Pick<User, 'id' | 'image'>;
@@ -34,8 +35,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         }
 
         const formData = new FormData();
-        formData.append('userId', user.id);
-        formData.append('file', file);
+        formData.append('file', await resizeImageForUpload(file));
         const imagePath = await updateUserAvatar(formData);
 
         setSrc(imagePath);
@@ -52,7 +52,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({ user }) => {
         setIsUploading(false);
       }
     },
-    [update, user.id],
+    [update],
   );
 
   return (

@@ -17,6 +17,7 @@
     "format": "pnpm lint --fix && pnpm prettier --write",
     "start": "next start",
     "prepare": "husky install",
+    "test": "vitest run",
     "e2e": "playwright test"
   },
   "dependencies": {
@@ -30,7 +31,6 @@
     "@mantine/notifications": "^8.3.18",
     "@mantine/tiptap": "^8.3.18",
     "@prisma/client": "^5.22.0",
-    "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.3",
     "@t3-oss/env-nextjs": "^0.9.2",
     "@tabler/icons-react": "^3.49.0",
@@ -89,7 +89,8 @@
     "prisma": "^5.22.0",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.71.2"
+    "typescript-eslint": "^8.71.2",
+    "vitest": "^5.0.5"
   },
   "ct3aMetadata": {
     "initVersion": "7.27.0"
