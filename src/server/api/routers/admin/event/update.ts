@@ -11,5 +11,5 @@ export const update = adminProcedure
       where: { id: input.id },
       data: input.data,
     });
-    revalidateEventPages(input.id);
+    revalidateEventPages();
   });

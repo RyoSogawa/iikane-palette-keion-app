@@ -11,5 +11,5 @@ export const setDraft = adminProcedure
       where: { id: input.id },
       data: { isDraft: input.isDraft },
     });
-    revalidateEventPages(input.id);
+    revalidateEventPages();
   });

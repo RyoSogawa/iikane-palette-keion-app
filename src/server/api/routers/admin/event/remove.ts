@@ -8,5 +8,5 @@ export const remove = adminProcedure
   .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
     await ctx.db.event.delete({ where: { id: input.id } });
-    revalidateEventPages(input.id);
+    revalidateEventPages();
   });

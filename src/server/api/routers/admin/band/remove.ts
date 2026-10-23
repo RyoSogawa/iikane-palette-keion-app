@@ -7,9 +7,6 @@ import { revalidateEventPages } from '@/server/applications/services/revalidate-
 export const remove = adminProcedure
   .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
-    const band = await ctx.db.band.delete({
-      where: { id: input.id },
-      select: { eventId: true },
-    });
-    if (band.eventId) revalidateEventPages(band.eventId);
+    await ctx.db.band.delete({ where: { id: input.id } });
+    revalidateEventPages();
   });

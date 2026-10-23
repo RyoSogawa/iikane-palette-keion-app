@@ -7,10 +7,6 @@ import { revalidateEventPages } from '@/server/applications/services/revalidate-
 export const update = adminProcedure
   .input(z.object({ id: z.string(), data: bandInputSchema }))
   .mutation(async ({ ctx, input }) => {
-    const band = await ctx.db.band.update({
-      where: { id: input.id },
-      data: input.data,
-      select: { eventId: true },
-    });
-    if (band.eventId) revalidateEventPages(band.eventId);
+    await ctx.db.band.update({ where: { id: input.id }, data: input.data });
+    revalidateEventPages();
   });

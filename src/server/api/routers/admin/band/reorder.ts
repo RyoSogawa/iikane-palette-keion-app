@@ -31,5 +31,5 @@ export const reorder = adminProcedure
         ),
       );
     });
-    revalidateEventPages(input.eventId);
+    revalidateEventPages();
   });

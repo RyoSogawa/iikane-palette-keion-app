@@ -103,7 +103,7 @@ export const uploadEventImage = async (formData: FormData) => {
   await saveUrl(target, url);
   await removeQuietly(storage, previousUrl);
 
-  revalidateEventPages(target.eventId);
+  revalidateEventPages();
   return url;
 };
 
@@ -119,5 +119,5 @@ export const removeEventImage = async (formData: FormData) => {
     previousUrl,
   );
 
-  revalidateEventPages(target.eventId);
+  revalidateEventPages();
 };

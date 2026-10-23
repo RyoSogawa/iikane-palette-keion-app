@@ -22,7 +22,6 @@ const createDb = () => {
       create: vi.fn().mockResolvedValue({ id: 'band-new' }),
       findMany: vi.fn().mockResolvedValue([{ id: 'band-1' }, { id: 'band-2' }]),
       update: vi.fn().mockResolvedValue({}),
-      findUniqueOrThrow: vi.fn().mockResolvedValue({ eventId: 'event-1' }),
     },
     userOnBand: {
       deleteMany: vi.fn().mockResolvedValue({}),
@@ -112,8 +111,7 @@ describe('admin ルーター', () => {
       where: { id: 'event-1' },
       data: { isDraft: false },
     });
-    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events');
-    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events/event-1', 'layout');
+    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events', 'layout');
   });
 
   it('バンドは出演順の最後に追加する', async () => {
@@ -179,6 +177,6 @@ describe('admin ルーター', () => {
         { userId: 'user-3', userName: 'ゲスト', part: null, bandId: 'band-1', order: 2 },
       ],
     });
-    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events/event-1', 'layout');
+    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events', 'layout');
   });
 });

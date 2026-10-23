@@ -22,6 +22,6 @@ export const create = adminProcedure
         select: { id: true },
       });
     });
-    revalidateEventPages(input.eventId);
+    revalidateEventPages();
     return band;
   });

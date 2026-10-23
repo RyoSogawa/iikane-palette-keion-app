@@ -80,7 +80,7 @@ describe('uploadEventImage', () => {
       data: { image: NEW_URL },
     });
     expect(mocks.removeByUrl).toHaveBeenCalledWith(OLD_URL);
-    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events/event-1', 'layout');
+    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events', 'layout');
   });
 
   it('バンドの写真は、そのイベントのバンドであることを確かめてから保存する', async () => {

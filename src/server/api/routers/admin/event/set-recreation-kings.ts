@@ -14,5 +14,5 @@ export const setRecreationKings = adminProcedure
         data: userIds.map((userId) => ({ eventId: input.eventId, userId })),
       }),
     ]);
-    revalidateEventPages(input.eventId);
+    revalidateEventPages();
   });
