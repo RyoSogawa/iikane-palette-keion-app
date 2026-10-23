@@ -59,34 +59,38 @@ beforeEach(() => {
 });
 
 describe('admin ルーター', () => {
-  it('管理者でなければどの手続きも FORBIDDEN', async () => {
-    const caller = callerFor(createDb(), false);
+  // admin 配下に手続きを足したら自動で対象に入るよう、一覧はルーターから取る
+  const adminPaths = Object.keys(appRouter._def.procedures).filter((path) =>
+    path.startsWith('admin.'),
+  );
 
-    await Promise.all(
-      [
-        () => caller.admin.event.list(),
-        () => caller.admin.event.findById({ id: 'event-1' }),
-        () => caller.admin.event.create(eventInput),
-        () => caller.admin.event.update({ id: 'event-1', data: eventInput }),
-        () => caller.admin.event.setDraft({ id: 'event-1', isDraft: false }),
-        () => caller.admin.event.remove({ id: 'event-1' }),
-        () => caller.admin.event.setRecreationKings({ eventId: 'event-1', userIds: [] }),
-        () =>
-          caller.admin.band.create({
-            eventId: 'event-1',
-            data: { name: 'a', description: '', movie: '' },
-          }),
-        () =>
-          caller.admin.band.update({
-            id: 'band-1',
-            data: { name: 'a', description: '', movie: '' },
-          }),
-        () => caller.admin.band.remove({ id: 'band-1' }),
-        () => caller.admin.band.reorder({ eventId: 'event-1', bandIds: [] }),
-        () => caller.admin.band.setMembers({ bandId: 'band-1', members: [] }),
-        () => caller.admin.user.list(),
-      ].map((call) => expect(call()).rejects.toMatchObject({ code: 'FORBIDDEN' })),
-    );
+  const callByPath = (caller: object, path: string) => {
+    const procedure = path
+      .split('.')
+      .reduce<unknown>((node, key) => (node as Record<string, unknown>)[key], caller);
+    return (procedure as (input?: unknown) => Promise<unknown>)();
+  };
+
+  // 認可は入力の検証より前に走るので、入力なしで呼んでも判定を確かめられる。
+  // DB は空のオブジェクトなので、認可をすり抜けると FORBIDDEN 以外のエラーで落ちる
+  const callerWith = (session: Session | null) =>
+    createCallerFactory(appRouter)({ db: {} as never, session, headers: new Headers() });
+
+  it('admin 配下の手続きを一覧として取れている', () => {
+    expect(adminPaths).toContain('admin.event.list');
+    expect(adminPaths).toContain('admin.band.setMembers');
+  });
+
+  it.each(adminPaths)('管理者でなければ %s は FORBIDDEN', async (path) => {
+    await expect(callByPath(callerWith(sessionOf(false)), path)).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    });
+  });
+
+  it.each(adminPaths)('未ログインなら %s は UNAUTHORIZED', async (path) => {
+    await expect(callByPath(callerWith(null), path)).rejects.toMatchObject({
+      code: 'UNAUTHORIZED',
+    });
   });
 
   it('イベントは下書きで作成する', async () => {
