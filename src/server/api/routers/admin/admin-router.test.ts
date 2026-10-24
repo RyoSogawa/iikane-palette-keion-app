@@ -2,26 +2,46 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { appRouter } from '@/server/api/root';
 import { createCallerFactory } from '@/server/api/trpc';
+import { EVENT_IMAGE_URL_PREFIX } from '@/server/applications/services/event-image-storage.service';
 
+import type * as StorageService from '@/server/applications/services/event-image-storage.service';
 import type { Session } from 'next-auth';
 
-const mocks = vi.hoisted(() => ({ revalidatePath: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+  revalidatePath: vi.fn(),
+  removeByUrl: vi.fn(),
+  removeEventFolder: vi.fn(),
+}));
 
 vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidatePath }));
 vi.mock('@/server/auth', () => ({ getServerAuthSession: vi.fn() }));
 vi.mock('@/server/db', () => ({ db: {} }));
+vi.mock('@/utils/supabase', () => ({ createSupabaseClientForAdmin: vi.fn(() => ({})) }));
+vi.mock('@/server/applications/services/event-image-storage.service', async (importOriginal) => ({
+  ...(await importOriginal<typeof StorageService>()),
+  EventImageStorageService: class {
+    removeByUrl = mocks.removeByUrl;
+    removeEventFolder = mocks.removeEventFolder;
+  },
+}));
+
+const IMAGE_URL = `${EVENT_IMAGE_URL_PREFIX}event-1/band-1-bandPhoto-1.webp`;
 
 const createDb = () => {
   const db = {
     event: {
       create: vi.fn().mockResolvedValue({ id: 'event-1' }),
       update: vi.fn().mockResolvedValue({}),
+      delete: vi.fn().mockResolvedValue({}),
+      findUnique: vi.fn().mockResolvedValue({ image: IMAGE_URL }),
     },
     band: {
       aggregate: vi.fn().mockResolvedValue({ _max: { liveOrder: 3 } }),
       create: vi.fn().mockResolvedValue({ id: 'band-new' }),
       findMany: vi.fn().mockResolvedValue([{ id: 'band-1' }, { id: 'band-2' }]),
       update: vi.fn().mockResolvedValue({}),
+      delete: vi.fn().mockResolvedValue({ photo: IMAGE_URL, image: null, typoImage: null }),
+      findFirst: vi.fn().mockResolvedValue({ photo: IMAGE_URL, image: null, typoImage: null }),
     },
     userOnBand: {
       deleteMany: vi.fn().mockResolvedValue({}),
@@ -178,5 +198,74 @@ describe('admin ルーター', () => {
       ],
     });
     expect(mocks.revalidatePath).toHaveBeenCalledWith('/events', 'layout');
+  });
+
+  it('イベントを削除したら、そのイベントの画像もまとめて消す', async () => {
+    const db = createDb();
+
+    await callerFor(db).admin.event.remove({ id: 'event-1' });
+
+    expect(db.event.delete).toHaveBeenCalledWith({ where: { id: 'event-1' } });
+    expect(mocks.removeEventFolder).toHaveBeenCalledWith('event-1');
+    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events', 'layout');
+  });
+
+  it('画像の後片付けに失敗しても、イベントの削除は成功にする', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    mocks.removeEventFolder.mockRejectedValueOnce(new Error('storage down'));
+
+    await expect(
+      callerFor(createDb()).admin.event.remove({ id: 'event-1' }),
+    ).resolves.toBeUndefined();
+  });
+
+  it('バンドを削除したら、そのバンドの画像も消す', async () => {
+    const db = createDb();
+
+    await callerFor(db).admin.band.remove({ id: 'band-1' });
+
+    expect(mocks.removeByUrl.mock.calls).toEqual([[IMAGE_URL], [null], [null]]);
+  });
+
+  it('画像の URL を差し替え、差し替え前の URL を返す', async () => {
+    const db = createDb();
+    const newUrl = `${EVENT_IMAGE_URL_PREFIX}event-1/event-2.webp`;
+
+    const previousUrl = await callerFor(db).admin.image.set({
+      target: { kind: 'event', eventId: 'event-1' },
+      url: newUrl,
+    });
+
+    expect(previousUrl).toBe(IMAGE_URL);
+    expect(db.event.update).toHaveBeenCalledWith({
+      where: { id: 'event-1' },
+      data: { image: newUrl },
+    });
+    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events', 'layout');
+  });
+
+  it('バンドの画像は、そのイベントのバンドであることを確かめてから差し替える', async () => {
+    const db = createDb();
+    db.band.findFirst.mockResolvedValueOnce(null);
+
+    await expect(
+      callerFor(db).admin.image.set({
+        target: { kind: 'bandPhoto', eventId: 'event-1', bandId: 'other-band' },
+        url: null,
+      }),
+    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    expect(db.band.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'other-band', eventId: 'event-1' } }),
+    );
+    expect(db.band.update).not.toHaveBeenCalled();
+  });
+
+  it('events バケット以外の URL は画像として保存できない', async () => {
+    await expect(
+      callerFor(createDb()).admin.image.set({
+        target: { kind: 'event', eventId: 'event-1' },
+        url: 'https://example.com/evil.png',
+      }),
+    ).rejects.toMatchObject({ code: 'BAD_REQUEST' });
   });
 });

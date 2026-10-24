@@ -1,36 +1,20 @@
 'use server';
 
-import { z } from 'zod';
-
+import { eventImageTargetSchema } from '@/server/api/routers/admin/schemas';
 import {
   EventImageStorageService,
   type EventImageTarget,
+  runCleanupQuietly,
 } from '@/server/applications/services/event-image-storage.service';
-import { revalidateEventPages } from '@/server/applications/services/revalidate-event-pages';
 import { getServerAuthSession } from '@/server/auth';
-import { db } from '@/server/db';
+import { api } from '@/trpc/server';
 import { createSupabaseClientForAdmin } from '@/utils/supabase';
-
-const targetSchema = z.discriminatedUnion('kind', [
-  z.object({ kind: z.literal('event'), eventId: z.string().min(1) }),
-  z.object({
-    kind: z.enum(['bandPhoto', 'bandImage', 'bandTypoImage']),
-    eventId: z.string().min(1),
-    bandId: z.string().min(1),
-  }),
-]);
-
-const BAND_COLUMN = {
-  bandPhoto: 'photo',
-  bandImage: 'image',
-  bandTypoImage: 'typoImage',
-} as const;
 
 // クライアントで縮小してから送るので、これを超えるのは縮小を通っていないリクエスト
 const MAX_FILE_BYTES = 1024 * 1024;
 
 const parseTarget = (formData: FormData): EventImageTarget =>
-  targetSchema.parse({
+  eventImageTargetSchema.parse({
     kind: formData.get('kind'),
     eventId: formData.get('eventId'),
     bandId: formData.get('bandId') ?? undefined,
@@ -44,7 +28,7 @@ const parseImageFile = (formData: FormData) => {
   return file;
 };
 
-// Server Action はどこからでも呼べるので、管理画面の layout とは別にここでも管理者か確かめる
+// Server Action はどこからでも呼べるので、Storage に書き込める JWT を作る前にここでも管理者か確かめる
 const requireAdmin = async () => {
   const session = await getServerAuthSession();
   if (!session?.user.isAdmin) {
@@ -53,57 +37,25 @@ const requireAdmin = async () => {
   return session.user;
 };
 
-const findCurrentUrl = async (target: EventImageTarget) => {
-  if (target.kind === 'event') {
-    const event = await db.event.findUnique({
-      where: { id: target.eventId },
-      select: { image: true },
-    });
-    if (!event) throw new Error('イベントが見つかりませんでした');
-    return event.image;
-  }
-
-  const band = await db.band.findFirst({
-    where: { id: target.bandId, eventId: target.eventId },
-    select: { photo: true, image: true, typoImage: true },
-  });
-  if (!band) throw new Error('バンドが見つかりませんでした');
-  return band[BAND_COLUMN[target.kind]];
-};
-
-const saveUrl = async (target: EventImageTarget, url: string | null) => {
-  if (target.kind === 'event') {
-    await db.event.update({ where: { id: target.eventId }, data: { image: url } });
-    return;
-  }
-  await db.band.update({
-    where: { id: target.bandId },
-    data: { [BAND_COLUMN[target.kind]]: url },
-  });
-};
-
-const removeQuietly = async (storage: EventImageStorageService, url: string | null) => {
-  try {
-    await storage.removeByUrl(url);
-  } catch (error) {
-    // 古いファイルが残るだけなので、差し替え自体は失敗にしない
-    console.error('Failed to remove the previous event image:', error);
-  }
-};
-
-/** イベントまたはバンドの画像をアップロードして差し替え、新しい公開 URL を返す */
+/**
+ * イベントまたはバンドの画像をアップロードして差し替え、新しい公開 URL を返す。
+ * ここが受け持つのはファイルの保存と削除で、URL の差し替えは admin.image.set に任せる。
+ */
 export const uploadEventImage = async (formData: FormData) => {
   const user = await requireAdmin();
   const target = parseTarget(formData);
   const file = parseImageFile(formData);
-  const previousUrl = await findCurrentUrl(target);
 
   const storage = new EventImageStorageService(createSupabaseClientForAdmin(user));
   const url = await storage.save(target, await file.arrayBuffer());
-  await saveUrl(target, url);
-  await removeQuietly(storage, previousUrl);
+  const trpc = await api();
+  const previousUrl = await trpc.admin.image.set({ target, url }).catch(async (error: unknown) => {
+    // 差し替え先のイベントやバンドが見つからなければ、どこからも参照されないファイルを残さない
+    await runCleanupQuietly(() => storage.removeByUrl(url));
+    throw error;
+  });
+  await runCleanupQuietly(() => storage.removeByUrl(previousUrl));
 
-  revalidateEventPages();
   return url;
 };
 
@@ -111,13 +63,9 @@ export const uploadEventImage = async (formData: FormData) => {
 export const removeEventImage = async (formData: FormData) => {
   const user = await requireAdmin();
   const target = parseTarget(formData);
-  const previousUrl = await findCurrentUrl(target);
 
-  await saveUrl(target, null);
-  await removeQuietly(
-    new EventImageStorageService(createSupabaseClientForAdmin(user)),
-    previousUrl,
-  );
-
-  revalidateEventPages();
+  const trpc = await api();
+  const previousUrl = await trpc.admin.image.set({ target, url: null });
+  const storage = new EventImageStorageService(createSupabaseClientForAdmin(user));
+  await runCleanupQuietly(() => storage.removeByUrl(previousUrl));
 };

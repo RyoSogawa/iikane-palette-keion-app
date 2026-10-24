@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 import { describe, expect, it, vi } from 'vitest';
 
-import { EventImageStorageService } from './event-image-storage.service';
+import { EventImageStorageService, runCleanupQuietly } from './event-image-storage.service';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
@@ -12,8 +12,12 @@ const createPng = (width: number, height: number) =>
     .png()
     .toBuffer();
 
-const createSupabaseMock = (options: { uploadError?: Error } = {}) => {
+const createSupabaseMock = (options: { uploadError?: Error; files?: string[] } = {}) => {
   const bucket = {
+    list: vi.fn().mockResolvedValue({
+      data: (options.files ?? []).map((name) => ({ name })),
+      error: null,
+    }),
     remove: vi.fn().mockResolvedValue({ data: [], error: null }),
     upload: vi.fn((path: string) =>
       Promise.resolve(
@@ -144,5 +148,39 @@ describe('EventImageStorageService.removeByUrl', () => {
     await new EventImageStorageService(supabase).removeByUrl(url);
 
     expect(bucket.remove).not.toHaveBeenCalled();
+  });
+});
+
+describe('EventImageStorageService.removeEventFolder', () => {
+  it('イベントのフォルダにある画像をすべて消す', async () => {
+    const { supabase, bucket } = createSupabaseMock({
+      files: ['event-1.webp', 'band-1-bandPhoto-2.webp'],
+    });
+
+    await new EventImageStorageService(supabase).removeEventFolder('event-1');
+
+    expect(bucket.list).toHaveBeenCalledWith('event-1', expect.anything());
+    expect(bucket.remove).toHaveBeenCalledWith([
+      'event-1/event-1.webp',
+      'event-1/band-1-bandPhoto-2.webp',
+    ]);
+  });
+
+  it('画像がなければ何も消さない', async () => {
+    const { supabase, bucket } = createSupabaseMock();
+
+    await new EventImageStorageService(supabase).removeEventFolder('event-1');
+
+    expect(bucket.remove).not.toHaveBeenCalled();
+  });
+});
+
+describe('runCleanupQuietly', () => {
+  it('後片付けが失敗しても投げない', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    await expect(
+      runCleanupQuietly(() => Promise.reject(new Error('storage down'))),
+    ).resolves.toBeUndefined();
   });
 });

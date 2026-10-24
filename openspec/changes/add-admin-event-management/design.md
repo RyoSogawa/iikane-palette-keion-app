@@ -23,7 +23,7 @@
 ### 2. 認可はサーバー側で二重に
 - tRPC: `adminProcedure = protectedProcedure.use(...)` で `isAdmin` でなければ `FORBIDDEN`。管理系の手続きはすべて `src/server/api/routers/admin/` に置き、`adminProcedure` 以外を使わない
 - ページ: `src/app/admin/layout.tsx` でセッションを確認し、管理者でなければ `notFound()`。未ログインも同じく 404 にして管理画面の存在を明かさない。管理画面は `dynamic = 'force-dynamic'`
-- Server Action（画像アップロード）: 内部で `getServerAuthSession()` を取り直し、`isAdmin` を確認してから処理する（Server Action は公開エンドポイントなので layout の判定に頼らない）
+- Server Action（画像アップロード）: 内部で `getServerAuthSession()` を取り直し、`isAdmin` を確認してから処理する（Server Action は公開エンドポイントなので layout の判定に頼らない）。Server Action が受け持つのはファイルの保存と削除だけで、DB の URL の差し替えは `admin.image.set`（`adminProcedure`）に任せる。DB の更新と管理者の判定を tRPC 側の 1 か所に揃えるため
 
 ### 3. 下書きは公開 API で必ず除外
 - `Event.isDraft Boolean @default(false)` を追加。既存行は公開のまま
@@ -51,7 +51,7 @@
   - イベント画像・バンド写真: 幅いっぱいに出るので幅 1200px 以内。縦長のフライヤーのため高さは 1800px まで残す。quality 75
   - バンドのアイコン画像: 最大でタブレット幅の 3 列表示の約 232px（2 倍で約 464px）なので 480x480 に切り抜く。quality 80
   - タイポ画像: 一覧ではアイコンと同じ幅、バンドページでは高さ 50px の横長で出るので 960x480 以内。文字の輪郭が崩れないよう quality 85 と smartSubsample を使い、透過を残す
-- 差し替え時は古いファイルを消す
+- 差し替え時は古いファイルを消す。イベントを削除したときはイベントのフォルダごと、バンドを削除したときはバンドの画像を消す（public のバケットに残ると URL を知る人に見え続けるため）。後片付けに失敗しても本体の処理は失敗にしない
 - 代替案: service role キーでの書き込み。RLS を素通りするため、既存方針（ユーザー JWT + RLS）に揃える
 
 ### 7. バンドメンバーは登録ユーザーか、未登録の人の表示名で入れる

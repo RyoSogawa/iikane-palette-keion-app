@@ -5,7 +5,11 @@ import { STORAGE_PATH } from '@/constants/supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 const BUCKET = 'events';
-const BUCKET_URL_PREFIX = `${STORAGE_PATH}/${BUCKET}/`;
+/** events バケットの画像の公開 URL の先頭。DB に保存する画像の URL はこれで始まる */
+export const EVENT_IMAGE_URL_PREFIX = `${STORAGE_PATH}/${BUCKET}/`;
+
+// 1 イベントの画像はイベント 1 枚とバンドごとに 3 枚なので、この件数で足りる
+const FOLDER_LIST_LIMIT = 1000;
 
 export type EventImageTarget =
   | { kind: 'event'; eventId: string }
@@ -63,7 +67,7 @@ export class EventImageStorageService {
       throw error;
     }
 
-    return `${BUCKET_URL_PREFIX}${data.path}`;
+    return `${EVENT_IMAGE_URL_PREFIX}${data.path}`;
   }
 
   /**
@@ -71,13 +75,40 @@ export class EventImageStorageService {
    * このバケットのものではないので触らない。
    */
   public async removeByUrl(url: string | null): Promise<void> {
-    if (!url?.startsWith(BUCKET_URL_PREFIX)) return;
+    if (!url?.startsWith(EVENT_IMAGE_URL_PREFIX)) return;
 
     const { error } = await this.supabase.storage
       .from(BUCKET)
-      .remove([url.slice(BUCKET_URL_PREFIX.length)]);
+      .remove([url.slice(EVENT_IMAGE_URL_PREFIX.length)]);
     if (error) {
       throw error;
     }
   }
+
+  /** イベントを削除したときに、そのイベントの画像をまとめて消す。差し替えで消し損ねたファイルも残さない */
+  public async removeEventFolder(eventId: string): Promise<void> {
+    const { data, error } = await this.supabase.storage
+      .from(BUCKET)
+      .list(eventId, { limit: FOLDER_LIST_LIMIT });
+    if (error) {
+      throw error;
+    }
+    if (data.length === 0) return;
+
+    const { error: removeError } = await this.supabase.storage
+      .from(BUCKET)
+      .remove(data.map((file) => `${eventId}/${file.name}`));
+    if (removeError) {
+      throw removeError;
+    }
+  }
 }
+
+/** 画像の後片付けに失敗しても、本体の処理は失敗にしない。使われないファイルが残るだけなので */
+export const runCleanupQuietly = async (cleanup: () => Promise<unknown>) => {
+  try {
+    await cleanup();
+  } catch (error) {
+    console.error('Failed to clean up event images:', error);
+  }
+};

@@ -1,26 +1,27 @@
+import { TRPCError } from '@trpc/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { removeEventImage, uploadEventImage } from './event-image';
+
+import type * as StorageService from '@/server/applications/services/event-image-storage.service';
 
 const mocks = vi.hoisted(() => ({
   getServerAuthSession: vi.fn(),
   createSupabaseClientForAdmin: vi.fn(() => ({})),
   save: vi.fn(),
   removeByUrl: vi.fn(),
-  revalidatePath: vi.fn(),
-  db: {
-    event: { findUnique: vi.fn(), update: vi.fn() },
-    band: { findFirst: vi.fn(), update: vi.fn() },
-  },
+  setImage: vi.fn(),
 }));
 
-vi.mock('next/cache', () => ({ revalidatePath: mocks.revalidatePath }));
 vi.mock('@/server/auth', () => ({ getServerAuthSession: mocks.getServerAuthSession }));
-vi.mock('@/server/db', () => ({ db: mocks.db }));
+vi.mock('@/trpc/server', () => ({
+  api: () => Promise.resolve({ admin: { image: { set: mocks.setImage } } }),
+}));
 vi.mock('@/utils/supabase', () => ({
   createSupabaseClientForAdmin: mocks.createSupabaseClientForAdmin,
 }));
-vi.mock('@/server/applications/services/event-image-storage.service', () => ({
+vi.mock('@/server/applications/services/event-image-storage.service', async (importOriginal) => ({
+  ...(await importOriginal<typeof StorageService>()),
   EventImageStorageService: class {
     save = mocks.save;
     removeByUrl = mocks.removeByUrl;
@@ -46,8 +47,7 @@ beforeEach(() => {
   mocks.getServerAuthSession.mockResolvedValue(adminSession);
   mocks.save.mockResolvedValue(NEW_URL);
   mocks.removeByUrl.mockResolvedValue(undefined);
-  mocks.db.event.findUnique.mockResolvedValue({ image: OLD_URL });
-  mocks.db.band.findFirst.mockResolvedValue({ photo: OLD_URL, image: null, typoImage: null });
+  mocks.setImage.mockResolvedValue(OLD_URL);
 });
 
 describe('uploadEventImage', () => {
@@ -64,48 +64,29 @@ describe('uploadEventImage', () => {
     },
   );
 
-  it('イベント画像を保存し、DB を更新して古い画像を消す', async () => {
+  it('画像を保存して URL を差し替え、古い画像を消す', async () => {
     const url = await uploadEventImage(
-      createFormData({ kind: 'event', eventId: 'event-1' }, imageFile()),
-    );
-
-    expect(url).toBe(NEW_URL);
-    expect(mocks.createSupabaseClientForAdmin).toHaveBeenCalledWith(adminSession.user);
-    expect(mocks.save).toHaveBeenCalledWith(
-      { kind: 'event', eventId: 'event-1' },
-      expect.any(ArrayBuffer),
-    );
-    expect(mocks.db.event.update).toHaveBeenCalledWith({
-      where: { id: 'event-1' },
-      data: { image: NEW_URL },
-    });
-    expect(mocks.removeByUrl).toHaveBeenCalledWith(OLD_URL);
-    expect(mocks.revalidatePath).toHaveBeenCalledWith('/events', 'layout');
-  });
-
-  it('バンドの写真は、そのイベントのバンドであることを確かめてから保存する', async () => {
-    await uploadEventImage(
       createFormData({ kind: 'bandPhoto', eventId: 'event-1', bandId: 'band-1' }, imageFile()),
     );
 
-    expect(mocks.db.band.findFirst).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 'band-1', eventId: 'event-1' } }),
-    );
-    expect(mocks.db.band.update).toHaveBeenCalledWith({
-      where: { id: 'band-1' },
-      data: { photo: NEW_URL },
-    });
+    const target = { kind: 'bandPhoto', eventId: 'event-1', bandId: 'band-1' };
+    expect(url).toBe(NEW_URL);
+    expect(mocks.createSupabaseClientForAdmin).toHaveBeenCalledWith(adminSession.user);
+    expect(mocks.save).toHaveBeenCalledWith(target, expect.any(ArrayBuffer));
+    expect(mocks.setImage).toHaveBeenCalledWith({ target, url: NEW_URL });
+    expect(mocks.removeByUrl).toHaveBeenCalledWith(OLD_URL);
   });
 
-  it('別のイベントのバンドは更新しない', async () => {
-    mocks.db.band.findFirst.mockResolvedValue(null);
+  it('URL を差し替えられなければ、上げた画像を消して投げる', async () => {
+    mocks.setImage.mockRejectedValue(new TRPCError({ code: 'NOT_FOUND' }));
 
     await expect(
       uploadEventImage(
         createFormData({ kind: 'bandPhoto', eventId: 'event-1', bandId: 'other' }, imageFile()),
       ),
-    ).rejects.toThrow();
-    expect(mocks.save).not.toHaveBeenCalled();
+    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    expect(mocks.removeByUrl).toHaveBeenCalledWith(NEW_URL);
+    expect(mocks.removeByUrl).not.toHaveBeenCalledWith(OLD_URL);
   });
 
   it('画像以外のファイルは受け付けない', async () => {
@@ -131,9 +112,9 @@ describe('removeEventImage', () => {
   it('画像を外して古いファイルを消す', async () => {
     await removeEventImage(createFormData({ kind: 'event', eventId: 'event-1' }));
 
-    expect(mocks.db.event.update).toHaveBeenCalledWith({
-      where: { id: 'event-1' },
-      data: { image: null },
+    expect(mocks.setImage).toHaveBeenCalledWith({
+      target: { kind: 'event', eventId: 'event-1' },
+      url: null,
     });
     expect(mocks.removeByUrl).toHaveBeenCalledWith(OLD_URL);
   });
@@ -144,5 +125,6 @@ describe('removeEventImage', () => {
     await expect(
       removeEventImage(createFormData({ kind: 'event', eventId: 'event-1' })),
     ).rejects.toThrow('Forbidden');
+    expect(mocks.setImage).not.toHaveBeenCalled();
   });
 });

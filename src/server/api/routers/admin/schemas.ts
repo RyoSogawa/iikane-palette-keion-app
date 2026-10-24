@@ -79,3 +79,13 @@ export const membersInputSchema = z
       }
     });
   });
+
+/** 画像を差し替える先。バンドの画像は、そのバンドが eventId のイベントに属するかを確かめてから使う */
+export const eventImageTargetSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('event'), eventId: z.string().min(1) }),
+  z.object({
+    kind: z.enum(['bandPhoto', 'bandImage', 'bandTypoImage']),
+    eventId: z.string().min(1),
+    bandId: z.string().min(1),
+  }),
+]);
