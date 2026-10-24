@@ -6,29 +6,30 @@
 主な機能:
 - **メンバー管理**: ユーザープロフィール、SNSリンク、タグ管理
 - **イベント管理**: ライブイベントの作成・閲覧、バンド情報、写真・動画管理
+- **管理画面**: 管理者（`User.isAdmin`）がイベント・バンド・メンバー・画像・レク王を編集する。イベントは下書きで作り、公開するまで公開ページに出さない
 - **My Best Songs**: Spotify APIを使った楽曲検索とお気に入りリスト作成（ドラッグ&ドロップで並び替え可能）
 - **オンボーディング**: 新規ユーザー向けの初回設定フロー
 
 ## Tech Stack
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript (strict mode)
-- **UI Library**: React 18.2
+- **UI Library**: React 19
 - **Database**: PostgreSQL + Prisma ORM
 - **API**: tRPC (type-safe API)
-- **Authentication**: NextAuth.js (Discord OAuth)
-- **UI Components**: Mantine UI v7
+- **Authentication**: NextAuth.js v5 (Discord OAuth、データベースセッション)
+- **UI Components**: Mantine UI v8
 - **Storage**: Supabase (ファイルストレージ)
 - **State Management**: Zustand, TanStack React Query
 - **Form Handling**: React Hook Form + Zod
 - **Drag & Drop**: @dnd-kit
 - **Rich Text Editor**: TipTap
 - **Validation**: Zod + zod-prisma-types
-- **Runtime**: Node.js 22, pnpm 9
+- **Runtime**: Node.js 24, pnpm 10
 
 ## Project Conventions
 
 ### Code Style
-- **ESLint**: Airbnb config + TypeScript rules
+- **ESLint**: eslint-config-next + typescript-eslint
 - **Prettier**: コードフォーマット
 - **TypeScript**: strict mode、noUncheckedIndexedAccess有効
 - **Import順序**: builtin → external → internal → parent/sibling → object → index → type
@@ -44,6 +45,7 @@ src/
 ├── app/                    # Next.js App Router (pages, API routes)
 ├── features/               # 機能別モジュール（コンポーネント、hooks、ロジック）
 │   ├── account/           # アカウント管理
+│   ├── admin/             # 管理画面
 │   ├── application/       # 共通アプリケーションUI
 │   ├── event/             # イベント機能
 │   ├── my-best-songs/     # お気に入り楽曲機能
@@ -60,11 +62,13 @@ src/
 
 **パターン**:
 - tRPC: 入力バリデーション（Zod）、認証済み/未認証プロシージャ
-- Feature modules: 各機能が自己完結（components, hooks, logics）
-- Server/Client分離: `server-only` パッケージで明示的に分離
+- Feature modules: 各機能が自己完結（components, hooks, logics, actions）。Server Action は部品の横の `actions.ts` か、機能直下の `actions/` に置く
+- Server/Client分離: `src/trpc/server.ts` は `server-only` で保護する。DB・Storage・秘密鍵を扱うサーバー側のモジュールはクライアントコンポーネントから import しない（型と zod スキーマだけは共有してよい）
 
 ### Testing Strategy
-（テストは現在未実装）
+- **ユニットテスト**: Vitest。対象ファイルの横に `*.test.ts` を置く（`pnpm test`）
+- **E2E**: Playwright。`e2e/*.spec.ts`（`pnpm e2e`）。ローカルの DB と Supabase を使う
+- **CI**: PR ごとに lint・ユニットテスト・build と E2E を流す
 
 ### Git Workflow
 - **Husky**: Git hooks管理

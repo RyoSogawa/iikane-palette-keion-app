@@ -1,3 +1,4 @@
+import { adminRouter } from '@/server/api/routers/admin';
 import { eventRouter } from '@/server/api/routers/event';
 import { myBestSongsRouter } from '@/server/api/routers/my-best-songs';
 import { onboardingRouter } from '@/server/api/routers/onboarding';
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   onboarding: onboardingRouter,
   myBestSongs: myBestSongsRouter,
   event: eventRouter,
+  admin: adminRouter,
 });
 
 // export type definition of API

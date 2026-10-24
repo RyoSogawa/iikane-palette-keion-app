@@ -20,6 +20,8 @@ export default async function seedUser() {
       podcastLink: `https://example.com/podcast${i}`,
       musicLink: `https://example.com/music${i}`,
       emailVerified: null,
+      // 管理画面を手元で触れるよう、先頭のユーザーだけ管理者にする
+      isAdmin: i === 0,
     }));
   await prisma.user.createMany({
     data,

@@ -28,3 +28,15 @@ $ pnpm db:seed # seed data
 $ pnpm db:clear # clear all data
 $ pnpm db:migrate # create migration file
 ```
+
+## 管理画面
+
+`/admin` でイベント・バンド・メンバー・画像・レク王を登録、編集できる。管理者以外には 404 になる。
+
+管理者の付与と解除は画面からはできないので、DB を直接更新する。
+
+```sql
+update "User" set "isAdmin" = true where id = '<userId>';
+```
+
+管理画面から作ったイベントは下書きになり、「公開する」まで公開ページには出ない。

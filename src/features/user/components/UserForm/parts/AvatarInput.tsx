@@ -9,9 +9,9 @@ import { useSession } from 'next-auth/react';
 
 import { NotificationOptions } from '@/constants/notification';
 import { type User } from '@/types/generated/zod';
+import { resizeImageForUpload } from '@/utils/resize-image';
 
 import { updateUserAvatar } from '../actions';
-import { resizeImageForUpload } from './resize-image';
 
 export type AvatarInputProps = {
   user: Pick<User, 'id' | 'image'>;

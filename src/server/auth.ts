@@ -15,7 +15,14 @@ declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      isAdmin: boolean;
     } & DefaultSession['user'];
+  }
+}
+
+declare module 'next-auth/adapters' {
+  interface AdapterUser {
+    isAdmin: boolean;
   }
 }
 

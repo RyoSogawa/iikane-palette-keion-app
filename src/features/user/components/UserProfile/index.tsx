@@ -11,7 +11,7 @@ import { type UserTag, type Event } from '@/types/generated/zod';
 import SnsLinks from './parts/SnsLinks';
 
 export type UserProfileProps = {
-  user: Omit<User, 'createdAt' | 'email' | 'emailVerified'> & {
+  user: Omit<User, 'createdAt' | 'email' | 'emailVerified' | 'isAdmin'> & {
     tags: Array<{
       userTag: Pick<UserTag, 'name'>;
     }>;
