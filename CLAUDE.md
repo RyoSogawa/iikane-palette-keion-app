@@ -52,6 +52,8 @@ pnpm db:clear     # Reset database (caution: deletes all data)
 pnpm lint         # Run ESLint
 pnpm format       # Fix ESLint issues and format with Prettier
 pnpm prettier     # Run Prettier only
+pnpm test         # Run unit tests (Vitest)
+pnpm e2e          # Run E2E tests (Playwright)
 ```
 
 ### Testing Single Features
@@ -64,12 +66,12 @@ When testing specific features, navigate to:
 ## Architecture Overview
 
 ### Tech Stack
-- **Framework**: Next.js 14 with App Router
+- **Framework**: Next.js 16 with App Router (React 19)
 - **Language**: TypeScript (strict mode)
 - **Database**: PostgreSQL with Prisma ORM
 - **API**: tRPC for type-safe APIs
-- **Auth**: NextAuth.js with Discord OAuth
-- **UI**: Mantine UI components
+- **Auth**: NextAuth.js v5 with Discord OAuth
+- **UI**: Mantine UI v8 components
 - **Storage**: Supabase for file storage
 - **External APIs**: Spotify API for song search
 
@@ -81,7 +83,7 @@ The codebase follows a layered architecture with feature-based organization:
 src/
 ├── app/          # Next.js pages and API routes
 ├── features/     # Feature-specific components and logic
-├── server/       # Backend logic (tRPC routers, domain, infrastructure)
+├── server/       # Backend logic (tRPC routers, application services)
 ├── ui/           # Shared UI components
 └── utils/        # Utility functions
 ```
@@ -93,19 +95,17 @@ src/
    - Input validation with Zod
    - Procedures organized by domain (auth, event, user, etc.)
 
-2. **Domain Layer** (`src/server/domains/`)
-   - Business logic and domain models
-   - Repository interfaces
-   - Domain services (EventService, UserService, etc.)
+2. **Application Services** (`src/server/applications/services/`)
+   - Integrations with external services such as Supabase Storage
+   - Shared server-side helpers used by tRPC routers and Server Actions
 
-3. **Infrastructure Layer** (`src/server/infrastructures/`)
-   - Prisma repositories
-   - External service integrations (Spotify, Supabase)
-   - Database access implementation
+3. **Admin Area** (`src/app/admin/`, `src/features/admin/`, `src/server/api/routers/admin/`)
+   - Only users with `User.isAdmin` can access it; every admin procedure uses `adminProcedure`
+   - Events are created as drafts (`Event.isDraft`) and hidden from public routes until published
 
 4. **Feature Modules** (`src/features/`)
    - Self-contained feature implementations
-   - Components, hooks, and utilities specific to each feature
+   - Components, hooks, logics, and Server Actions (`actions/`) specific to each feature
    - Examples: event management, user profiles, my-best-songs
 
 ### Important Implementation Details
@@ -123,7 +123,7 @@ src/
 
 3. **File Upload**
    - Supabase storage for user avatars and event images
-   - Upload handling in `src/features/account/image-uploader/`
+   - Images are resized in the browser (`src/utils/resize-image.ts`), sent to Server Actions, and stored by services in `src/server/applications/services/`
 
 4. **Drag & Drop**
    - Song ordering in My Best Songs feature
