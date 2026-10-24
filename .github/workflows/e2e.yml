@@ -2,6 +2,23 @@ name: e2e
 on:
   pull_request:
     types: [opened, synchronize]
+    # 画面・DB・Storage の動きに関わる変更があるときだけ流す
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'prisma/**'
+      - 'supabase/**'
+      - 'e2e/**'
+      - 'playwright.config.ts'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.npmrc'
+      - '.node-version'
+      - 'tsconfig.json'
+      - 'next.config.js'
+      - 'postcss.config.cjs'
+      - '.github/workflows/e2e.yml'
 permissions:
   contents: read
 concurrency:
