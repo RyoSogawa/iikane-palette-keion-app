@@ -2,6 +2,24 @@ name: lint-and-build
 on:
   pull_request:
     types: [opened, synchronize]
+    # ドキュメントや openspec だけの変更では lint・ユニットテスト・build が変わらないので流さない
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'prisma/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.npmrc'
+      - '.node-version'
+      - '.env.example'
+      - 'tsconfig.json'
+      - 'next.config.js'
+      - 'postcss.config.cjs'
+      - 'eslint.config.mjs'
+      - 'prettier.config.js'
+      - 'vitest.config.ts'
+      - '.github/workflows/lint-and-build.yml'
 permissions:
   contents: read
   pull-requests: write
