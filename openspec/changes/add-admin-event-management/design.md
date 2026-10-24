@@ -38,8 +38,9 @@
 - プレビュー内のリンクは公開 URL を指すと下書きでは 404 になるため、リンク先を props で差し替えられるようにする
 
 ### 5. キャッシュの無効化
-- 管理系のミューテーション（イベント・バンド・メンバー・画像・レク王・公開状態の変更・削除）の後に `revalidatePath('/events')` と `revalidatePath('/events/<eventId>', 'layout')`（バンドページも含む）、`revalidatePath('/members', 'layout')`（レク王の表示）を呼び、ISR の 1 時間キャッシュに編集が埋もれないようにする
-- 呼び出しは 1 か所の関数（`revalidateEventPages(eventId)`）にまとめる
+- 管理系のミューテーション（イベント・バンド・メンバー・画像・レク王・公開状態の変更・削除）の後に `revalidatePath('/events', 'layout')` と `revalidatePath('/members', 'layout')` を呼び、ISR の 1 時間キャッシュに編集が埋もれないようにする
+- 変えたイベントのページだけでなく `/events` 配下をまとめて消す。レク王の回数は別のイベントの詳細ページにも出るため。イベントの数は多くないので、作り直しの負担は小さい
+- 呼び出しは 1 か所の関数（`revalidateEventPages()`）にまとめる。イベントの作成は下書きで始まり公開ページに出ないので呼ばない
 
 ### 6. 画像は新しい `events` バケットに管理者だけが書き込む
 - パス: `events/<eventId>/<name>-<timestamp>.webp`（name = `event`、バンドなら `<bandId>-bandPhoto` / `<bandId>-bandImage` / `<bandId>-bandTypoImage`）
