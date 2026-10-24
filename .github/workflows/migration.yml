@@ -31,3 +31,5 @@ jobs:
         run: npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          # schema.prisma の directUrl が読む。マイグレーションは Pooler を通さない直接接続（5432）で流す
+          DIRECT_URL: ${{ secrets.PROD_DIRECT_URL }}
