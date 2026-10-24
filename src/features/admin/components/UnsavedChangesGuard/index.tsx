@@ -13,7 +13,7 @@ import React, {
 import { Button, Group, Modal, Text } from '@mantine/core';
 import { useRouter } from 'next/navigation';
 
-import { toLeavingHref } from '@/features/admin/logics/leaving-href';
+import { toInAppNavigationPath } from '@/features/admin/logics/in-app-navigation-path';
 
 type SetDirty = (id: string, isDirty: boolean) => void;
 
@@ -50,7 +50,7 @@ const UnsavedChangesGuard: React.FC<{ children: React.ReactNode }> = ({ children
   const router = useRouter();
   // クリックのリスナーから最新の値を読むため state ではなく ref に持つ
   const dirtyIds = useRef<ReadonlySet<string>>(new Set());
-  const [pendingHref, setPendingHref] = useState<string | null>(null);
+  const [pendingPath, setPendingPath] = useState<string | null>(null);
 
   const setDirty = useCallback<SetDirty>((id, isDirty) => {
     const others = [...dirtyIds.current].filter((dirtyId) => dirtyId !== id);
@@ -61,11 +61,11 @@ const UnsavedChangesGuard: React.FC<{ children: React.ReactNode }> = ({ children
     const handleClick = (event: MouseEvent) => {
       if (dirtyIds.current.size === 0 || !isPlainLeftClick(event)) return;
       const anchor = findAnchor(event);
-      const href = anchor ? toLeavingHref(anchor.href, window.location.href) : null;
-      if (!href) return;
+      const path = anchor ? toInAppNavigationPath(anchor.href, window.location.href) : null;
+      if (!path) return;
       event.preventDefault();
       event.stopPropagation();
-      setPendingHref(href);
+      setPendingPath(path);
     };
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (dirtyIds.current.size === 0) return;
@@ -80,17 +80,17 @@ const UnsavedChangesGuard: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const handleStay = useCallback(() => setPendingHref(null), []);
+  const handleStay = useCallback(() => setPendingPath(null), []);
   const handleLeave = useCallback(() => {
-    if (pendingHref) router.push(pendingHref);
-    setPendingHref(null);
-  }, [pendingHref, router]);
+    if (pendingPath) router.push(pendingPath);
+    setPendingPath(null);
+  }, [pendingPath, router]);
 
   return (
     <UnsavedChangesContext.Provider value={setDirty}>
       {children}
       <Modal
-        opened={pendingHref !== null}
+        opened={pendingPath !== null}
         title="保存していない変更があります"
         centered
         onClose={handleStay}

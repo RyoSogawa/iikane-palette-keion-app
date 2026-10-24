@@ -1,29 +1,31 @@
 import { describe, expect, it } from 'vitest';
 
-import { toLeavingHref } from './leaving-href';
+import { toInAppNavigationPath } from './in-app-navigation-path';
 
 const CURRENT = 'http://localhost:3000/admin/events/abc';
 
-describe('toLeavingHref', () => {
+describe('toInAppNavigationPath', () => {
   it('同じオリジンの別ページへのリンクは、遷移先のパスを返す', () => {
-    expect(toLeavingHref('http://localhost:3000/admin/events?page=2#top', CURRENT)).toBe(
+    expect(toInAppNavigationPath('http://localhost:3000/admin/events?page=2#top', CURRENT)).toBe(
       '/admin/events?page=2#top',
     );
   });
 
   it('同じページ内のアンカーだけが変わるリンクはページを離れないので null を返す', () => {
-    expect(toLeavingHref('http://localhost:3000/admin/events/abc#bands', CURRENT)).toBeNull();
+    expect(
+      toInAppNavigationPath('http://localhost:3000/admin/events/abc#bands', CURRENT),
+    ).toBeNull();
   });
 
   it('別オリジンへのリンクは beforeunload に任せるので null を返す', () => {
-    expect(toLeavingHref('https://drive.google.com/xxx', CURRENT)).toBeNull();
+    expect(toInAppNavigationPath('https://drive.google.com/xxx', CURRENT)).toBeNull();
   });
 
   it('URL として解釈できない値は null を返す', () => {
-    expect(toLeavingHref('http://[', CURRENT)).toBeNull();
+    expect(toInAppNavigationPath('http://[', CURRENT)).toBeNull();
   });
 
   it('javascript: などオリジンを持たない URL は null を返す', () => {
-    expect(toLeavingHref('javascript:void(0)', CURRENT)).toBeNull();
+    expect(toInAppNavigationPath('javascript:void(0)', CURRENT)).toBeNull();
   });
 });
