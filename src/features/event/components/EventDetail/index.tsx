@@ -93,8 +93,6 @@ const EventDetail: React.FC<EventDetailProps> = ({ event, bandHref }) => {
           </Title>
           <AspectRatio ratio={16 / 9} mt="md" bg="gray">
             <iframe
-              width="560"
-              height="315"
               src={event.movie}
               title="YouTube video player"
               frameBorder="0"
