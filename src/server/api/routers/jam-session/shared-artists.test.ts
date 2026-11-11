@@ -31,6 +31,12 @@ describe('findSharedArtists', () => {
     ]);
   });
 
+  it('全角と半角の違いも同じアーティストとみなす', () => {
+    expect(findSharedArtists([song('a', 'ＯＡＳＩＳ'), song('b', 'Oasis')])).toEqual([
+      { artist: 'ＯＡＳＩＳ', userIds: ['a', 'b'] },
+    ]);
+  });
+
   it('アーティスト名が空の曲は数えない', () => {
     expect(findSharedArtists([song('a', ''), song('b', ' ')])).toEqual([]);
   });

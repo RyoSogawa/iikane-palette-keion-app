@@ -21,7 +21,9 @@ const SHARED_ARTIST = 'E2E 共通アーティスト';
 const cleanUp = async () => {
   await db.jamSessionSong.deleteMany({ where: { proposerId: { in: E2E_USER_IDS } } });
   await db.jamSessionParticipant.deleteMany({ where: { userId: { in: E2E_USER_IDS } } });
-  await db.myBestSong.deleteMany({ where: { artist: SHARED_ARTIST } });
+  await db.myBestSong.deleteMany({
+    where: { artist: SHARED_ARTIST, userId: { in: E2E_USER_IDS } },
+  });
 };
 
 const songTitles = (page: Page) =>
@@ -133,11 +135,11 @@ test.describe('セッションページ', () => {
     await page.getByRole('button', { name: '曲を挙げる' }).click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
     await dialog.getByText('自分で入力', { exact: true }).click();
-    await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('Oasis');
+    await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('E2E Oasis');
     await dialog.getByRole('button', { name: 'この内容で挙げる' }).click();
 
-    await expect(songRow(page, 'Oasis の曲なにか')).toBeVisible();
-    await expect(songRow(page, 'Oasis の曲なにか')).toContainText(`Vo ${LOGIN_USER.name}`);
+    await expect(songRow(page, 'E2E Oasis の曲なにか')).toBeVisible();
+    await expect(songRow(page, 'E2E Oasis の曲なにか')).toContainText(`Vo ${LOGIN_USER.name}`);
   });
 
   test('片方の操作が、もう片方の画面に再読み込みなしで出る', async ({ page, browser }) => {
@@ -159,11 +161,11 @@ test.describe('セッションページ', () => {
     await page.getByRole('button', { name: '曲を挙げる' }).click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
     await dialog.getByText('自分で入力', { exact: true }).click();
-    await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('Oasis');
-    await dialog.getByRole('textbox', { name: /曲名/ }).fill('Wonderwall');
+    await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('E2E Oasis');
+    await dialog.getByRole('textbox', { name: /曲名/ }).fill('E2E Wonderwall');
     await dialog.getByRole('button', { name: 'この内容で挙げる' }).click();
 
-    await expect(songRow(otherPage, 'Wonderwall')).toBeVisible(POLLING_TIMEOUT);
+    await expect(songRow(otherPage, 'E2E Wonderwall')).toBeVisible(POLLING_TIMEOUT);
     await otherContext.close();
   });
 

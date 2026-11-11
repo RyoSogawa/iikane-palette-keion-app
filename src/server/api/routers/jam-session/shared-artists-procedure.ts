@@ -17,6 +17,8 @@ export const sharedArtists = protectedProcedure.query(async ({ ctx }) => {
   const songs = await ctx.db.myBestSong.findMany({
     where: { userId: { in: participants.map(({ userId }) => userId) } },
     select: { userId: true, artist: true },
+    // 表記が揺れたときに出す名前が取り直すたびに変わらないよう、古い登録から数える
+    orderBy: { createdAt: 'asc' },
   });
   return findSharedArtists(songs);
 });

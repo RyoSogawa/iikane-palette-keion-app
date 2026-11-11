@@ -191,6 +191,7 @@ describe('jamSession.sharedArtists', () => {
     expect(db.myBestSong.findMany).toHaveBeenCalledWith({
       where: { userId: { in: ['user-1', 'user-2'] } },
       select: { userId: true, artist: true },
+      orderBy: { createdAt: 'asc' },
     });
     expect(result).toEqual([{ artist: 'Oasis', userIds: ['user-1', 'user-2'] }]);
   });

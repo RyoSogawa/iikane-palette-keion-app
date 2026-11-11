@@ -3,6 +3,7 @@ import React from 'react';
 import { Avatar, Group, Stack, Text, Title, UnstyledButton } from '@mantine/core';
 
 import { displayName } from '@/features/jam-session/components/PresenceSection';
+import { artistKey } from '@/server/api/routers/jam-session/shared-artists';
 import { api } from '@/trpc/react';
 
 import type { JamSessionParticipantView } from '@/features/jam-session/types';
@@ -28,7 +29,14 @@ const SharedArtists: React.FC<SharedArtistsProps> = ({
   const { data } = api.jamSession.sharedArtists.useQuery(undefined, {
     refetchInterval: REFETCH_INTERVAL_MS,
   });
-  const artists = (data ?? []).filter(({ artist }) => !listedArtists.has(artist.toLowerCase()));
+  // この query は 30 秒おきなので、その間に退出した人は board の参加者で外し、2 人を切ったら出さない
+  const artists = (data ?? [])
+    .filter(({ artist }) => !listedArtists.has(artistKey(artist)))
+    .map(({ artist, userIds }) => ({
+      artist,
+      userIds: userIds.filter((userId) => participantsById.has(userId)),
+    }))
+    .filter(({ userIds }) => userIds.length >= 2);
 
   if (artists.length === 0) return null;
 
