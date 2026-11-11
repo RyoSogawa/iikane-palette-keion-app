@@ -9,6 +9,7 @@ import AddSongModal from '@/features/jam-session/components/AddSongModal';
 import PersonModal from '@/features/jam-session/components/PersonModal';
 import PresenceSection from '@/features/jam-session/components/PresenceSection';
 import ProfileModal from '@/features/jam-session/components/ProfileModal';
+import SharedArtists from '@/features/jam-session/components/SharedArtists';
 import SongList from '@/features/jam-session/components/SongList';
 import SongModal from '@/features/jam-session/components/SongModal';
 import { useJamSessionBoard } from '@/features/jam-session/hooks/useJamSessionBoard';
@@ -20,7 +21,7 @@ type Dialog =
   | { kind: 'profile' }
   | { kind: 'person'; userId: string }
   | { kind: 'song'; songId: string }
-  | { kind: 'addSong' }
+  | { kind: 'addSong'; artist?: string }
   | null;
 
 export type JamSessionBoardProps = {
@@ -38,6 +39,12 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
 
   const existingSpotifyIds = useMemo(
     () => new Set(songs.flatMap(({ spotifyId }) => (spotifyId ? [spotifyId] : []))),
+    [songs],
+  );
+  // 曲名の無い「<アーティスト名> の曲なにか」が挙がっているアーティスト
+  const listedArtists = useMemo(
+    () =>
+      new Set(songs.flatMap(({ name, artist }) => (!name && artist ? [artist.toLowerCase()] : []))),
     [songs],
   );
   const selectedSong =
@@ -63,6 +70,13 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
           onSelectPerson={(userId) => setDialog({ kind: 'person', userId })}
           onOpenProfile={openProfile}
           onLeave={() => void run(mutations.leave.mutateAsync())}
+        />
+        <SharedArtists
+          participantsById={participantsById}
+          listedArtists={listedArtists}
+          onSelect={(artist) =>
+            setDialog(viewer.isActive ? { kind: 'addSong', artist } : { kind: 'profile' })
+          }
         />
         <Divider />
         <SongList
@@ -130,6 +144,7 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
         opened={dialog?.kind === 'addSong'}
         viewer={viewer}
         existingSpotifyIds={existingSpotifyIds}
+        initialArtist={dialog?.kind === 'addSong' ? dialog.artist : undefined}
         isPending={mutations.createSong.isPending}
         onClose={close}
         onSubmit={(input) => closeOnSuccess(mutations.createSong.mutateAsync(input))}

@@ -1,0 +1,82 @@
+import React from 'react';
+
+import { Avatar, Group, Stack, Text, Title, UnstyledButton } from '@mantine/core';
+
+import { displayName } from '@/features/jam-session/components/PresenceSection';
+import { api } from '@/trpc/react';
+
+import type { JamSessionParticipantView } from '@/features/jam-session/types';
+
+// 全員の My Best Songs を読むので、board の 5 秒より間を空けて取り直す
+const REFETCH_INTERVAL_MS = 30_000;
+
+export type SharedArtistsProps = {
+  participantsById: Map<string, JamSessionParticipantView>;
+  listedArtists: Set<string>;
+  onSelect: (artist: string) => void;
+};
+
+/**
+ * 参加中のメンバーの My Best Songs で重なっているアーティスト。タップするとそのアーティストで曲を挙げられる。
+ * すでに「<アーティスト名> の曲なにか」が挙がっているアーティストは、同じ曲が二重にできないよう出さない。
+ */
+const SharedArtists: React.FC<SharedArtistsProps> = ({
+  participantsById,
+  listedArtists,
+  onSelect,
+}) => {
+  const { data } = api.jamSession.sharedArtists.useQuery(undefined, {
+    refetchInterval: REFETCH_INTERVAL_MS,
+  });
+  const artists = (data ?? []).filter(({ artist }) => !listedArtists.has(artist.toLowerCase()));
+
+  if (artists.length === 0) return null;
+
+  return (
+    <Stack component="section" aria-labelledby="shared-artists-title" gap={6}>
+      <Title id="shared-artists-title" order={2} fz="sm">
+        みんなの My Best Songs で重なっているアーティスト
+      </Title>
+      <Group gap={6}>
+        {artists.map(({ artist, userIds }) => (
+          <UnstyledButton
+            key={artist}
+            aria-label={`${artist}（${userIds.length} 人）で曲を挙げる`}
+            px={10}
+            py={4}
+            bg="grape.9"
+            style={{ borderRadius: 999 }}
+            onClick={() => onSelect(artist)}
+          >
+            <Group gap={6} wrap="nowrap">
+              <Text fz="xs" fw={700} c="white">
+                {artist}
+              </Text>
+              <Avatar.Group spacing={6}>
+                {userIds.map((userId) => {
+                  const participant = participantsById.get(userId);
+                  const name = participant ? displayName(participant) : '';
+                  return (
+                    <Avatar
+                      key={userId}
+                      src={participant?.user.image}
+                      alt={name}
+                      name={name}
+                      color="initials"
+                      size={18}
+                    />
+                  );
+                })}
+              </Avatar.Group>
+            </Group>
+          </UnstyledButton>
+        ))}
+      </Group>
+      <Text fz="xs" c="dimmed">
+        タップすると「〇〇 の曲なにか」として挙げられます
+      </Text>
+    </Stack>
+  );
+};
+
+export default SharedArtists;

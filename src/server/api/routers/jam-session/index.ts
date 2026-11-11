@@ -7,6 +7,7 @@ import { join } from './join';
 import { leave } from './leave';
 import { setMyParts } from './set-my-parts';
 import { setPlayed } from './set-played';
+import { sharedArtists } from './shared-artists-procedure';
 
 /** セッションページの API。認証の Session と混ざらないよう jamSession と呼ぶ */
 export const jamSessionRouter = createTRPCRouter({
@@ -17,4 +18,5 @@ export const jamSessionRouter = createTRPCRouter({
   deleteSong,
   setMyParts,
   setPlayed,
+  sharedArtists,
 });

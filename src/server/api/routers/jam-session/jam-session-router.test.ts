@@ -42,6 +42,9 @@ const createDb = (myJoinedAt: Date | null = JOINED_RECENTLY) => {
       deleteMany: vi.fn().mockResolvedValue({ count: 1 }),
       updateMany: vi.fn().mockResolvedValue({ count: 1 }),
     },
+    myBestSong: {
+      findMany: vi.fn().mockResolvedValue([]),
+    },
     jamSessionEntry: {
       deleteMany: vi.fn().mockResolvedValue({}),
       createMany: vi.fn().mockResolvedValue({}),
@@ -96,6 +99,7 @@ describe('jamSession の認可', () => {
         'jamSession.join',
         'jamSession.leave',
         'jamSession.deleteSong',
+        'jamSession.sharedArtists',
         ...activeOnlyPaths,
       ]),
     );
@@ -162,6 +166,41 @@ describe('jamSession.board', () => {
       isActive: false,
       profile: { parts: ['guitar'], partNote: null, roots: ['ロック'] },
     });
+  });
+});
+
+describe('jamSession.sharedArtists', () => {
+  it('参加中のメンバーの My Best Songs から、2 人以上が登録しているアーティストを返す', async () => {
+    const db = createDb();
+    db.jamSessionParticipant.findMany.mockResolvedValue([
+      { userId: 'user-1' },
+      { userId: 'user-2' },
+    ]);
+    db.myBestSong.findMany.mockResolvedValue([
+      { userId: 'user-1', artist: 'Oasis' },
+      { userId: 'user-2', artist: 'Oasis' },
+      { userId: 'user-2', artist: 'Blur' },
+    ]);
+
+    const result = await callerFor(db).jamSession.sharedArtists();
+
+    expect(db.jamSessionParticipant.findMany).toHaveBeenCalledWith({
+      where: { joinedAt: { gt: SINCE } },
+      select: { userId: true },
+    });
+    expect(db.myBestSong.findMany).toHaveBeenCalledWith({
+      where: { userId: { in: ['user-1', 'user-2'] } },
+      select: { userId: true, artist: true },
+    });
+    expect(result).toEqual([{ artist: 'Oasis', userIds: ['user-1', 'user-2'] }]);
+  });
+
+  it('参加中のメンバーが 1 人以下なら My Best Songs を読まない', async () => {
+    const db = createDb();
+    db.jamSessionParticipant.findMany.mockResolvedValue([{ userId: 'user-1' }]);
+
+    expect(await callerFor(db).jamSession.sharedArtists()).toEqual([]);
+    expect(db.myBestSong.findMany).not.toHaveBeenCalled();
   });
 });
 

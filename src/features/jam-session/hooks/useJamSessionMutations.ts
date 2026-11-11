@@ -19,11 +19,12 @@ const notifyError = (error: unknown) => {
   });
 };
 
-/** セッションの更新系の操作。成功したらボードをすぐ取り直し、ポーリングを待たずに反映する */
+/** セッションの更新系の操作。成功したらすぐ取り直し、ポーリングを待たずに反映する */
 export const useJamSessionMutations = () => {
   const utils = api.useUtils();
   const options = {
-    onSuccess: () => utils.jamSession.board.invalidate(),
+    // 参加・退出で重なっているアーティストも変わるので、board だけでなくセッション全体を取り直す
+    onSuccess: () => utils.jamSession.invalidate(),
     onError: notifyError,
   };
 

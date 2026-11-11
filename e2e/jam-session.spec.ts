@@ -3,6 +3,7 @@ import { type JamSessionPart, PrismaClient } from '@prisma/client';
 
 import {
   ADMIN_STORAGE_STATE,
+  ADMIN_USER,
   LOGIN_USER,
   OTHER_STORAGE_STATE,
   OTHER_USER,
@@ -12,6 +13,21 @@ import {
 const POLLING_TIMEOUT = { timeout: 15_000 };
 
 const db = new PrismaClient();
+
+const E2E_USER_IDS = [LOGIN_USER.id, OTHER_USER.id, ADMIN_USER.id];
+const SHARED_ARTIST = 'E2E 共通アーティスト';
+
+// ローカル DB には開発中に触ったセッションのデータも入っているので、消すのは E2E ユーザーの行だけにする
+const cleanUp = async () => {
+  await db.jamSessionSong.deleteMany({ where: { proposerId: { in: E2E_USER_IDS } } });
+  await db.jamSessionParticipant.deleteMany({ where: { userId: { in: E2E_USER_IDS } } });
+  await db.myBestSong.deleteMany({ where: { artist: SHARED_ARTIST } });
+};
+
+const songTitles = (page: Page) =>
+  page
+    .getByTestId('jam-session-song')
+    .evaluateAll((rows) => rows.map((row) => row.getAttribute('aria-label') ?? ''));
 
 const joinByDb = (userId: string, parts: JamSessionPart[] = ['vocal']) =>
   db.jamSessionParticipant.upsert({
@@ -37,19 +53,14 @@ const songRow = (page: Page, title: string) =>
   page.getByRole('button', { name: new RegExp(`^${title}`) });
 
 test.describe('セッションページ', () => {
-  // ボードは部全体で 1 つなので、テストどうしが同じ表を読み書きする。順番に流し、毎回空にしてから始める。
-  // 並び順を確かめるため E2E ユーザー以外の行も消す。global-setup がローカル以外の DB では止めるので、消えるのはローカルの行だけ
+  // ボードは部全体で 1 つなので、テストどうしが同じ表を読み書きする。順番に流し、毎回 E2E ユーザーの行を消してから始める
   test.describe.configure({ mode: 'serial' });
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test.beforeEach(async () => {
-    await db.jamSessionSong.deleteMany();
-    await db.jamSessionParticipant.deleteMany();
-  });
+  test.beforeEach(cleanUp);
 
   test.afterAll(async () => {
-    await db.jamSessionSong.deleteMany();
-    await db.jamSessionParticipant.deleteMany();
+    await cleanUp();
     await db.$disconnect();
   });
 
@@ -161,16 +172,21 @@ test.describe('セッションページ', () => {
     await createSongByDb('人が多い曲', LOGIN_USER.id, [{ userId: LOGIN_USER.id, part: 'vocal' }]);
     await createSongByDb('誰もいない曲', LOGIN_USER.id, [], new Date(Date.now() - 60_000));
 
+    // 開発中に挙げた曲も並ぶので、このテストの 2 曲どうしの位置だけを比べる
+    const isAbove = async (upper: string, lower: string) => {
+      const titles = await songTitles(page);
+      const index = (title: string) => titles.findIndex((name) => name.startsWith(title));
+      return index(upper) >= 0 && index(upper) < index(lower);
+    };
+
     await page.goto('/jam-session');
-    const rows = page.getByTestId('jam-session-song');
-    await expect(rows.first()).toHaveAccessibleName(/^人が多い曲/);
+    await expect.poll(() => isAbove('人が多い曲', '誰もいない曲')).toBe(true);
 
     await songRow(page, '人が多い曲').click();
     await page.getByRole('dialog').getByRole('button', { name: '演奏済みにする' }).click();
 
-    await expect(rows.first()).toHaveAccessibleName(/^誰もいない曲/);
-    await expect(rows.last()).toHaveAccessibleName(/^人が多い曲/);
-    await expect(rows.last()).toContainText('演奏済み');
+    await expect(songRow(page, '人が多い曲')).toContainText('演奏済み');
+    await expect.poll(() => isAbove('誰もいない曲', '人が多い曲')).toBe(true);
   });
 
   test('ほかの人の曲は消せず、管理者は消せる', async ({ page, browser }) => {
@@ -195,5 +211,32 @@ test.describe('セッションページ', () => {
 
     await expect(songRow(adminPage, '別ユーザーの曲')).toHaveCount(0);
     await adminContext.close();
+  });
+
+  test('重なっているアーティストをタップすると、そのアーティストで曲を挙げられる', async ({
+    page,
+  }) => {
+    await joinByDb(LOGIN_USER.id, ['vocal']);
+    await joinByDb(OTHER_USER.id, ['guitar']);
+    await db.myBestSong.createMany({
+      data: [LOGIN_USER.id, OTHER_USER.id].map((userId) => ({
+        userId,
+        name: 'E2E の曲',
+        artist: SHARED_ARTIST,
+        type: 'track' as const,
+      })),
+    });
+
+    await page.goto('/jam-session');
+    const chip = page.getByRole('button', { name: `${SHARED_ARTIST}（2 人）で曲を挙げる` });
+    await chip.click();
+    const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
+    await expect(dialog.getByRole('textbox', { name: 'アーティスト名' })).toHaveValue(
+      SHARED_ARTIST,
+    );
+    await dialog.getByRole('button', { name: 'この内容で挙げる' }).click();
+
+    await expect(songRow(page, `${SHARED_ARTIST} の曲なにか`)).toBeVisible();
+    await expect(chip).toHaveCount(0);
   });
 });

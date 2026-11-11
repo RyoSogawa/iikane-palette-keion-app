@@ -40,6 +40,8 @@ export type AddSongModalProps = {
   opened: boolean;
   viewer: JamSessionViewer;
   existingSpotifyIds: Set<string>;
+  /** 重なっているアーティストから開いたときは、自分で入力にしてアーティスト名を入れておく */
+  initialArtist?: string;
   isPending: boolean;
   onClose: () => void;
   onSubmit: (input: CreateSongInput) => void;
@@ -55,14 +57,15 @@ const AddSongModal: React.FC<AddSongModalProps> = ({ opened, onClose, ...props }
 const AddSongForm: React.FC<Omit<AddSongModalProps, 'opened' | 'onClose'>> = ({
   viewer,
   existingSpotifyIds,
+  initialArtist,
   isPending,
   onSubmit,
 }) => {
-  const [source, setSource] = useState<Source>('spotify');
+  const [source, setSource] = useState<Source>(initialArtist ? 'free' : 'spotify');
   const [keyword, setKeyword] = useState('');
   const [track, setTrack] = useState<Track>();
   const [name, setName] = useState('');
-  const [artist, setArtist] = useState('');
+  const [artist, setArtist] = useState(initialArtist ?? '');
   const [parts, setParts] = useState<JamSessionPartType[]>(viewer.profile?.parts ?? []);
   const [partNote, setPartNote] = useState(viewer.profile?.partNote ?? '');
   const [errors, setErrors] = useState<Errors>({});

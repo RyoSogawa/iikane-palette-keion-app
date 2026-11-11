@@ -44,3 +44,9 @@
 ## 6. 仕上げ
 - [x] 6.1 `openspec/project.md` と `CLAUDE.md` にセッション機能を追記する
 - [x] 6.2 `pnpm lint` / `pnpm test` / `pnpm build` / `pnpm e2e` を通す
+
+## 7. 重なっているアーティスト（今後の候補から 1 つ追加）
+- [x] 7.1 参加中のメンバーの My Best Songs で 2 人以上が登録しているアーティストを数える純関数（テストを先に書く）
+- [x] 7.2 `jamSession.sharedArtists`（board とは別の query）
+- [x] 7.3 「いまここにいる人」の下に表示し、タップで自由入力の「曲を挙げる」を開く
+- [x] 7.4 E2E: 重なっているアーティストから曲を挙げられる

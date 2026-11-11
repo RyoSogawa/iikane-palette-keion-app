@@ -132,6 +132,13 @@ model JamSessionParticipant {
 - `NavMenu` は `AdminMenu` と同じ形で、ログイン中だけ項目を足す
 - Spotify 検索の部品（`useSearchSpotify`, `MusicSearchInput`, `MusicCard`）は `features/my-best-songs` から import して使う。`MusicSearchInput` の Track / Album 切り替えは props で隠せるようにする
 
+### 8. 重なっているアーティスト（2026-11-11 に追加）
+- `jamSession.sharedArtists` で、参加中のメンバーの `MyBestSong.artist` を集計し、2 人以上が登録しているアーティストを人数の多い順に最大 10 件返す
+- 全員の My Best Songs を読むので、5 秒おきの `board` には含めず別の query にして 30 秒おきに取り直す。参加・退出などの操作のあとはすぐ取り直す
+- 大文字と小文字、前後の空白の違いは同じとみなす。複数アーティストの曲は "A, B" とつないだ文字列で入っているが、"Earth, Wind & Fire" のような名前を壊すのでカンマでは分けない
+- タップすると「曲を挙げる」を自由入力でアーティスト名を入れた状態で開く。自由入力の曲は重複を防げないので、「<アーティスト名> の曲なにか」がすでに挙がっているアーティストは出さない
+- AI は使わない。API キーの環境変数と SDK の追加が要り、「環境変数を足さない」という前提に反するため
+
 ## Risks / Trade-offs
 - 反映が最大 5 秒遅れる → 現場で声を掛け合いながら使うので許容する
 - 誰でもほかの人を退出させられる → いたずらはできるが、本人が押し直せば戻り、Entry も消えない。部内の利用なので許容する
