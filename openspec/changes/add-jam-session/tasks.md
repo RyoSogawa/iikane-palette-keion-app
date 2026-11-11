@@ -11,14 +11,14 @@
 - [x] 2.5 入力スキーマ（曲名かアーティスト名のどちらか必須、`other` のときの `partNote` 必須、ルーツは 1 件 20 文字・8 件まで）を zod で定義する
 
 ## 3. tRPC（`src/server/api/routers/jam-session/`、テストを先に書く）
-- [ ] 3.1 `board`（参加中のメンバー、全曲と参加中のメンバーの Entry、自分の参加状態）
-- [ ] 3.2 `join`（パートとルーツを保存して参加する）
-- [ ] 3.3 `leave`（自分の退出と、参加中のメンバーによるほかの人の退出）
-- [ ] 3.4 `createSong`（参加中だけ。Spotify の曲は `spotifyId` からサーバーが曲名を取り直す。曲と自分の Entry を 1 トランザクションで作る。`spotifyId` の重複は `CONFLICT`）
-- [ ] 3.5 `deleteSong`（提案者か管理者だけ）
-- [ ] 3.6 `setMyParts`（参加中だけ。自分のパート一式を置き換える）
-- [ ] 3.7 `setPlayed`（参加中だけ。演奏済みにする・戻す）
-- [ ] 3.8 `root.ts` に登録し、未ログインでは全 procedure が `UNAUTHORIZED`、未参加では更新系が `FORBIDDEN` になることをテストする
+- [x] 3.1 `board`（参加中のメンバー、全曲と参加中のメンバーの Entry、自分の参加状態）
+- [x] 3.2 `join`（パートとルーツを保存して参加する）
+- [x] 3.3 `leave`（自分の退出と、参加中のメンバーによるほかの人の退出）
+- [x] 3.4 `createSong`（参加中だけ。Spotify の曲は `spotifyId` からサーバーが曲名を取り直す。曲と自分の Entry を 1 トランザクションで作る。`spotifyId` の重複は `CONFLICT`）
+- [x] 3.5 `deleteSong`（提案者か管理者だけ）
+- [x] 3.6 `setMyParts`（参加中だけ。自分のパート一式を置き換える）
+- [x] 3.7 `setPlayed`（参加中だけ。演奏済みにする・戻す）
+- [x] 3.8 `root.ts` に登録し、未ログインでは全 procedure が `UNAUTHORIZED`、未参加では更新系が `FORBIDDEN` になることをテストする
 
 ## 4. UI（`src/app/jam-session/`, `src/features/jam-session/`、スマホ幅）
 - [ ] 4.1 ページ（未ログインは `redirect('/')`、`force-dynamic`、初期データを RSC で取得）
