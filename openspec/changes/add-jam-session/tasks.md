@@ -1,7 +1,7 @@
 ## 1. データモデル
-- [ ] 1.1 `prisma/schema.prisma` に `JamSessionPart` / `JamSessionSong` / `JamSessionEntry` / `JamSessionParticipant` を追加し、`User` にリレーションを足す
-- [ ] 1.2 マイグレーションを作り、新しい 3 テーブルの `ENABLE ROW LEVEL SECURITY` を追記する
-- [ ] 1.3 `prisma generate` で `src/types/generated/zod` を更新する
+- [x] 1.1 `prisma/schema.prisma` に `JamSessionPart` / `JamSessionSong` / `JamSessionEntry` / `JamSessionParticipant` を追加し、`User` にリレーションを足す
+- [x] 1.2 マイグレーションを作り、新しい 3 テーブルの `ENABLE ROW LEVEL SECURITY` を追記する
+- [x] 1.3 `prisma generate` で `src/types/generated/zod` を更新する
 
 ## 2. ロジック（テストを先に書く）
 - [ ] 2.1 パートの定義（表示名・並び順）とルーツの選択肢を `src/features/jam-session/logics/` に置く
