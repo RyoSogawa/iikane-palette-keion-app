@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { JamSessionPartSchema } from '@/types/generated/zod';
 
+import { fromHeldOn, HELD_ON_PATTERN, toHeldOn } from './held-on';
+
 const blankToNull = (value: string) => {
   const trimmed = value.trim();
   return trimmed === '' ? null : trimmed;
@@ -40,7 +42,7 @@ const rootsField = z
   .max(8, 'ルーツは 8 件までです')
   .transform((roots) => unique(roots.filter((root) => root !== '')));
 
-/** 参加するとき、または参加中にプロフィールを直すときの入力 */
+/** 参加するとき、または参加中に直す、できるパートとルーツ。どのセッションでも同じものを使う */
 export const joinInputSchema = z
   // パートが無いと「いまここにいる人」のどこにも出ず、ほかの人が開いて退出させることもできないので 1 つ以上にする
   .object({
@@ -97,5 +99,34 @@ export const songIdInputSchema = z.object({ songId: z.string() });
 
 export const setPlayedInputSchema = z.object({ songId: z.string(), played: z.boolean() });
 
+export const sessionIdInputSchema = z.object({ sessionId: z.string() });
+
+// フォームのスキーマはそのまま画面でも使うので、セッションの指定は外側に足す
+export const joinSessionInputSchema = sessionIdInputSchema.extend({ profile: joinInputSchema });
+
+export const createSessionSongInputSchema = sessionIdInputSchema.extend({
+  song: createSongInputSchema,
+});
+
 /** userId を省けば自分が退出する */
-export const leaveInputSchema = z.object({ userId: z.string().optional() }).optional();
+export const leaveInputSchema = sessionIdInputSchema.extend({ userId: z.string().optional() });
+
+/** セッションの名前と日付。日付は YYYY-MM-DD で受け取り、DB の date 型にする */
+export const sessionInputSchema = z.object({
+  name: z.string().trim().min(1, '名前を入力してください').max(50, '名前は 50 文字までです'),
+  heldOn: z
+    .string()
+    // 2026-13-40 のような値は Date が繰り上げて受け付けてしまうので、元の文字列に戻るかで確かめる
+    .refine((value) => {
+      if (!HELD_ON_PATTERN.test(value)) return false;
+      const date = toHeldOn(value);
+      return !Number.isNaN(date.getTime()) && fromHeldOn(date) === value;
+    }, '日付を入力してください')
+    .transform(toHeldOn),
+});
+
+export type SessionInput = z.input<typeof sessionInputSchema>;
+
+export const updateSessionInputSchema = sessionIdInputSchema.extend({
+  session: sessionInputSchema,
+});

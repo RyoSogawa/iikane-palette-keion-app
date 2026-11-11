@@ -72,9 +72,11 @@ model User {
   myBestSongs          MyBestSong[]
   bands                UserOnBand[]
   recreationKingEvents RecreationKingUserOnEvent[]
+  jamSessions          JamSession[]
   jamSessionSongs      JamSessionSong[]
   jamSessionEntries    JamSessionEntry[]
-  jamSessionProfile    JamSessionParticipant?
+  jamSessionProfile    JamSessionProfile?
+  jamSessionJoins      JamSessionParticipant[]
 }
 
 model VerificationToken {
@@ -189,7 +191,7 @@ model RecreationKingUserOnEvent {
   @@id([userId, eventId])
 }
 
-// セッションページ（当日の現場で使う一時的な機能）。消すときはこの 4 つを落とせば済むよう User には持たせない
+// セッションページ（当日の現場で使う一時的な機能）。消すときは JamSession* を落とせば済むよう User には持たせない
 enum JamSessionPart {
   vocal
   guitar
@@ -202,18 +204,38 @@ enum JamSessionPart {
   other
 }
 
+// 当日の会。ライブの Event と取り違えないよう JamSession と呼ぶ
+model JamSession {
+  id           String                  @id @default(cuid())
+  createdAt    DateTime                @default(now())
+  name         String
+  // 日付だけを持ち、JST の日付として扱う
+  heldOn       DateTime                @db.Date
+  // 作った人が退会しても、ほかの人の曲が付いたセッションは残す
+  creatorId    String?
+  creator      User?                   @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  songs        JamSessionSong[]
+  participants JamSessionParticipant[]
+
+  @@index([heldOn])
+}
+
 model JamSessionSong {
   id         String            @id @default(cuid())
   createdAt  DateTime          @default(now())
+  sessionId  String
+  session    JamSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   // 提案者が退会しても、ほかの人の挙手が付いた曲は残す
   proposerId String?
   proposer   User?             @relation(fields: [proposerId], references: [id], onDelete: SetNull)
-  // 自由入力の曲は null。null どうしは重複しないので Spotify の曲だけ 1 件に絞れる
-  spotifyId  String?           @unique
+  // 自由入力の曲は null。null どうしは重複しないので、セッションの中で Spotify の曲だけ 1 件に絞れる
+  spotifyId  String?
   name       String?
   artist     String?
   playedAt   DateTime?
   entries    JamSessionEntry[]
+
+  @@unique([sessionId, spotifyId])
 }
 
 model JamSessionEntry {
@@ -231,12 +253,24 @@ model JamSessionEntry {
   @@index([userId])
 }
 
-model JamSessionParticipant {
+// できるパートとルーツ。人ごとに 1 つ持ち、どのセッションでも使い回す
+model JamSessionProfile {
   userId   String           @id
   user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   parts    JamSessionPart[]
   partNote String?
   roots    String[]
+}
+
+// どのセッションに参加中か
+model JamSessionParticipant {
+  sessionId String
+  session   JamSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   // 退出すると null。24 時間より前の値も退出扱いにする
-  joinedAt DateTime?
+  joinedAt  DateTime?
+
+  @@id([sessionId, userId])
+  @@index([userId])
 }

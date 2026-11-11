@@ -1,31 +1,49 @@
 import { TRPCError } from '@trpc/server';
 
-import { protectedProcedure } from '@/server/api/trpc';
-
 import { isActiveParticipant } from './active-participant';
 
 import type { PrismaClient } from '@prisma/client';
 
-type Db = Pick<PrismaClient, 'jamSessionParticipant'>;
+type Db = Pick<PrismaClient, 'jamSession' | 'jamSessionParticipant' | 'jamSessionSong'>;
 
-export const findMyParticipation = (db: Db, userId: string) =>
+export const findParticipation = (db: Db, sessionId: string, userId: string) =>
   db.jamSessionParticipant.findUnique({
-    where: { userId },
-    select: { joinedAt: true, parts: true, partNote: true, roots: true },
+    where: { sessionId_userId: { sessionId, userId } },
+    select: { joinedAt: true },
   });
 
-export const assertActiveParticipant = async (db: Db, userId: string) => {
-  const participant = await findMyParticipation(db, userId);
-  if (!isActiveParticipant(participant?.joinedAt, new Date())) {
+/** 曲を挙げる・手を挙げる・演奏済みにする操作は、そのセッションに参加中の人だけに許す */
+export const assertActiveParticipant = async (db: Db, sessionId: string, userId: string) => {
+  const participation = await findParticipation(db, sessionId, userId);
+  if (!isActiveParticipant(participation?.joinedAt, new Date())) {
     throw new TRPCError({ code: 'FORBIDDEN', message: 'セッションに参加してから操作してください' });
   }
 };
 
-/**
- * 参加中のメンバーだけが呼べる procedure。曲を挙げる・手を挙げる・演奏済みにする操作はこれで作る。
- * 入力の検証より前に判定するので、未参加なら入力に関係なく FORBIDDEN になる。
- */
-export const activeParticipantProcedure = protectedProcedure.use(async ({ ctx, next }) => {
-  await assertActiveParticipant(ctx.db, ctx.session.user.id);
-  return next();
-});
+export const findSessionOrThrow = async (db: Db, sessionId: string) => {
+  const session = await db.jamSession.findUnique({
+    where: { id: sessionId },
+    select: { id: true, name: true, heldOn: true, creatorId: true },
+  });
+  if (!session) {
+    throw new TRPCError({ code: 'NOT_FOUND' });
+  }
+  return session;
+};
+
+/** 曲の操作は、その曲が属するセッションへの参加で判定するので、先に曲のセッションを引く */
+export const findSongOrThrow = async (db: Db, songId: string) => {
+  const song = await db.jamSessionSong.findUnique({
+    where: { id: songId },
+    select: { id: true, sessionId: true, proposerId: true },
+  });
+  if (!song) {
+    throw new TRPCError({ code: 'NOT_FOUND' });
+  }
+  return song;
+};
+
+export const canManageSession = (
+  session: { creatorId: string | null },
+  user: { id: string; isAdmin: boolean },
+) => session.creatorId === user.id || user.isAdmin;

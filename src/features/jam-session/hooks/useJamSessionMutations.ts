@@ -34,6 +34,9 @@ export const useJamSessionMutations = () => {
   const deleteSong = api.jamSession.deleteSong.useMutation(options);
   const setMyParts = api.jamSession.setMyParts.useMutation(options);
   const setPlayed = api.jamSession.setPlayed.useMutation(options);
+  const updateSession = api.jamSession.update.useMutation(options);
+  // 消したセッションのボードを取り直すと NOT_FOUND になるので、削除のあとは取り直さない
+  const deleteSession = api.jamSession.delete.useMutation({ onError: notifyError });
 
   const isPending = [join, leave, createSong, deleteSong, setMyParts, setPlayed].some(
     ({ isPending: pending }) => pending,
@@ -44,5 +47,16 @@ export const useJamSessionMutations = () => {
     [],
   );
 
-  return { join, leave, createSong, deleteSong, setMyParts, setPlayed, isPending, run };
+  return {
+    join,
+    leave,
+    createSong,
+    deleteSong,
+    setMyParts,
+    setPlayed,
+    updateSession,
+    deleteSession,
+    isPending,
+    run,
+  };
 };

@@ -2,7 +2,8 @@ import React from 'react';
 
 import { redirect } from 'next/navigation';
 
-import JamSessionBoard from '@/features/jam-session/components/JamSessionBoard';
+import SessionList from '@/features/jam-session/components/SessionList';
+import { todayInJst } from '@/server/api/routers/jam-session/held-on';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
 
@@ -15,15 +16,15 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** 当日のセッションで、いる人とやりたい曲を持ち寄るページ。ログイン済みのメンバーだけが見られる */
-export default async function JamSessionPage() {
+/** セッションの一覧。ログイン済みのメンバーだけが見られ、誰でもセッションを作れる */
+export default async function JamSessionListPage() {
   const session = await getServerAuthSession();
   if (!session) {
     redirect('/');
   }
 
   const caller = await api();
-  const initialData = await caller.jamSession.board();
+  const sessions = await caller.jamSession.list();
 
-  return <JamSessionBoard initialData={initialData} />;
+  return <SessionList initialData={sessions} today={todayInJst(new Date())} />;
 }

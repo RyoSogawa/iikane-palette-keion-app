@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { createSongInputSchema, joinInputSchema, setMyPartsInputSchema } from './schemas';
+import {
+  createSongInputSchema,
+  joinInputSchema,
+  sessionInputSchema,
+  setMyPartsInputSchema,
+} from './schemas';
 
 describe('joinInputSchema', () => {
   it('パートの重複を除き、ルーツは前後の空白を除いて重複を除く', () => {
@@ -129,4 +134,32 @@ describe('createSongInputSchema', () => {
       true,
     );
   });
+});
+
+describe('sessionInputSchema', () => {
+  it('名前は前後の空白を除き、日付は date 型にする', () => {
+    expect(sessionInputSchema.parse({ name: ' 11 月のセッション ', heldOn: '2026-11-11' })).toEqual(
+      {
+        name: '11 月のセッション',
+        heldOn: new Date('2026-11-11T00:00:00.000Z'),
+      },
+    );
+  });
+
+  it('名前は必須で 50 文字まで', () => {
+    expect(sessionInputSchema.safeParse({ name: ' ', heldOn: '2026-11-11' }).success).toBe(false);
+    expect(
+      sessionInputSchema.safeParse({ name: 'あ'.repeat(51), heldOn: '2026-11-11' }).success,
+    ).toBe(false);
+    expect(
+      sessionInputSchema.safeParse({ name: 'あ'.repeat(50), heldOn: '2026-11-11' }).success,
+    ).toBe(true);
+  });
+
+  it.each(['', '2026/11/11', '2026-13-40', '2026-02-30'])(
+    '正しくない日付（%s）は通さない',
+    (heldOn) => {
+      expect(sessionInputSchema.safeParse({ name: 'セッション', heldOn }).success).toBe(false);
+    },
+  );
 });

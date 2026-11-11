@@ -4,11 +4,13 @@ import React, { useMemo, useState } from 'react';
 
 import { Container, Divider, Space, Stack } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 
 import AddSongModal from '@/features/jam-session/components/AddSongModal';
 import PersonModal from '@/features/jam-session/components/PersonModal';
 import PresenceSection from '@/features/jam-session/components/PresenceSection';
 import ProfileModal from '@/features/jam-session/components/ProfileModal';
+import SessionHeader from '@/features/jam-session/components/SessionHeader';
 import SharedArtists from '@/features/jam-session/components/SharedArtists';
 import SongList from '@/features/jam-session/components/SongList';
 import SongModal from '@/features/jam-session/components/SongModal';
@@ -30,9 +32,12 @@ export type JamSessionBoardProps = {
   initialData: Board;
 };
 
-/** セッションページの本体。スマホ幅だけを設計し、PC では同じ幅のまま中央に出す */
+/** セッションのボード。スマホ幅だけを設計し、PC では同じ幅のまま中央に出す */
 const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
-  const { participants, songs, viewer, participantsById } = useJamSessionBoard(initialData);
+  const { session, participants, songs, viewer, participantsById } =
+    useJamSessionBoard(initialData);
+  const sessionId = session.id;
+  const router = useRouter();
   const mutations = useJamSessionMutations();
   const { run, isPending } = mutations;
   const [dialog, setDialog] = useState<Dialog>(null);
@@ -65,15 +70,29 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
   return (
     <Container size={480} px={12} py={12}>
       <Stack gap="md">
+        <SessionHeader
+          session={session}
+          canManage={viewer.canManageSession}
+          isPending={mutations.updateSession.isPending || mutations.deleteSession.isPending}
+          onUpdate={(input) =>
+            run(mutations.updateSession.mutateAsync({ sessionId, session: input }))
+          }
+          onDelete={() =>
+            void run(mutations.deleteSession.mutateAsync({ sessionId })).then(
+              (ok) => ok && router.push('/jam-session'),
+            )
+          }
+        />
         <PresenceSection
           participants={participants}
           viewer={viewer}
           isPending={mutations.leave.isPending}
           onSelectPerson={(userId) => setDialog({ kind: 'person', userId })}
           onOpenProfile={openProfile}
-          onLeave={() => void run(mutations.leave.mutateAsync())}
+          onLeave={() => void run(mutations.leave.mutateAsync({ sessionId }))}
         />
         <SharedArtists
+          sessionId={sessionId}
           participantsById={participantsById}
           listedArtists={listedArtists}
           onSelect={(artist) =>
@@ -105,7 +124,7 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
         isActive={viewer.isActive}
         isPending={mutations.join.isPending}
         onClose={close}
-        onSubmit={(input) => closeOnSuccess(mutations.join.mutateAsync(input))}
+        onSubmit={(profile) => closeOnSuccess(mutations.join.mutateAsync({ sessionId, profile }))}
       />
       <PersonModal
         person={selectedPerson}
@@ -113,7 +132,7 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
         viewer={viewer}
         isPending={isPending}
         onClose={close}
-        onKick={(userId) => closeOnSuccess(mutations.leave.mutateAsync({ userId }))}
+        onKick={(userId) => closeOnSuccess(mutations.leave.mutateAsync({ sessionId, userId }))}
         onEditProfile={openProfile}
       />
       <SongModal
@@ -147,7 +166,7 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
         initialArtist={dialog?.kind === 'addSong' ? dialog.artist : undefined}
         isPending={mutations.createSong.isPending}
         onClose={close}
-        onSubmit={(input) => closeOnSuccess(mutations.createSong.mutateAsync(input))}
+        onSubmit={(song) => closeOnSuccess(mutations.createSong.mutateAsync({ sessionId, song }))}
       />
     </Container>
   );

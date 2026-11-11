@@ -17,10 +17,10 @@ const db = new PrismaClient();
 const E2E_USER_IDS = [LOGIN_USER.id, OTHER_USER.id, ADMIN_USER.id];
 const SHARED_ARTIST = 'E2E 共通アーティスト';
 
-// ローカル DB には開発中に触ったセッションのデータも入っているので、消すのは E2E ユーザーの行だけにする
+// ローカル DB には開発中に触ったセッションのデータも入っているので、消すのは E2E ユーザーが作った行だけにする
 const cleanUp = async () => {
-  await db.jamSessionSong.deleteMany({ where: { proposerId: { in: E2E_USER_IDS } } });
-  await db.jamSessionParticipant.deleteMany({ where: { userId: { in: E2E_USER_IDS } } });
+  await db.jamSession.deleteMany({ where: { creatorId: { in: E2E_USER_IDS } } });
+  await db.jamSessionProfile.deleteMany({ where: { userId: { in: E2E_USER_IDS } } });
   await db.myBestSong.deleteMany({
     where: { artist: SHARED_ARTIST, userId: { in: E2E_USER_IDS } },
   });
@@ -31,21 +31,46 @@ const songTitles = (page: Page) =>
     .getByTestId('jam-session-song')
     .evaluateAll((rows) => rows.map((row) => row.getAttribute('aria-label') ?? ''));
 
-const joinByDb = (userId: string, parts: JamSessionPart[] = ['vocal']) =>
-  db.jamSessionParticipant.upsert({
-    where: { userId },
-    create: { userId, parts, roots: [], joinedAt: new Date() },
-    update: { parts, roots: [], joinedAt: new Date() },
+const todayInJst = () => new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
+const createSessionByDb = (name: string, creatorId: string = LOGIN_USER.id) =>
+  db.jamSession.create({
+    data: { name, heldOn: new Date(`${todayInJst()}T00:00:00Z`), creatorId },
   });
+
+// テストごとに作るセッション。ボードはセッションごとなので、開発中のデータとも混ざらない
+let sessionId = '';
+const boardPath = () => `/jam-session/${sessionId}`;
+
+const joinByDb = async (userId: string, parts: JamSessionPart[] = ['vocal']) => {
+  await db.jamSessionProfile.upsert({
+    where: { userId },
+    create: { userId, parts, roots: [] },
+    update: { parts, roots: [] },
+  });
+  await db.jamSessionParticipant.upsert({
+    where: { sessionId_userId: { sessionId, userId } },
+    create: { sessionId, userId, joinedAt: new Date() },
+    update: { joinedAt: new Date() },
+  });
+};
 
 const createSongByDb = (
   name: string,
   proposerId: string,
   entries: Array<{ userId: string; part: JamSessionPart }>,
   createdAt = new Date(),
+  targetSessionId = sessionId,
 ) =>
   db.jamSessionSong.create({
-    data: { name, artist: 'E2E', proposerId, createdAt, entries: { create: entries } },
+    data: {
+      sessionId: targetSessionId,
+      name,
+      artist: 'E2E',
+      proposerId,
+      createdAt,
+      entries: { create: entries },
+    },
   });
 
 const presenceGroup = (page: Page, label: string) =>
@@ -55,11 +80,14 @@ const songRow = (page: Page, title: string) =>
   page.getByRole('button', { name: new RegExp(`^${title}`) });
 
 test.describe('セッションページ', () => {
-  // ボードは部全体で 1 つなので、テストどうしが同じ表を読み書きする。順番に流し、毎回 E2E ユーザーの行を消してから始める
+  // E2E ユーザーのプロフィールは全セッション共通なので、順番に流し、毎回 E2E ユーザーの行を消してから始める
   test.describe.configure({ mode: 'serial' });
   test.use({ viewport: { width: 390, height: 844 } });
 
-  test.beforeEach(cleanUp);
+  test.beforeEach(async () => {
+    await cleanUp();
+    ({ id: sessionId } = await createSessionByDb('E2E セッション'));
+  });
 
   test.afterAll(async () => {
     await cleanUp();
@@ -87,7 +115,7 @@ test.describe('セッションページ', () => {
   });
 
   test('参加すると「いまここにいる人」に出て、退出すると消える', async ({ page }) => {
-    await page.goto('/jam-session');
+    await page.goto(boardPath());
     // 曲を挙げられるのは参加中の人だけなので、参加するまでボタンを出さない
     await expect(page.getByRole('button', { name: 'やりたい曲を挙げる', exact: true })).toHaveCount(
       0,
@@ -122,7 +150,7 @@ test.describe('セッションページ', () => {
       { userId: OTHER_USER.id, part: 'vocal' },
     ]);
 
-    await page.goto('/jam-session');
+    await page.goto(boardPath());
     await expect(songRow(page, '退出テストの曲')).toHaveAccessibleName(/2 人$/);
     await presenceGroup(page, 'Vo').getByRole('button', { name: OTHER_USER.name }).click();
     const dialog = page.getByRole('dialog');
@@ -139,7 +167,7 @@ test.describe('セッションページ', () => {
   }) => {
     await joinByDb(LOGIN_USER.id, ['vocal']);
 
-    await page.goto('/jam-session');
+    await page.goto(boardPath());
     await page.getByRole('button', { name: 'やりたい曲を挙げる', exact: true }).click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
     await dialog.getByText('自分で入力', { exact: true }).click();
@@ -154,8 +182,8 @@ test.describe('セッションページ', () => {
     await joinByDb(LOGIN_USER.id, ['vocal']);
     const otherContext = await browser.newContext({ storageState: OTHER_STORAGE_STATE });
     const otherPage = await otherContext.newPage();
-    await otherPage.goto('/jam-session');
-    await page.goto('/jam-session');
+    await otherPage.goto(boardPath());
+    await page.goto(boardPath());
 
     await otherPage.getByRole('button', { name: '参加する' }).click();
     const profile = otherPage.getByRole('dialog', { name: '自分のパートとルーツ' });
@@ -189,7 +217,7 @@ test.describe('セッションページ', () => {
       return index(upper) >= 0 && index(upper) < index(lower);
     };
 
-    await page.goto('/jam-session');
+    await page.goto(boardPath());
     await expect.poll(() => isAbove('人が多い曲', '誰もいない曲')).toBe(true);
 
     await songRow(page, '人が多い曲').click();
@@ -208,7 +236,7 @@ test.describe('セッションページ', () => {
       { userId: OTHER_USER.id, part: 'vocal' },
     ]);
 
-    await page.goto('/jam-session');
+    await page.goto(boardPath());
     await songRow(page, '別ユーザーの曲').click();
     await expect(
       page.getByRole('dialog').getByRole('button', { name: 'この曲を削除する' }),
@@ -216,7 +244,7 @@ test.describe('セッションページ', () => {
 
     const adminContext = await browser.newContext({ storageState: ADMIN_STORAGE_STATE });
     const adminPage = await adminContext.newPage();
-    await adminPage.goto('/jam-session');
+    await adminPage.goto(boardPath());
     await songRow(adminPage, '別ユーザーの曲').click();
     const dialog = adminPage.getByRole('dialog');
     await dialog.getByRole('button', { name: 'この曲を削除する' }).click();
@@ -240,7 +268,7 @@ test.describe('セッションページ', () => {
       })),
     });
 
-    await page.goto('/jam-session');
+    await page.goto(boardPath());
     const chip = page.getByRole('button', { name: `${SHARED_ARTIST}（2 人）で曲を挙げる` });
     await chip.click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
@@ -253,5 +281,51 @@ test.describe('セッションページ', () => {
     await expect(
       page.getByRole('button', { name: `${SHARED_ARTIST}（2 人・挙がっています）で曲を挙げる` }),
     ).toBeVisible();
+  });
+
+  test('セッションを作ると、そのボードが開き、一覧にも出る', async ({ page }) => {
+    await page.goto('/jam-session');
+    await page.getByRole('button', { name: 'セッションを作る' }).click();
+    const dialog = page.getByRole('dialog', { name: 'セッションを作る' });
+    await dialog.getByRole('textbox', { name: '名前' }).fill('E2E で作ったセッション');
+    await dialog.getByRole('button', { name: '作る' }).click();
+
+    await expect(page.getByRole('heading', { name: 'E2E で作ったセッション' })).toBeVisible();
+    await expect(page).toHaveURL(/\/jam-session\/[^/]+$/);
+
+    await page.getByRole('link', { name: 'セッション一覧' }).click();
+    await expect(page.getByRole('link', { name: /^E2E で作ったセッション/ })).toContainText('今日');
+  });
+
+  test('曲はセッションをまたがない', async ({ page }) => {
+    const other = await createSessionByDb('E2E 別のセッション');
+    await createSongByDb('別のセッションの曲', LOGIN_USER.id, [], new Date(), other.id);
+
+    await page.goto(boardPath());
+    await expect(page.getByRole('heading', { name: 'E2E セッション' })).toBeVisible();
+    await expect(songRow(page, '別のセッションの曲')).toHaveCount(0);
+
+    await page.goto(`/jam-session/${other.id}`);
+    await expect(songRow(page, '別のセッションの曲')).toBeVisible();
+  });
+
+  test('作った人はセッションを消せて、ほかのメンバーには変更・削除が出ない', async ({
+    page,
+    browser,
+  }) => {
+    const otherContext = await browser.newContext({ storageState: OTHER_STORAGE_STATE });
+    const otherPage = await otherContext.newPage();
+    await otherPage.goto(boardPath());
+    await expect(otherPage.getByRole('heading', { name: 'E2E セッション' })).toBeVisible();
+    await expect(otherPage.getByRole('button', { name: 'セッションのメニュー' })).toHaveCount(0);
+    await otherContext.close();
+
+    await page.goto(boardPath());
+    await page.getByRole('button', { name: 'セッションのメニュー' }).click();
+    await page.getByRole('menuitem', { name: 'セッションを削除' }).click();
+    await page.getByRole('button', { name: '消す', exact: true }).click();
+
+    await expect(page).toHaveURL('/jam-session');
+    await expect(page.getByRole('link', { name: /^E2E セッション/ })).toHaveCount(0);
   });
 });

@@ -1,10 +1,11 @@
 import { Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 
+import { protectedProcedure } from '@/server/api/trpc';
 import { SpotifyApiService } from '@/server/applications/services/spotify-api.service';
 
-import { activeParticipantProcedure } from './procedures';
-import { createSongInputSchema } from './schemas';
+import { assertActiveParticipant } from './procedures';
+import { createSessionSongInputSchema } from './schemas';
 
 // SpotifyApiService は失敗しても例外を投げず void を返すので、ここで曲が取れたかを見る
 const fetchTrack = async (spotifyId: string) => {
@@ -21,10 +22,11 @@ const fetchTrack = async (spotifyId: string) => {
 };
 
 /** 曲を挙げる。曲と自分の挙手を 1 回の作成で入れるので、どちらかだけが残ることは無い */
-export const createSong = activeParticipantProcedure
-  .input(createSongInputSchema)
-  .mutation(async ({ ctx, input }) => {
+export const createSong = protectedProcedure
+  .input(createSessionSongInputSchema)
+  .mutation(async ({ ctx, input: { sessionId, song: input } }) => {
     const userId = ctx.session.user.id;
+    await assertActiveParticipant(ctx.db, sessionId, userId);
     const song = input.spotifyId
       ? await fetchTrack(input.spotifyId)
       : { spotifyId: null, name: input.name, artist: input.artist };
@@ -32,6 +34,7 @@ export const createSong = activeParticipantProcedure
     try {
       return await ctx.db.jamSessionSong.create({
         data: {
+          sessionId,
           proposerId: userId,
           ...song,
           entries: {
@@ -46,7 +49,10 @@ export const createSong = activeParticipantProcedure
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new TRPCError({ code: 'CONFLICT', message: 'この曲はすでに挙がっています' });
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: 'この曲はこのセッションにすでに挙がっています',
+        });
       }
       throw error;
     }

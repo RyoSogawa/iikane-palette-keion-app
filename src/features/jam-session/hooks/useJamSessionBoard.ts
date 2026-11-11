@@ -12,10 +12,13 @@ const POLLING_INTERVAL_MS = 5000;
  * React Query の既定で、タブが裏にある間は止まり、戻ったときに取り直す。
  */
 export const useJamSessionBoard = (initialData: JamSessionBoard) => {
-  const { data } = api.jamSession.board.useQuery(undefined, {
-    initialData,
-    refetchInterval: POLLING_INTERVAL_MS,
-  });
+  const { data } = api.jamSession.board.useQuery(
+    { sessionId: initialData.session.id },
+    {
+      initialData,
+      refetchInterval: POLLING_INTERVAL_MS,
+    },
+  );
 
   const participantsById = useMemo(
     () => new Map(data.participants.map((participant) => [participant.userId, participant])),

@@ -13,6 +13,7 @@ import type { JamSessionParticipantView } from '@/features/jam-session/types';
 const REFETCH_INTERVAL_MS = 30_000;
 
 export type SharedArtistsProps = {
+  sessionId: string;
   participantsById: Map<string, JamSessionParticipantView>;
   listedArtists: Set<string>;
   onSelect: (artist: string) => void;
@@ -23,13 +24,17 @@ export type SharedArtistsProps = {
  * 「<アーティスト名> の曲なにか」が挙がった後も手がかりとして残し、挙がっている印だけ付ける。
  */
 const SharedArtists: React.FC<SharedArtistsProps> = ({
+  sessionId,
   participantsById,
   listedArtists,
   onSelect,
 }) => {
-  const { data } = api.jamSession.sharedArtists.useQuery(undefined, {
-    refetchInterval: REFETCH_INTERVAL_MS,
-  });
+  const { data } = api.jamSession.sharedArtists.useQuery(
+    { sessionId },
+    {
+      refetchInterval: REFETCH_INTERVAL_MS,
+    },
+  );
   // この query は 30 秒おきなので、その間に退出した人は board の参加者で外し、2 人を切ったら出さない
   const artists = (data ?? [])
     .map(({ artist, userIds }) => ({
