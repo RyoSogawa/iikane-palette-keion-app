@@ -46,12 +46,12 @@ type ToggleProps = {
   onClick: () => void;
 };
 
-/** 押すたびに切り替わるボタン。押されているときは塗りとチェックで示す */
+/** 押すたびに切り替わるボタン。押されているときは塗りとチェックで示し、切り替えで動かないようにする */
 const ToggleButton: React.FC<ToggleProps> = ({
   label,
   pressed,
   color,
-  disabled,
+  disabled = false,
   isPending,
   onClick,
 }) => (
@@ -60,9 +60,12 @@ const ToggleButton: React.FC<ToggleProps> = ({
     color={color}
     variant={pressed ? 'filled' : 'default'}
     aria-pressed={pressed}
-    disabled={disabled}
-    loading={isPending}
-    leftSection={pressed ? <IconCheck size={14} /> : undefined}
+    disabled={disabled || isPending}
+    // ローディングの回転・押したときの沈み込み・✓ の出し入れによる幅の変化で動いて見えるので、どれも止める
+    leftSection={
+      <IconCheck size={14} style={{ visibility: pressed ? 'visible' : 'hidden' }} aria-hidden />
+    }
+    style={{ transform: 'none', transition: 'none' }}
     onClick={onClick}
   >
     {label}
