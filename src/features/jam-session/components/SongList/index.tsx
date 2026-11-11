@@ -1,6 +1,16 @@
 import React from 'react';
 
-import { Badge, Box, Group, Paper, Stack, Text, Title } from '@mantine/core';
+import {
+  Avatar,
+  Badge,
+  Box,
+  Group,
+  Paper,
+  Stack,
+  Text,
+  Title,
+  VisuallyHidden,
+} from '@mantine/core';
 
 import { displayName } from '@/features/jam-session/components/PresenceSection';
 import { memberCount, summarizeParts } from '@/features/jam-session/logics/song-list';
@@ -15,7 +25,10 @@ export type SongListProps = {
   onSelectSong: (songId: string) => void;
 };
 
-/** やりたい曲の一覧。スマホで多く見えるよう、1 曲を曲名の行とパートの行の 2 行に詰める */
+/**
+ * やりたい曲の一覧。スマホで多く見えるよう、1 曲を曲名の行とパートの行の 2 行に詰める。
+ * 手を挙げている人はアバターで出し、名前は読み上げ用にだけ持つ
+ */
 const SongList: React.FC<SongListProps> = ({ songs, participantsById, viewerId, onSelectSong }) => (
   <Stack component="section" aria-labelledby="songs-title" gap={6}>
     <Group gap="xs" align="baseline">
@@ -111,12 +124,36 @@ const SongRow: React.FC<SongRowProps> = ({ song, participantsById, viewerId, onC
       <Group gap={4} mt={6}>
         {summarizeParts(song.entries).map((summary) =>
           summary.userIds.length > 0 ? (
-            <Box key={summary.key} px={6} bg="dark.4" fz={12} style={{ borderRadius: 4 }}>
+            <Group
+              key={summary.key}
+              gap={4}
+              pl={6}
+              pr={2}
+              py={2}
+              bg="dark.4"
+              wrap="nowrap"
+              style={{ borderRadius: 4 }}
+            >
               <Text fz={12} fw={700} c="blue.2" span>
                 {summary.label}
-              </Text>{' '}
-              {summary.userIds.map(nameOf).join(' ')}
-            </Box>
+              </Text>
+              <Avatar.Group spacing={4} aria-hidden>
+                {summary.userIds.map((userId) => {
+                  const participant = participantsById.get(userId);
+                  return (
+                    <Avatar
+                      key={userId}
+                      src={participant?.user.image}
+                      alt=""
+                      name={nameOf(userId)}
+                      color="initials"
+                      size={18}
+                    />
+                  );
+                })}
+              </Avatar.Group>
+              <VisuallyHidden> {summary.userIds.map(nameOf).join(' ')}</VisuallyHidden>
+            </Group>
           ) : (
             <Box
               key={summary.key}

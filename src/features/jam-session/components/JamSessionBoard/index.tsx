@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { Affix, Button, Container, Divider, Space, Stack } from '@mantine/core';
+import { Container, Divider, Space, Stack } from '@mantine/core';
 import { IconPlus } from '@tabler/icons-react';
 
 import AddSongModal from '@/features/jam-session/components/AddSongModal';
@@ -15,6 +15,7 @@ import SongModal from '@/features/jam-session/components/SongModal';
 import { useJamSessionBoard } from '@/features/jam-session/hooks/useJamSessionBoard';
 import { useJamSessionMutations } from '@/features/jam-session/hooks/useJamSessionMutations';
 import { artistKey } from '@/server/api/routers/jam-session/shared-artists';
+import StickyBottomButton from '@/ui/components/button/StickyBottomButton';
 
 import type { JamSessionBoard as Board } from '@/features/jam-session/types';
 
@@ -42,7 +43,7 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
     () => new Set(songs.flatMap(({ spotifyId }) => (spotifyId ? [spotifyId] : []))),
     [songs],
   );
-  // 曲名の無い「<アーティスト名> の曲なにか」が挙がっているアーティスト
+  // 曲名の無い「<アーティスト名> の曲なにか」が挙がっているアーティスト。チップは残し、印だけ付ける
   const listedArtists = useMemo(
     () =>
       new Set(songs.flatMap(({ name, artist }) => (!name && artist ? [artistKey(artist)] : []))),
@@ -86,21 +87,17 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
           viewerId={viewer.userId}
           onSelectSong={(songId) => setDialog({ kind: 'song', songId })}
         />
-        {/* 右下に固定したボタンで最後の曲が隠れないよう、下に余白を取る */}
-        <Space h={72} />
       </Stack>
 
-      <Affix position={{ bottom: 20, right: 16 }}>
-        <Button
-          size="lg"
-          radius="xl"
-          leftSection={<IconPlus size={20} />}
-          style={{ boxShadow: 'var(--mantine-shadow-lg)' }}
-          onClick={() => setDialog(viewer.isActive ? { kind: 'addSong' } : { kind: 'profile' })}
-        >
-          曲を挙げる
-        </Button>
-      </Affix>
+      {/* My Best Songs の「追加」と同じく、一覧の下に付いてスクロール中は画面の下に留まるボタンにする */}
+      <StickyBottomButton
+        mt={32}
+        onClick={() => setDialog(viewer.isActive ? { kind: 'addSong' } : { kind: 'profile' })}
+      >
+        <IconPlus size={16} />
+        <Space w={4} />
+        曲を挙げる
+      </StickyBottomButton>
 
       <ProfileModal
         opened={dialog?.kind === 'profile'}
@@ -132,10 +129,11 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
             }),
           )
         }
+        onToggleHand={(input) =>
+          void run(mutations.setMyParts.mutateAsync({ songId: selectedSong?.id ?? '', ...input }))
+        }
         onSetPlayed={(played) =>
-          closeOnSuccess(
-            mutations.setPlayed.mutateAsync({ songId: selectedSong?.id ?? '', played }),
-          )
+          void run(mutations.setPlayed.mutateAsync({ songId: selectedSong?.id ?? '', played }))
         }
         onDelete={() =>
           closeOnSuccess(mutations.deleteSong.mutateAsync({ songId: selectedSong?.id ?? '' }))

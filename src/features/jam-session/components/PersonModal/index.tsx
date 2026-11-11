@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import {
-  Alert,
   Anchor,
   Button,
   Group,
@@ -14,6 +13,7 @@ import {
   Title,
 } from '@mantine/core';
 
+import ConfirmDialog from '@/features/jam-session/components/ConfirmDialog';
 import ParticipantAvatar from '@/features/jam-session/components/ParticipantAvatar';
 import { displayName, profileSummary } from '@/features/jam-session/components/PresenceSection';
 import { songTitle } from '@/features/jam-session/logics/song-title';
@@ -80,29 +80,26 @@ const PersonDetail: React.FC<
 
       <MyBestSongList userId={person.userId} />
 
-      {canKick &&
-        (confirmingKick ? (
-          <Alert color="red" variant="light" title={`${name} を退出させますか？`}>
-            <Text fz="sm">本人はいつでも参加し直せます。挙手は消えません。</Text>
-            <Group mt="sm" grow>
-              <Button variant="default" onClick={() => setConfirmingKick(false)}>
-                やめる
-              </Button>
-              <Button color="red" loading={isPending} onClick={() => onKick(person.userId)}>
-                退出させる
-              </Button>
-            </Group>
-          </Alert>
-        ) : (
-          <Stack gap={4}>
-            <Button variant="outline" color="red" onClick={() => setConfirmingKick(true)}>
-              {name} を退出させる
-            </Button>
-            <Text fz="xs" c="dimmed">
-              退出を忘れて帰った人を外すための操作です。
-            </Text>
-          </Stack>
-        ))}
+      {canKick && (
+        <Stack gap={4}>
+          <Button variant="outline" color="red" onClick={() => setConfirmingKick(true)}>
+            {name} を退出させる
+          </Button>
+          <Text fz="xs" c="dimmed">
+            退出を忘れて帰った人を外すための操作です。
+          </Text>
+        </Stack>
+      )}
+
+      <ConfirmDialog
+        opened={confirmingKick}
+        title={`${name} を退出させますか？`}
+        message="本人はいつでも参加し直せます。挙手は消えません。"
+        confirmLabel="退出させる"
+        isPending={isPending}
+        onConfirm={() => onKick(person.userId)}
+        onCancel={() => setConfirmingKick(false)}
+      />
     </Stack>
   );
 };

@@ -120,7 +120,8 @@ test.describe('セッションページ', () => {
     await presenceGroup(page, 'Vo').getByRole('button', { name: OTHER_USER.name }).click();
     const dialog = page.getByRole('dialog');
     await dialog.getByRole('button', { name: `${OTHER_USER.name} を退出させる` }).click();
-    await dialog.getByRole('button', { name: '退出させる', exact: true }).click();
+    // 確認は元のポップアップに重ねた別のダイアログで出る
+    await page.getByRole('button', { name: '退出させる', exact: true }).click();
 
     await expect(page.getByRole('button', { name: OTHER_USER.name })).toHaveCount(0);
     await expect(songRow(page, '退出テストの曲')).toHaveAccessibleName(/1 人$/);
@@ -132,14 +133,14 @@ test.describe('セッションページ', () => {
     await joinByDb(LOGIN_USER.id, ['vocal']);
 
     await page.goto('/jam-session');
-    await page.getByRole('button', { name: '曲を挙げる' }).click();
+    await page.getByRole('button', { name: '曲を挙げる', exact: true }).click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
     await dialog.getByText('自分で入力', { exact: true }).click();
     await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('E2E Oasis');
     await dialog.getByRole('button', { name: 'この内容で挙げる' }).click();
 
     await expect(songRow(page, 'E2E Oasis の曲なにか')).toBeVisible();
-    await expect(songRow(page, 'E2E Oasis の曲なにか')).toContainText(`Vo ${LOGIN_USER.name}`);
+    await expect(songRow(page, 'E2E Oasis の曲なにか')).toContainText(LOGIN_USER.name);
   });
 
   test('片方の操作が、もう片方の画面に再読み込みなしで出る', async ({ page, browser }) => {
@@ -158,7 +159,7 @@ test.describe('セッションページ', () => {
       presenceGroup(page, 'Dr').getByRole('button', { name: OTHER_USER.name }),
     ).toBeVisible(POLLING_TIMEOUT);
 
-    await page.getByRole('button', { name: '曲を挙げる' }).click();
+    await page.getByRole('button', { name: '曲を挙げる', exact: true }).click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
     await dialog.getByText('自分で入力', { exact: true }).click();
     await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('E2E Oasis');
@@ -185,7 +186,10 @@ test.describe('セッションページ', () => {
     await expect.poll(() => isAbove('人が多い曲', '誰もいない曲')).toBe(true);
 
     await songRow(page, '人が多い曲').click();
-    await page.getByRole('dialog').getByRole('button', { name: '演奏済みにする' }).click();
+    const playedToggle = page.getByRole('dialog').getByRole('button', { name: '演奏済み' });
+    await expect(playedToggle).toHaveAttribute('aria-pressed', 'false');
+    await playedToggle.click();
+    await expect(playedToggle).toHaveAttribute('aria-pressed', 'true');
 
     await expect(songRow(page, '人が多い曲')).toContainText('演奏済み');
     await expect.poll(() => isAbove('誰もいない曲', '人が多い曲')).toBe(true);
@@ -209,7 +213,7 @@ test.describe('セッションページ', () => {
     await songRow(adminPage, '別ユーザーの曲').click();
     const dialog = adminPage.getByRole('dialog');
     await dialog.getByRole('button', { name: 'この曲を削除する' }).click();
-    await dialog.getByRole('button', { name: '消す' }).click();
+    await adminPage.getByRole('button', { name: '消す', exact: true }).click();
 
     await expect(songRow(adminPage, '別ユーザーの曲')).toHaveCount(0);
     await adminContext.close();
@@ -239,6 +243,8 @@ test.describe('セッションページ', () => {
     await dialog.getByRole('button', { name: 'この内容で挙げる' }).click();
 
     await expect(songRow(page, `${SHARED_ARTIST} の曲なにか`)).toBeVisible();
-    await expect(chip).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: `${SHARED_ARTIST}（2 人・挙がっています）で曲を挙げる` }),
+    ).toBeVisible();
   });
 });
