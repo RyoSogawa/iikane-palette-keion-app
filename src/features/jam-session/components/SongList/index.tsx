@@ -41,7 +41,7 @@ const SongList: React.FC<SongListProps> = ({ songs, participantsById, viewerId, 
     </Group>
     {songs.length === 0 && (
       <Text c="dimmed" fz="sm" py="md">
-        まだ曲が挙がっていません。下の「やりたい曲を挙げる」から挙げてみましょう。
+        まだ曲が挙がっていません。
       </Text>
     )}
     <Stack component="ul" gap={6} m={0} p={0} style={{ listStyle: 'none' }}>

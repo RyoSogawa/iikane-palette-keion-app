@@ -88,6 +88,10 @@ test.describe('セッションページ', () => {
 
   test('参加すると「いまここにいる人」に出て、退出すると消える', async ({ page }) => {
     await page.goto('/jam-session');
+    // 曲を挙げられるのは参加中の人だけなので、参加するまでボタンを出さない
+    await expect(page.getByRole('button', { name: 'やりたい曲を挙げる', exact: true })).toHaveCount(
+      0,
+    );
     await page.getByRole('button', { name: '参加する' }).click();
     const dialog = page.getByRole('dialog', { name: '自分のパートとルーツ' });
     await dialog.getByText('Gt', { exact: true }).click();
@@ -96,6 +100,9 @@ test.describe('セッションページ', () => {
 
     const me = presenceGroup(page, 'Gt').getByRole('button', { name: LOGIN_USER.name });
     await expect(me).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'やりたい曲を挙げる', exact: true }),
+    ).toBeVisible();
     await page.getByText('ルーツ', { exact: true }).click();
     await expect(
       presenceGroup(page, 'ロック').getByRole('button', { name: LOGIN_USER.name }),

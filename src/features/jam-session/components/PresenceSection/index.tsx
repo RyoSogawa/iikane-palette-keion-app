@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 
-import { Alert, Button, Group, Paper, SegmentedControl, Stack, Text, Title } from '@mantine/core';
+import { Button, Group, Paper, SegmentedControl, Stack, Text, Title } from '@mantine/core';
 
 import ParticipantAvatar from '@/features/jam-session/components/ParticipantAvatar';
 import { partLabel, sortParts } from '@/features/jam-session/logics/parts';
@@ -91,14 +91,9 @@ const PresenceSection: React.FC<PresenceSectionProps> = ({
       </Group>
 
       {!viewer.isActive && (
-        <Alert variant="light" p="sm">
-          <Group wrap="nowrap" gap="sm">
-            <Text fz="sm" flex={1}>
-              まだ参加していません。参加すると、ここに表示されて曲に手を挙げられます。
-            </Text>
-            <Button onClick={onOpenProfile}>参加する</Button>
-          </Group>
-        </Alert>
+        <Button fullWidth onClick={onOpenProfile}>
+          参加する
+        </Button>
       )}
 
       {groups.length === 0 ? (

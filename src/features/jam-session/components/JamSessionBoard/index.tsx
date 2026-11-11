@@ -89,15 +89,15 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
         />
       </Stack>
 
-      {/* My Best Songs の「追加」と同じく、一覧の下に付いてスクロール中は画面の下に留まるボタンにする */}
-      <StickyBottomButton
-        mt={32}
-        onClick={() => setDialog(viewer.isActive ? { kind: 'addSong' } : { kind: 'profile' })}
-      >
-        <IconPlus size={16} />
-        <Space w={4} />
-        やりたい曲を挙げる
-      </StickyBottomButton>
+      {/* My Best Songs の「追加」と同じく、一覧の下に付いてスクロール中は画面の下に留まるボタンにする。
+          曲を挙げられるのは参加中の人だけなので、参加していなければ出さない */}
+      {viewer.isActive && (
+        <StickyBottomButton mt={32} onClick={() => setDialog({ kind: 'addSong' })}>
+          <IconPlus size={16} />
+          <Space w={4} />
+          やりたい曲を挙げる
+        </StickyBottomButton>
+      )}
 
       <ProfileModal
         opened={dialog?.kind === 'profile'}
