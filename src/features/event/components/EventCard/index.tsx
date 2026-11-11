@@ -4,7 +4,6 @@ import React from 'react';
 
 import { Card, Group, Image, Text } from '@mantine/core';
 
-
 import EventStatusBadge from '@/features/event/components/EventStatusBadge';
 import { type Event } from '@/types/generated/zod';
 import LinkComponent from '@/ui/components/common/LinkComponent';

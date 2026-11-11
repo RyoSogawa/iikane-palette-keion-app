@@ -37,7 +37,8 @@ const songRow = (page: Page, title: string) =>
   page.getByRole('button', { name: new RegExp(`^${title}`) });
 
 test.describe('セッションページ', () => {
-  // ボードは部全体で 1 つなので、テストどうしが同じ表を読み書きする。順番に流し、毎回空にしてから始める
+  // ボードは部全体で 1 つなので、テストどうしが同じ表を読み書きする。順番に流し、毎回空にしてから始める。
+  // 並び順を確かめるため E2E ユーザー以外の行も消す。global-setup がローカル以外の DB では止めるので、消えるのはローカルの行だけ
   test.describe.configure({ mode: 'serial' });
   test.use({ viewport: { width: 390, height: 844 } });
 

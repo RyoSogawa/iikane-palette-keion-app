@@ -25,6 +25,8 @@ export const setMyParts = activeParticipantProcedure
           part,
           partNote: part === 'other' ? input.partNote : null,
         })),
+        // 同じ人が 2 台から同時に保存しても、一意制約で失敗させない
+        skipDuplicates: true,
       }),
     ]);
   });

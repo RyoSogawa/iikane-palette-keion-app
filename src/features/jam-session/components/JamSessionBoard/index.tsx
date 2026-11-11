@@ -45,8 +45,13 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
   const selectedPerson =
     dialog?.kind === 'person' ? participantsById.get(dialog.userId) : undefined;
 
-  const closeOnSuccess = (promise: Promise<unknown>) =>
-    void run(promise).then((ok) => ok && close());
+  // 待っている間に別のポップアップへ移っていたら、そちらは閉じない
+  const closeOnSuccess = (promise: Promise<unknown>) => {
+    const openedDialog = dialog;
+    void run(promise).then(
+      (ok) => ok && setDialog((current) => (current === openedDialog ? null : current)),
+    );
+  };
 
   return (
     <Container size={480} px={12} py={12}>

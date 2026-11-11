@@ -15,7 +15,7 @@ const splitFreeRoots = (text: string) =>
     .map((root) => root.trim())
     .filter(Boolean);
 
-type Errors = { partNote?: string; roots?: string };
+type Errors = { parts?: string; partNote?: string; roots?: string };
 
 export type ProfileModalProps = {
   opened: boolean;
@@ -57,7 +57,11 @@ const ProfileForm: React.FC<Omit<ProfileModalProps, 'opened' | 'onClose'>> = ({
     if (!result.success) {
       const issueOf = (key: string) =>
         result.error.issues.find(({ path }) => path[0] === key)?.message;
-      setErrors({ partNote: issueOf('partNote'), roots: issueOf('roots') });
+      setErrors({
+        parts: issueOf('parts'),
+        partNote: issueOf('partNote'),
+        roots: issueOf('roots'),
+      });
       return;
     }
     setErrors({});
@@ -71,8 +75,9 @@ const ProfileForm: React.FC<Omit<ProfileModalProps, 'opened' | 'onClose'>> = ({
           「いまここにいる人」に表示されます。あとからいつでも変えられます。
         </Text>
         <PartChips
-          legend="できるパート（複数選べます）"
+          legend="できるパート（1 つ以上・複数選べます）"
           value={parts}
+          error={errors.parts}
           partNote={partNote}
           partNoteError={errors.partNote}
           onChange={setParts}

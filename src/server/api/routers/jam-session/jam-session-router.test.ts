@@ -39,7 +39,7 @@ const createDb = (myJoinedAt: Date | null = JOINED_RECENTLY) => {
       findMany: vi.fn().mockResolvedValue([]),
       findUnique: vi.fn().mockResolvedValue({ id: 'song-1', proposerId: 'user-1' }),
       create: vi.fn().mockResolvedValue({ id: 'song-new' }),
-      delete: vi.fn().mockResolvedValue({}),
+      deleteMany: vi.fn().mockResolvedValue({ count: 1 }),
       updateMany: vi.fn().mockResolvedValue({ count: 1 }),
     },
     jamSessionEntry: {
@@ -340,7 +340,7 @@ describe('jamSession.deleteSong', () => {
 
     await callerFor(db).jamSession.deleteSong({ songId: 'song-1' });
 
-    expect(db.jamSessionSong.delete).toHaveBeenCalledWith({ where: { id: 'song-1' } });
+    expect(db.jamSessionSong.deleteMany).toHaveBeenCalledWith({ where: { id: 'song-1' } });
   });
 
   it('管理者はほかの人の曲も消せる', async () => {
@@ -348,7 +348,7 @@ describe('jamSession.deleteSong', () => {
 
     await callerFor(db, sessionOf('admin', true)).jamSession.deleteSong({ songId: 'song-1' });
 
-    expect(db.jamSessionSong.delete).toHaveBeenCalled();
+    expect(db.jamSessionSong.deleteMany).toHaveBeenCalled();
   });
 
   it('提案者が退会した曲は管理者だけが消せる', async () => {
@@ -366,7 +366,7 @@ describe('jamSession.deleteSong', () => {
     await expect(
       callerFor(db, sessionOf('user-2')).jamSession.deleteSong({ songId: 'song-1' }),
     ).rejects.toMatchObject({ code: 'FORBIDDEN' });
-    expect(db.jamSessionSong.delete).not.toHaveBeenCalled();
+    expect(db.jamSessionSong.deleteMany).not.toHaveBeenCalled();
   });
 
   it('無い曲は NOT_FOUND', async () => {
@@ -397,6 +397,7 @@ describe('jamSession.setMyParts', () => {
         { songId: 'song-1', userId: 'user-1', part: 'other', partNote: 'ハーモニカ' },
         { songId: 'song-1', userId: 'user-1', part: 'bass', partNote: null },
       ],
+      skipDuplicates: true,
     });
   });
 

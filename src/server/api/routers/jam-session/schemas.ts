@@ -42,7 +42,12 @@ const rootsField = z
 
 /** 参加するとき、または参加中にプロフィールを直すときの入力 */
 export const joinInputSchema = z
-  .object({ parts: partsField(0), partNote: partNoteField, roots: rootsField })
+  // パートが無いと「いまここにいる人」のどこにも出ず、ほかの人が開いて退出させることもできないので 1 つ以上にする
+  .object({
+    parts: partsField(1, 'できるパートを 1 つ以上選んでください'),
+    partNote: partNoteField,
+    roots: rootsField,
+  })
   .superRefine(refinePartNote)
   .transform(normalizePartNote);
 

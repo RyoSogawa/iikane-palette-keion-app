@@ -20,5 +20,6 @@ export const deleteSong = protectedProcedure
       throw new TRPCError({ code: 'FORBIDDEN' });
     }
 
-    await ctx.db.jamSessionSong.delete({ where: { id: input.songId } });
+    // 2 人がほぼ同時に消しても後の方を失敗させないよう、件数で結果を見る deleteMany を使う
+    await ctx.db.jamSessionSong.deleteMany({ where: { id: input.songId } });
   });

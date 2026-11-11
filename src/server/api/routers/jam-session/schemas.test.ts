@@ -13,25 +13,37 @@ describe('joinInputSchema', () => {
     ).toEqual({ parts: ['guitar', 'vocal'], partNote: null, roots: ['ロック', 'UK ロック'] });
   });
 
+  it('できるパートが 1 つも無ければ通さない', () => {
+    const result = joinInputSchema.safeParse({ parts: [], partNote: '', roots: [] });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0]?.path).toEqual(['parts']);
+  });
+
   it('20 文字を超えるルーツは通さない', () => {
     expect(
-      joinInputSchema.safeParse({ parts: [], partNote: '', roots: ['あ'.repeat(21)] }).success,
+      joinInputSchema.safeParse({ parts: ['vocal'], partNote: '', roots: ['あ'.repeat(21)] })
+        .success,
     ).toBe(false);
     expect(
-      joinInputSchema.safeParse({ parts: [], partNote: '', roots: ['あ'.repeat(20)] }).success,
+      joinInputSchema.safeParse({ parts: ['vocal'], partNote: '', roots: ['あ'.repeat(20)] })
+        .success,
     ).toBe(true);
   });
 
   it('8 件を超えるルーツは通さない', () => {
     const roots = Array.from({ length: 9 }, (_, i) => `root${i}`);
-    expect(joinInputSchema.safeParse({ parts: [], partNote: '', roots }).success).toBe(false);
+    expect(joinInputSchema.safeParse({ parts: ['vocal'], partNote: '', roots }).success).toBe(
+      false,
+    );
     expect(
-      joinInputSchema.safeParse({ parts: [], partNote: '', roots: roots.slice(1) }).success,
+      joinInputSchema.safeParse({ parts: ['vocal'], partNote: '', roots: roots.slice(1) }).success,
     ).toBe(true);
   });
 
   it('空のルーツは捨てる', () => {
-    expect(joinInputSchema.parse({ parts: [], partNote: '', roots: ['  '] }).roots).toEqual([]);
+    expect(joinInputSchema.parse({ parts: ['vocal'], partNote: '', roots: ['  '] }).roots).toEqual(
+      [],
+    );
   });
 });
 
