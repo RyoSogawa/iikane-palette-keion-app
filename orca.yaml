@@ -1,0 +1,6 @@
+# Orca の worktree フック。cwd は worktree。.wtp.yml の post_create と同じ準備をする
+# gitignore 済みファイル（.env など）のコピーは Orca が .worktreeinclude を読んで先に行う
+scripts:
+  # Orca のフックは mise を有効にしたシェルとは限らないので mise exec を通す
+  # postinstall の prisma generate で src/types/generated も作られる
+  setup: mise exec -- pnpm install --frozen-lockfile

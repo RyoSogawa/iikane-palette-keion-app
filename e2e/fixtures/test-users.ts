@@ -8,11 +8,14 @@ export const LOGIN_USER = {
   sessionToken: 'e2e-login-user-session-token',
 } as const;
 
-/** 他人のプロフィール編集を拒否できるかを確かめるための、ログインしないユーザー */
+export const OTHER_STORAGE_STATE = 'e2e/.auth/other.json';
+
+/** 他人の画面・操作を確かめるためのユーザー。セッションページでは 2 人目のメンバーとしてログインする */
 export const OTHER_USER = {
   id: 'e2e-other-user',
   name: 'E2E 別ユーザー',
   email: 'e2e-other-user@example.com',
+  sessionToken: 'e2e-other-user-session-token',
 } as const;
 
 export const ADMIN_STORAGE_STATE = 'e2e/.auth/admin.json';

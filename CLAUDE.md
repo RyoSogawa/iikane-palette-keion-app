@@ -61,6 +61,7 @@ When testing specific features, navigate to:
 - Events: `/events`
 - Members: `/members`
 - My Best Songs: `/my-best`
+- Session (jam session board, login required): `/jam-session`
 - Settings: `/settings`
 
 ## Architecture Overview
@@ -103,7 +104,13 @@ src/
    - Only users with `User.isAdmin` can access it; every admin procedure uses `adminProcedure`
    - Events are created as drafts (`Event.isDraft`) and hidden from public routes until published
 
-4. **Feature Modules** (`src/features/`)
+4. **Jam Session** (`src/app/jam-session/`, `src/features/jam-session/`, `src/server/api/routers/jam-session/`)
+   - Mobile-only page for on-site sessions. Named `JamSession*` so it does not collide with the NextAuth `Session` (or the live `Event`)
+   - `/jam-session` lists sessions (any logged-in member can create one); `/jam-session/[sessionId]` is the board. Songs and participation belong to a session; parts/roots (`JamSessionProfile`) are per user
+   - Updates by polling `jamSession.board` every 5 seconds (no WebSocket / Realtime)
+   - Adding songs, raising hands, and marking songs played require an active participant of that session (`assertActiveParticipant`, joined within 24 hours)
+
+5. **Feature Modules** (`src/features/`)
    - Self-contained feature implementations
    - Components, hooks, logics, and Server Actions (`actions/`) specific to each feature
    - Examples: event management, user profiles, my-best-songs

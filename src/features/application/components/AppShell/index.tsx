@@ -13,7 +13,6 @@ import {
   Text,
 } from '@mantine/core';
 
-
 import AccountMenuButton from '@/features/account/components/AccountMenuButton';
 import Footer from '@/features/application/components/Footer';
 import NavMenu from '@/features/application/components/NavMenu';

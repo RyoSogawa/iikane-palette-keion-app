@@ -72,6 +72,11 @@ model User {
   myBestSongs          MyBestSong[]
   bands                UserOnBand[]
   recreationKingEvents RecreationKingUserOnEvent[]
+  jamSessions          JamSession[]
+  jamSessionSongs      JamSessionSong[]
+  jamSessionEntries    JamSessionEntry[]
+  jamSessionProfile    JamSessionProfile?
+  jamSessionJoins      JamSessionParticipant[]
 }
 
 model VerificationToken {
@@ -184,4 +189,88 @@ model RecreationKingUserOnEvent {
   event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@id([userId, eventId])
+}
+
+// セッションページ（当日の現場で使う一時的な機能）。消すときは JamSession* を落とせば済むよう User には持たせない
+enum JamSessionPart {
+  vocal
+  guitar
+  bass
+  drums
+  keyboard
+  wind
+  strings
+  percussion
+  other
+}
+
+// 当日の会。ライブの Event と取り違えないよう JamSession と呼ぶ
+model JamSession {
+  id           String                  @id @default(cuid())
+  createdAt    DateTime                @default(now())
+  name         String
+  // 日付だけを持ち、JST の日付として扱う
+  heldOn       DateTime                @db.Date
+  // 作った人が退会しても、ほかの人の曲が付いたセッションは残す
+  creatorId    String?
+  creator      User?                   @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  songs        JamSessionSong[]
+  participants JamSessionParticipant[]
+
+  @@index([heldOn])
+}
+
+model JamSessionSong {
+  id         String            @id @default(cuid())
+  createdAt  DateTime          @default(now())
+  sessionId  String
+  session    JamSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  // 提案者が退会しても、ほかの人の挙手が付いた曲は残す
+  proposerId String?
+  proposer   User?             @relation(fields: [proposerId], references: [id], onDelete: SetNull)
+  // 自由入力の曲は null。null どうしは重複しないので、セッションの中で Spotify の曲だけ 1 件に絞れる
+  spotifyId  String?
+  name       String?
+  artist     String?
+  playedAt   DateTime?
+  entries    JamSessionEntry[]
+
+  @@unique([sessionId, spotifyId])
+}
+
+model JamSessionEntry {
+  id        String         @id @default(cuid())
+  createdAt DateTime       @default(now())
+  songId    String
+  song      JamSessionSong @relation(fields: [songId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  part      JamSessionPart
+  // part が other のときの楽器名。必須かどうかは zod で検査する
+  partNote  String?
+
+  @@unique([songId, userId, part])
+  @@index([userId])
+}
+
+// できるパートとルーツ。人ごとに 1 つ持ち、どのセッションでも使い回す
+model JamSessionProfile {
+  userId   String           @id
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parts    JamSessionPart[]
+  partNote String?
+  roots    String[]
+}
+
+// どのセッションに参加中か
+model JamSessionParticipant {
+  sessionId String
+  session   JamSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // 退出すると null。24 時間より前の値も退出扱いにする
+  joinedAt  DateTime?
+
+  @@id([sessionId, userId])
+  @@index([userId])
 }

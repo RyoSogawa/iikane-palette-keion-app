@@ -5,7 +5,6 @@ import React from 'react';
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import { IconBrandSpotify } from '@tabler/icons-react';
 
-
 import MusicImage from '@/features/my-best-songs/components/MusicImage';
 import NextPrevButton from '@/features/my-best-songs/components/MusicInfoModal/parts/NextPrevButton';
 import MusicTypeBadge from '@/features/my-best-songs/components/MusicTypeBadge';
