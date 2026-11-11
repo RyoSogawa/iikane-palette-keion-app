@@ -320,7 +320,9 @@ test.describe('セッションページ', () => {
     await expect(otherPage.getByRole('button', { name: 'セッションのメニュー' })).toHaveCount(0);
     await otherContext.close();
 
-    await page.goto(boardPath());
+    // 一覧のキャッシュが古いまま残らないことも見たいので、一覧から開いて一覧へ戻る
+    await page.goto('/jam-session');
+    await page.getByRole('link', { name: /^E2E セッション/ }).click();
     await page.getByRole('button', { name: 'セッションのメニュー' }).click();
     await page.getByRole('menuitem', { name: 'セッションを削除' }).click();
     await page.getByRole('button', { name: '消す', exact: true }).click();

@@ -632,6 +632,15 @@ describe('jamSession.sharedArtists', () => {
     expect(result).toEqual([{ artist: 'Oasis', userIds: ['user-1', 'user-2'] }]);
   });
 
+  it('無いセッションは NOT_FOUND', async () => {
+    const db = createDb();
+    db.jamSession.findUnique.mockResolvedValue(null);
+
+    await expect(
+      callerFor(db).jamSession.sharedArtists({ sessionId: 'missing' }),
+    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+  });
+
   it('参加中のメンバーが 1 人以下なら My Best Songs を読まない', async () => {
     const db = createDb();
     db.jamSessionParticipant.findMany.mockResolvedValue([{ userId: 'user-1' }]);

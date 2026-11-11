@@ -1,6 +1,7 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
 import { activeSince } from './active-participant';
+import { findSessionOrThrow } from './procedures';
 import { sessionIdInputSchema } from './schemas';
 import { findSharedArtists } from './shared-artists';
 
@@ -11,6 +12,7 @@ import { findSharedArtists } from './shared-artists';
 export const sharedArtists = protectedProcedure
   .input(sessionIdInputSchema)
   .query(async ({ ctx, input }) => {
+    await findSessionOrThrow(ctx.db, input.sessionId);
     const participants = await ctx.db.jamSessionParticipant.findMany({
       where: { sessionId: input.sessionId, joinedAt: { gt: activeSince(new Date()) } },
       select: { userId: true },

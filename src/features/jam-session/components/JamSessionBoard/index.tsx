@@ -34,8 +34,11 @@ export type JamSessionBoardProps = {
 
 /** セッションのボード。スマホ幅だけを設計し、PC では同じ幅のまま中央に出す */
 const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
-  const { session, participants, songs, viewer, participantsById } =
-    useJamSessionBoard(initialData);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { session, participants, songs, viewer, participantsById } = useJamSessionBoard(
+    initialData,
+    !isDeleting,
+  );
   const sessionId = session.id;
   const router = useRouter();
   const mutations = useJamSessionMutations();
@@ -73,14 +76,21 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
         <SessionHeader
           session={session}
           canManage={viewer.canManageSession}
-          isPending={mutations.updateSession.isPending || mutations.deleteSession.isPending}
+          // 消したあと一覧へ移るまでの間に、もう一度押せないようにする
+          isPending={
+            mutations.updateSession.isPending ||
+            mutations.deleteSession.isPending ||
+            mutations.deleteSession.isSuccess
+          }
           onUpdate={(input) =>
             run(mutations.updateSession.mutateAsync({ sessionId, session: input }))
           }
           onDelete={() =>
-            void run(mutations.deleteSession.mutateAsync({ sessionId })).then(
-              (ok) => ok && router.push('/jam-session'),
-            )
+            void run(mutations.deleteSession.mutateAsync({ sessionId })).then((ok) => {
+              if (!ok) return;
+              setIsDeleting(true);
+              router.push('/jam-session');
+            })
           }
         />
         <PresenceSection

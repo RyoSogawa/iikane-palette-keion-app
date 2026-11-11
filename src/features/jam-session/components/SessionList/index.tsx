@@ -27,8 +27,13 @@ const SessionList: React.FC<SessionListProps> = ({ initialData, today }) => {
   const router = useRouter();
   const [creating, setCreating] = useState(false);
   const { data } = api.jamSession.list.useQuery(undefined, { initialData });
+  const utils = api.useUtils();
   const create = api.jamSession.create.useMutation({
-    onSuccess: ({ id }) => router.push(`/jam-session/${id}`),
+    // 一覧に戻ったときに作ったセッションが抜けて見えないよう、キャッシュも取り直しておく
+    onSuccess: ({ id }) => {
+      void utils.jamSession.list.invalidate();
+      router.push(`/jam-session/${id}`);
+    },
     onError: () => showNotification(NotificationOptions.error),
   });
   const sessions = sortSessions(data, today);
