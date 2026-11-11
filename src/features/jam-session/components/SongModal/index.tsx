@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
 import { Alert, Button, Group, Modal, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
+import { IconExternalLink } from '@tabler/icons-react';
 
 import PartChips from '@/features/jam-session/components/PartChips';
+import { songSearchUrl } from '@/features/jam-session/logics/search-links';
 import { memberCount, summarizeParts } from '@/features/jam-session/logics/song-list';
 import { songSubtitle, songTitle } from '@/features/jam-session/logics/song-title';
 import { setMyPartsInputSchema } from '@/server/api/routers/jam-session/schemas';
@@ -81,6 +83,30 @@ const SongForm: React.FC<Omit<SongModalProps, 'onClose'> & { song: JamSessionSon
             .filter(Boolean)
             .join(' ・ ')}
         </Text>
+        <Group gap="xs" mt="xs" grow>
+          <Button
+            component="a"
+            href={songSearchUrl(song, 'chord')}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="light"
+            size="xs"
+            rightSection={<IconExternalLink size={14} />}
+          >
+            コード譜を探す
+          </Button>
+          <Button
+            component="a"
+            href={songSearchUrl(song, 'lyrics')}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="light"
+            size="xs"
+            rightSection={<IconExternalLink size={14} />}
+          >
+            歌詞を探す
+          </Button>
+        </Group>
       </Paper>
 
       {viewer.isActive ? (
