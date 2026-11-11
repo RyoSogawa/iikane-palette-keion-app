@@ -10,7 +10,7 @@
 
 ## Goals / Non-Goals
 - Goals: いまいる人とそのパートが分かる。メンバーが曲を挙げ、パートで手を挙げられる。人が集まっている曲が分かる。ほかの人の操作が数秒で画面に出る
-- Non-Goals: PC レイアウト、セッション会ごとのボード、バンド編成、即時（1 秒未満）の反映
+- Non-Goals: PC レイアウト、バンド編成、即時（1 秒未満）の反映
 
 ## Decisions
 
@@ -33,16 +33,32 @@ enum JamSessionPart {
   other
 }
 
+// セッション（当日の会）。ログインしていれば誰でも作れる（2026-11-11 に部全体で 1 つのボードから変更）
+model JamSession {
+  id        String                  @id @default(cuid())
+  createdAt DateTime                @default(now())
+  name      String
+  heldOn    DateTime                @db.Date
+  creatorId String?
+  creator   User?                   @relation(fields: [creatorId], references: [id], onDelete: SetNull)
+  songs     JamSessionSong[]
+  participants JamSessionParticipant[]
+}
+
 model JamSessionSong {
   id         String            @id @default(cuid())
   createdAt  DateTime          @default(now())
+  sessionId  String
+  session    JamSession        @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   proposerId String?
   proposer   User?             @relation(fields: [proposerId], references: [id], onDelete: SetNull)
-  spotifyId  String?           @unique
+  spotifyId  String?
   name       String?
   artist     String?
   playedAt   DateTime?
   entries    JamSessionEntry[]
+
+  @@unique([sessionId, spotifyId])
 }
 
 model JamSessionEntry {
@@ -59,25 +75,37 @@ model JamSessionEntry {
   @@index([userId])
 }
 
+// できるパートとルーツは人ごとに 1 つ持ち、セッションをまたいで使い回す
+model JamSessionProfile {
+  userId   String           @id
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parts    JamSessionPart[]
+  partNote String?
+  roots    String[]
+}
+
+// どのセッションに参加中か
 model JamSessionParticipant {
-  userId     String           @id
-  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parts      JamSessionPart[]
-  partNote   String?
-  roots      String[]
-  joinedAt   DateTime?
+  sessionId String
+  session   JamSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joinedAt  DateTime?
+
+  @@id([sessionId, userId])
 }
 ```
 - 曲を挙げた人の担当パートも `JamSessionEntry` として持つ。「挙げた人」と「手を挙げた人」を同じ形で集計できる
 - 退会したとき: その人の Entry と Participant は消す（`Cascade`）。挙げた曲はほかの人の Entry が付いているので残し、`proposerId` を null にする（`SetNull`）。提案者がいない曲は管理者だけが消せる
-- `spotifyId` は自由入力なら null。Postgres の unique は null どうしを重複と見なさないので、Spotify の曲だけ 1 件に絞れる
+- `spotifyId` は自由入力なら null。Postgres の unique は null どうしを重複と見なさないので、同じセッションの中で Spotify の曲だけ 1 件に絞れる
 - 曲名とアーティスト名は `MyBestSong` と同じく DB に持つ。自由入力は曲名とアーティスト名のどちらか一方があればよく、両方空は zod で弾く。曲名が無い曲は「<アーティスト名> の曲なにか」と表示する
 - `playedAt` が入っている曲が「演奏済み」。状態は未演奏と演奏済みの 2 つだけなので、enum のステータスにはしない
 - Spotify のジャケット画像は扱わない。一覧を詰めるので表示する場所が無く、保存もキャッシュも要らなくなる
 - `part = other` のときだけ `partNote`（30 文字まで）を必須にする。この条件は DB ではなく zod で検査する
 - ルーツは選択肢からの複数選択と自由入力を、区別せず `String[]` に入れる（1 件 20 文字まで、8 件まで）。選択肢は `src/features/jam-session/logics/roots.ts` に定数で持ち、画面の候補としてだけ使う
   - 選択肢: ロック / J-POP / 歌謡曲 / ジャズ / ファンク・ソウル / メタル
-- できるパートとルーツは `User` ではなく `JamSessionParticipant` に持つ。一時的な機能なので、消すときにこの 3 テーブルを落とせば済むようにする
+- できるパートとルーツは `User` ではなく `JamSessionProfile` に持つ。一時的な機能なので、消すときに `JamSession*` のテーブルを落とせば済むようにする
+- セッションは、ライブの `Event` と取り違えないよう `JamSession` と呼ぶ。`heldOn` は日付だけを持ち、JST の日付として扱う
 - パートの表示名と並び順は `src/features/jam-session/logics/parts.ts` に 1 か所で持つ
 
 ### 3. 「いまここにいる人」は参加・退出の操作で決める
@@ -151,6 +179,14 @@ model JamSessionParticipant {
 - 自分のパートとルーツの変更は、自分のアバターを開いたポップアップの「パートとルーツを変更」から行う。常時出していた「あなた：…」の行は置かない
 - 「退出する」は「いまここにいる人」の人数の隣に置く
 - 未参加のときの案内は文章を置かず、「参加する」ボタンだけにする
+
+### 11. セッションごとのボード（2026-11-11 にユーザーと確認）
+- `/jam-session` はセッションの一覧と「セッションを作る」。`/jam-session/[sessionId]` がこれまでのボード
+- セッションは名前（50 文字まで）と日付だけを持つ。ログインしていれば誰でも作れ、名前・日付の変更と削除は作った人と管理者だけ。削除すると曲と参加も消える
+- 一覧は今日（JST）のセッションを一番上に出し、それ以外は日付の新しい順
+- 参加・退出、曲、重なっているアーティストはすべてセッションごと。参加から 24 時間で退出扱いにする仕組みはそのまま
+- できるパートとルーツは人ごとに 1 つで、どのセッションでも同じものを使う
+- 曲を操作する procedure（`setMyParts` / `setPlayed`）は、曲が属するセッションに参加中かで判定する
 
 ## Risks / Trade-offs
 - 反映が最大 5 秒遅れる → 現場で声を掛け合いながら使うので許容する
