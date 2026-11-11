@@ -133,7 +133,7 @@ test.describe('セッションページ', () => {
     await joinByDb(LOGIN_USER.id, ['vocal']);
 
     await page.goto('/jam-session');
-    await page.getByRole('button', { name: '曲を挙げる', exact: true }).click();
+    await page.getByRole('button', { name: 'やりたい曲を挙げる', exact: true }).click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
     await dialog.getByText('自分で入力', { exact: true }).click();
     await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('E2E Oasis');
@@ -159,7 +159,7 @@ test.describe('セッションページ', () => {
       presenceGroup(page, 'Dr').getByRole('button', { name: OTHER_USER.name }),
     ).toBeVisible(POLLING_TIMEOUT);
 
-    await page.getByRole('button', { name: '曲を挙げる', exact: true }).click();
+    await page.getByRole('button', { name: 'やりたい曲を挙げる', exact: true }).click();
     const dialog = page.getByRole('dialog', { name: '曲を挙げる' });
     await dialog.getByText('自分で入力', { exact: true }).click();
     await dialog.getByRole('textbox', { name: 'アーティスト名' }).fill('E2E Oasis');

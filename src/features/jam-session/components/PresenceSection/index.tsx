@@ -42,7 +42,10 @@ export type PresenceSectionProps = {
   isPending: boolean;
 };
 
-/** 「いまここにいる人」。アバターだけをパートかルーツごとに横に並べ、名前はタップして見る */
+/**
+ * 「いまここにいる人」。アバターだけをパートかルーツごとに横に並べ、名前はタップして見る。
+ * 自分のパートとルーツの変更は、自分のアバターを開いたポップアップから行う
+ */
 const PresenceSection: React.FC<PresenceSectionProps> = ({
   participants,
   viewer,
@@ -66,6 +69,17 @@ const PresenceSection: React.FC<PresenceSectionProps> = ({
         <Text c="dimmed" fz="xs">
           {participants.length} 人
         </Text>
+        {viewer.isActive && (
+          <Button
+            variant="subtle"
+            color="red"
+            size="compact-xs"
+            loading={isPending}
+            onClick={onLeave}
+          >
+            退出する
+          </Button>
+        )}
         <SegmentedControl
           ml="auto"
           size="xs"
@@ -128,26 +142,6 @@ const PresenceSection: React.FC<PresenceSectionProps> = ({
               </Group>
             </Paper>
           ))}
-        </Group>
-      )}
-
-      {viewer.isActive && viewer.profile && (
-        <Group gap={4} wrap="nowrap">
-          <Text c="dimmed" fz="xs" flex={1} truncate="end">
-            あなた：{profileSummary(viewer.profile) || '未登録'}
-          </Text>
-          <Button variant="subtle" size="compact-sm" onClick={onOpenProfile}>
-            変更
-          </Button>
-          <Button
-            variant="subtle"
-            color="red"
-            size="compact-sm"
-            loading={isPending}
-            onClick={onLeave}
-          >
-            退出する
-          </Button>
         </Group>
       )}
     </Stack>

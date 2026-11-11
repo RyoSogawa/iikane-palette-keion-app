@@ -33,6 +33,7 @@ export type PersonModalProps = {
   isPending: boolean;
   onClose: () => void;
   onKick: (userId: string) => void;
+  onEditProfile: () => void;
 };
 
 /** アバターをタップして開くポップアップ。その人のパート・ルーツと、My Best Songs を一覧で読める形で出す */
@@ -49,7 +50,7 @@ const PersonModal: React.FC<PersonModalProps> = ({ person, onClose, ...props }) 
 
 const PersonDetail: React.FC<
   Omit<PersonModalProps, 'person'> & { person: JamSessionParticipantView }
-> = ({ person, songs, viewer, isPending, onClose, onKick }) => {
+> = ({ person, songs, viewer, isPending, onClose, onKick, onEditProfile }) => {
   const name = displayName(person);
   const [confirmingKick, setConfirmingKick] = useState(false);
   const raisedSongs = songs.filter(({ entries }) =>
@@ -79,6 +80,12 @@ const PersonDetail: React.FC<
       )}
 
       <MyBestSongList userId={person.userId} />
+
+      {person.userId === viewer.userId && (
+        <Button variant="light" onClick={onEditProfile}>
+          パートとルーツを変更
+        </Button>
+      )}
 
       {canKick && (
         <Stack gap={4}>
@@ -126,7 +133,7 @@ const MyBestSongList: React.FC<{ userId: string }> = ({ userId }) => {
           プロフィールを見る
         </Anchor>
       </Group>
-      <ScrollArea.Autosize mah="45vh">
+      <ScrollArea.Autosize mah="45vh" scrollbars="y">
         <Stack component="ul" gap={4} m={0} p={0} style={{ listStyle: 'none' }}>
           {data.map((song) => (
             <Group key={song.id} component="li" gap={8} wrap="nowrap">
@@ -141,7 +148,7 @@ const MyBestSongList: React.FC<{ userId: string }> = ({ userId }) => {
                 fallbackSrc="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
                 style={{ flexShrink: 0 }}
               />
-              <Text fz="sm" c="bright" truncate="end" miw={0}>
+              <Text fz="sm" c="bright" truncate="end" miw={0} flex={1}>
                 {song.name}
                 <Text fz="xs" c="dimmed" span>
                   {' '}

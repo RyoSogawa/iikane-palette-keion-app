@@ -96,7 +96,7 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
       >
         <IconPlus size={16} />
         <Space w={4} />
-        曲を挙げる
+        やりたい曲を挙げる
       </StickyBottomButton>
 
       <ProfileModal
@@ -114,6 +114,7 @@ const JamSessionBoard: React.FC<JamSessionBoardProps> = ({ initialData }) => {
         isPending={isPending}
         onClose={close}
         onKick={(userId) => closeOnSuccess(mutations.leave.mutateAsync({ userId }))}
+        onEditProfile={openProfile}
       />
       <SongModal
         song={selectedSong}

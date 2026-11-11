@@ -36,12 +36,12 @@ const SongList: React.FC<SongListProps> = ({ songs, participantsById, viewerId, 
         やりたい曲
       </Title>
       <Text c="dimmed" fz="xs">
-        {songs.length} 曲 ・ 人が多い順 ・ 自動で更新
+        {songs.length} 曲
       </Text>
     </Group>
     {songs.length === 0 && (
       <Text c="dimmed" fz="sm" py="md">
-        まだ曲が挙がっていません。右下の「曲を挙げる」から挙げてみましょう。
+        まだ曲が挙がっていません。下の「やりたい曲を挙げる」から挙げてみましょう。
       </Text>
     )}
     <Stack component="ul" gap={6} m={0} p={0} style={{ listStyle: 'none' }}>

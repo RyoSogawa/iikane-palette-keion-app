@@ -82,9 +82,6 @@ const SharedArtists: React.FC<SharedArtistsProps> = ({
           </UnstyledButton>
         ))}
       </Group>
-      <Text fz="xs" c="dimmed">
-        タップすると「〇〇 の曲なにか」として挙げられます
-      </Text>
     </Stack>
   );
 };
