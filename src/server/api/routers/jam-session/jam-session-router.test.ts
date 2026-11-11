@@ -267,21 +267,27 @@ describe('jamSession.createSong', () => {
   it('Spotify の曲は、曲名とアーティスト名を Spotify から取り直す', async () => {
     const db = createDb();
     mocks.getSeveralTracks.mockResolvedValue({
-      tracks: [{ name: 'Wonderwall', artists: [{ name: 'Oasis' }, { name: 'Noel' }] }],
+      tracks: [
+        {
+          id: '4gzpq5DPGxSnKTe4SA8HAU',
+          name: 'Wonderwall',
+          artists: [{ name: 'Oasis' }, { name: 'Noel' }],
+        },
+      ],
     });
 
     await callerFor(db).jamSession.createSong({
-      spotifyId: 'track-1',
+      spotifyId: '4gzpq5DPGxSnKTe4SA8HAU',
       name: '偽の曲名',
       artist: '偽のアーティスト',
       parts: ['vocal'],
     });
 
-    expect(mocks.getSeveralTracks).toHaveBeenCalledWith(['track-1']);
+    expect(mocks.getSeveralTracks).toHaveBeenCalledWith(['4gzpq5DPGxSnKTe4SA8HAU']);
     expect(db.jamSessionSong.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
-          spotifyId: 'track-1',
+          spotifyId: '4gzpq5DPGxSnKTe4SA8HAU',
           name: 'Wonderwall',
           artist: 'Oasis, Noel',
         }) as unknown,
@@ -293,12 +299,16 @@ describe('jamSession.createSong', () => {
     ['取得に失敗した', undefined],
     ['曲が無い', { tracks: [] }],
     ['曲が null', { tracks: [null] }],
+    ['別の曲', { tracks: [{ id: '0000000000000000000000', name: 'x', artists: [] }] }],
   ])('Spotify から曲を%sときは登録しない', async (_label, response) => {
     const db = createDb();
     mocks.getSeveralTracks.mockResolvedValue(response);
 
     await expect(
-      callerFor(db).jamSession.createSong({ spotifyId: 'track-1', parts: ['vocal'] }),
+      callerFor(db).jamSession.createSong({
+        spotifyId: '4gzpq5DPGxSnKTe4SA8HAU',
+        parts: ['vocal'],
+      }),
     ).rejects.toMatchObject({ code: 'BAD_REQUEST' });
     expect(db.jamSessionSong.create).not.toHaveBeenCalled();
   });
@@ -306,7 +316,7 @@ describe('jamSession.createSong', () => {
   it('すでに挙がっている Spotify の曲は CONFLICT', async () => {
     const db = createDb();
     mocks.getSeveralTracks.mockResolvedValue({
-      tracks: [{ name: 'Wonderwall', artists: [{ name: 'Oasis' }] }],
+      tracks: [{ id: '4gzpq5DPGxSnKTe4SA8HAU', name: 'Wonderwall', artists: [{ name: 'Oasis' }] }],
     });
     db.jamSessionSong.create.mockRejectedValue(
       new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
@@ -316,7 +326,10 @@ describe('jamSession.createSong', () => {
     );
 
     await expect(
-      callerFor(db).jamSession.createSong({ spotifyId: 'track-1', parts: ['vocal'] }),
+      callerFor(db).jamSession.createSong({
+        spotifyId: '4gzpq5DPGxSnKTe4SA8HAU',
+        parts: ['vocal'],
+      }),
     ).rejects.toMatchObject({ code: 'CONFLICT' });
   });
 });

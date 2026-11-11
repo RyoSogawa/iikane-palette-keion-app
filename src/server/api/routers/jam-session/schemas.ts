@@ -60,7 +60,13 @@ export const setMyPartsInputSchema = z
  */
 export const createSongInputSchema = z
   .object({
-    spotifyId: z.string().trim().max(64).optional().default('').transform(blankToNull),
+    // getSeveralTracks はカンマ区切りで複数の曲を取るので、1 曲分の ID の形だけを通す
+    spotifyId: z
+      .string()
+      .regex(/^([A-Za-z0-9]{22})?$/, 'Spotify の曲 ID が正しくありません')
+      .optional()
+      .default('')
+      .transform(blankToNull),
     name: optionalText(100).optional().default(null),
     artist: optionalText(100).optional().default(null),
     parts: partsField(1, 'パートを 1 つ以上選んでください'),

@@ -87,9 +87,21 @@ describe('createSongInputSchema', () => {
 
   it('Spotify の曲は spotifyId だけでよく、送られた曲名とアーティスト名は捨てる', () => {
     expect(
-      createSongInputSchema.parse({ ...parts, spotifyId: 'abc', name: '偽の曲名', artist: '' }),
-    ).toMatchObject({ spotifyId: 'abc', name: null, artist: null });
+      createSongInputSchema.parse({
+        ...parts,
+        spotifyId: '4gzpq5DPGxSnKTe4SA8HAU',
+        name: '偽の曲名',
+        artist: '',
+      }),
+    ).toMatchObject({ spotifyId: '4gzpq5DPGxSnKTe4SA8HAU', name: null, artist: null });
   });
+
+  it.each(['4gzpq5DPGxSnKTe4SA8HAU,0000000000000000000000', 'short', '4gzpq5DPGxSnKTe4SA8HA!'])(
+    '1 曲分の形でない spotifyId（%s）は通さない',
+    (spotifyId) => {
+      expect(createSongInputSchema.safeParse({ ...parts, spotifyId }).success).toBe(false);
+    },
+  );
 
   it('パートを 1 つも選ばなければ通さない', () => {
     const result = createSongInputSchema.safeParse({ parts: [], partNote: '', artist: 'Oasis' });
