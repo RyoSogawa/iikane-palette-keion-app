@@ -14,7 +14,9 @@ export type MusicSearchInputProps = {
   value: string;
   type: SongTypeType;
   onChange: (value: string) => void;
-  onChangeType: (type: SongTypeType) => void;
+  onChangeType?: (type: SongTypeType) => void;
+  /** トラックだけを探す画面では Track / Album の切り替えを出さない */
+  hideTypeSwitcher?: boolean;
 };
 
 const MusicSearchInput: React.FC<MusicSearchInputProps> = ({
@@ -22,6 +24,7 @@ const MusicSearchInput: React.FC<MusicSearchInputProps> = ({
   type,
   onChange,
   onChangeType,
+  hideTypeSwitcher = false,
 }) => {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +39,7 @@ const MusicSearchInput: React.FC<MusicSearchInputProps> = ({
 
   const handleChangeType = useCallback(
     (typeValue: string) => {
-      onChangeType(SongTypeSchema.parse(typeValue));
+      onChangeType?.(SongTypeSchema.parse(typeValue));
     },
     [onChangeType],
   );
@@ -57,7 +60,14 @@ const MusicSearchInput: React.FC<MusicSearchInputProps> = ({
         flex={1}
         onChange={handleChange}
       />
-      <SegmentedControl data={SongTypeDataMap} value={type} fullWidth onChange={handleChangeType} />
+      {!hideTypeSwitcher && (
+        <SegmentedControl
+          data={SongTypeDataMap}
+          value={type}
+          fullWidth
+          onChange={handleChangeType}
+        />
+      )}
     </Stack>
   );
 };

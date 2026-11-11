@@ -5,6 +5,7 @@ import React, { useMemo } from 'react';
 import { ActionIcon, Menu } from '@mantine/core';
 import {
   IconCaretDownFilled,
+  IconGuitarPick,
   IconHome,
   IconMicrophone2,
   IconSettings,
@@ -27,6 +28,12 @@ const MenuMap: Record<string, MenuItem> = {
   users: { title: '部員名簿', icon: <IconUsersGroup size={14} />, pathname: '/members' },
 };
 
+const JamSessionMenu: MenuItem = {
+  title: 'セッション',
+  icon: <IconGuitarPick size={14} />,
+  pathname: '/jam-session',
+};
+
 const AdminMenu: MenuItem = {
   title: '管理画面',
   icon: <IconSettings size={14} />,
@@ -37,9 +44,15 @@ const NavMenu: React.FC = () => {
   const currentPath = usePathname();
   const { data: session } = useSession();
 
+  const isLoggedIn = !!session;
+  const isAdmin = !!session?.user.isAdmin;
   const menus = useMemo(
-    () => (session?.user.isAdmin ? { ...MenuMap, admin: AdminMenu } : MenuMap),
-    [session?.user.isAdmin],
+    () => ({
+      ...MenuMap,
+      ...(isLoggedIn ? { jamSession: JamSessionMenu } : {}),
+      ...(isAdmin ? { admin: AdminMenu } : {}),
+    }),
+    [isLoggedIn, isAdmin],
   );
 
   const currentMenu = useMemo(() => {
