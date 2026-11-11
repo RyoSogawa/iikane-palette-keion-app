@@ -42,5 +42,5 @@
 - [x] 5.7 他人の曲は消せず、管理者は消せる
 
 ## 6. 仕上げ
-- [ ] 6.1 `openspec/project.md` と `CLAUDE.md` にセッション機能を追記する
-- [ ] 6.2 `pnpm lint` / `pnpm test` / `pnpm build` / `pnpm e2e` を通す
+- [x] 6.1 `openspec/project.md` と `CLAUDE.md` にセッション機能を追記する
+- [x] 6.2 `pnpm lint` / `pnpm test` / `pnpm build` / `pnpm e2e` を通す
