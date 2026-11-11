@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import { ActionIcon, Menu } from '@mantine/core';
 import {
   IconCaretDownFilled,
-  IconGuitarPick,
+  IconConfetti,
   IconHome,
   IconMicrophone2,
   IconSettings,
@@ -30,7 +30,7 @@ const MenuMap: Record<string, MenuItem> = {
 
 const JamSessionMenu: MenuItem = {
   title: 'セッション',
-  icon: <IconGuitarPick size={14} />,
+  icon: <IconConfetti size={14} />,
   pathname: '/jam-session',
 };
 

@@ -8,11 +8,10 @@ import {
   Image,
   Loader,
   Modal,
-  SimpleGrid,
+  ScrollArea,
   Stack,
   Text,
   Title,
-  UnstyledButton,
 } from '@mantine/core';
 
 import ParticipantAvatar from '@/features/jam-session/components/ParticipantAvatar';
@@ -36,7 +35,7 @@ export type PersonModalProps = {
   onKick: (userId: string) => void;
 };
 
-/** アバターをタップして開くポップアップ。その人のパート・ルーツと、My Best Songs のジャケットを敷き詰めて出す */
+/** アバターをタップして開くポップアップ。その人のパート・ルーツと、My Best Songs を一覧で読める形で出す */
 const PersonModal: React.FC<PersonModalProps> = ({ person, onClose, ...props }) => (
   <Modal
     opened={!!person}
@@ -79,7 +78,7 @@ const PersonDetail: React.FC<
         </Text>
       )}
 
-      <MyBestSongTiles userId={person.userId} />
+      <MyBestSongList userId={person.userId} />
 
       {canKick &&
         (confirmingKick ? (
@@ -108,17 +107,14 @@ const PersonDetail: React.FC<
   );
 };
 
-const MyBestSongTiles: React.FC<{ userId: string }> = ({ userId }) => {
+const MyBestSongList: React.FC<{ userId: string }> = ({ userId }) => {
   const { data, isLoading } = api.myBestSongs.findByUserId.useQuery(
     { userId },
     { refetchOnWindowFocus: false },
   );
-  const [selectedId, setSelectedId] = useState<string>();
 
   if (isLoading) return <Loader size="sm" mx="auto" />;
   if (!data || data.length === 0) return null;
-
-  const selected = data.find(({ id }) => id === selectedId);
 
   return (
     <Stack gap={6}>
@@ -133,31 +129,32 @@ const MyBestSongTiles: React.FC<{ userId: string }> = ({ userId }) => {
           プロフィールを見る
         </Anchor>
       </Group>
-      <Text fz="xs" c={selected ? 'bright' : 'dimmed'} truncate="end" aria-live="polite">
-        {selected
-          ? `${selected.name} / ${selected.artist}`
-          : 'ジャケットをタップすると曲名が出ます'}
-      </Text>
-      <SimpleGrid cols={5} spacing={3} mah="45vh" style={{ overflowY: 'auto' }}>
-        {data.map((song) => (
-          <UnstyledButton
-            key={song.id}
-            aria-label={`${song.name} / ${song.artist}`}
-            aria-pressed={song.id === selectedId}
-            onClick={() => setSelectedId(song.id)}
-          >
-            <Image
-              src={song.image}
-              alt=""
-              radius={3}
-              loading="lazy"
-              bg="dark.5"
-              style={{ aspectRatio: '1 / 1' }}
-              fallbackSrc="data:image/gif;base64,R0lGODlhAQABAAAAACw="
-            />
-          </UnstyledButton>
-        ))}
-      </SimpleGrid>
+      <ScrollArea.Autosize mah="45vh">
+        <Stack component="ul" gap={4} m={0} p={0} style={{ listStyle: 'none' }}>
+          {data.map((song) => (
+            <Group key={song.id} component="li" gap={8} wrap="nowrap">
+              <Image
+                src={song.image}
+                alt=""
+                w={32}
+                h={32}
+                radius={3}
+                loading="lazy"
+                bg="dark.5"
+                fallbackSrc="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                style={{ flexShrink: 0 }}
+              />
+              <Text fz="sm" c="bright" truncate="end" miw={0}>
+                {song.name}
+                <Text fz="xs" c="dimmed" span>
+                  {' '}
+                  {song.artist}
+                </Text>
+              </Text>
+            </Group>
+          ))}
+        </Stack>
+      </ScrollArea.Autosize>
     </Stack>
   );
 };
