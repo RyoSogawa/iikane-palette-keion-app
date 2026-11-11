@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import {
   Button,
+  Group,
   Loader,
   Modal,
   Paper,
@@ -14,7 +15,7 @@ import {
 } from '@mantine/core';
 
 import PartChips from '@/features/jam-session/components/PartChips';
-import { songTitle } from '@/features/jam-session/logics/song-title';
+import { songSubtitle, songTitle } from '@/features/jam-session/logics/song-title';
 import MusicCard from '@/features/my-best-songs/components/MusicCard';
 import MusicSearchInput from '@/features/my-best-songs/components/MusicSearchInput';
 import { useSearchSpotify } from '@/features/my-best-songs/hooks/useSearchSpotify';
@@ -142,9 +143,7 @@ const AddSongForm: React.FC<Omit<AddSongModalProps, 'opened' | 'onClose'>> = ({
                 <Text fz="xs" c="dimmed">
                   一覧での見え方
                 </Text>
-                <Text fw={700} c="bright">
-                  {songTitle({ name: name.trim() || null, artist: artist.trim() || null })}
-                </Text>
+                <SongNamePreview name={name.trim() || null} artist={artist.trim() || null} />
               </Paper>
             )}
           </>
@@ -164,6 +163,23 @@ const AddSongForm: React.FC<Omit<AddSongModalProps, 'opened' | 'onClose'>> = ({
         </Button>
       </Stack>
     </form>
+  );
+};
+
+/** 曲の一覧の 1 行目と同じ形（曲名とアーティスト名）で見せる */
+const SongNamePreview: React.FC<{ name: string | null; artist: string | null }> = (song) => {
+  const subtitle = songSubtitle(song);
+  return (
+    <Group gap={8} wrap="nowrap" align="baseline">
+      <Text fw={700} c="bright" truncate="end">
+        {songTitle(song)}
+      </Text>
+      {subtitle && (
+        <Text fz="xs" c="dimmed" truncate="end" style={{ flexShrink: 0 }} maw="40%">
+          {subtitle}
+        </Text>
+      )}
+    </Group>
   );
 };
 
