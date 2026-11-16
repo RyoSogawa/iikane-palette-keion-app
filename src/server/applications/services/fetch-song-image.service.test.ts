@@ -70,4 +70,25 @@ describe('FetchSongImageService', () => {
 
     expect(result).toEqual(songs);
   });
+  // 実物の SpotifyApiService は失敗しても reject せず、中で握りつぶして undefined を返す
+  it('Spotify の曲情報が取れず undefined が返っても、曲は画像なしで返す', async () => {
+    const service = new FetchSongImageService(
+      createSpotifyMock({ getSeveralTracks: vi.fn().mockResolvedValue(undefined) }),
+    );
+    const songs = [song({})];
+
+    const result = await service.invoke(songs);
+
+    expect(result).toEqual(songs);
+  });
+
+  it('Spotify のアルバム情報が取れず undefined が返っても、曲は画像なしで返す', async () => {
+    const service = new FetchSongImageService(
+      createSpotifyMock({ getSeveralAlbums: vi.fn().mockResolvedValue(undefined) }),
+    );
+
+    const result = await service.invoke([song({ type: 'album', spotifyId: 'spotify-album-1' })]);
+
+    expect(result).toEqual([expect.objectContaining({ id: 'song-1', image: undefined })]);
+  });
 });
