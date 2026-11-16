@@ -3,7 +3,7 @@ import { PROFILE_EMPTY_USER, PROFILE_FULL_USER, PROFILE_SHORT_USER } from './tes
 import type { PrismaClient } from '@prisma/client';
 
 export const LONG_INTRO_FIRST = '長いプロフィール文の 1 段落目です';
-export const LONG_INTRO_LAST = '長いプロフィール文の最後の段落です';
+const LONG_INTRO_LAST = '長いプロフィール文の最後の段落です';
 export const SHORT_INTRO = '短いプロフィール文です';
 export const PROFILE_SONGS = [
   { name: 'E2E の 1 曲目', artist: 'E2E アーティスト A' },

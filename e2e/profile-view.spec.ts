@@ -27,17 +27,19 @@ test.describe('プロフィールの閲覧', () => {
     await page.goto(`/members/${PROFILE_FULL_USER.id}/profile`);
     await expect(page.getByText(LONG_INTRO_FIRST)).toBeVisible();
 
-    await page.getByRole('button', { name: '続きを読む' }).click();
-    await expect(page.getByRole('button', { name: '閉じる' })).toHaveAttribute(
-      'aria-expanded',
-      'true',
-    );
+    // 畳んだ本文は overflow: hidden で切っているだけで toBeVisible では見分けられないので、本文の直下にあるボタンの位置で本文の高さの変化を見る
+    const more = page.getByRole('button', { name: '続きを読む' });
+    const close = page.getByRole('button', { name: '閉じる' });
+    const topOf = async (locator: typeof more) => (await locator.boundingBox())?.y ?? 0;
+    const collapsedTop = await topOf(more);
 
-    await page.getByRole('button', { name: '閉じる' }).click();
-    await expect(page.getByRole('button', { name: '続きを読む' })).toHaveAttribute(
-      'aria-expanded',
-      'false',
-    );
+    await more.click();
+    await expect(close).toHaveAttribute('aria-expanded', 'true');
+    await expect.poll(() => topOf(close)).toBeGreaterThan(collapsedTop + 50);
+
+    await close.click();
+    await expect(more).toHaveAttribute('aria-expanded', 'false');
+    await expect.poll(() => topOf(more)).toBe(collapsedTop);
   });
 
   test('短いプロフィール文には「続きを読む」が出ず、My Best Songs が無ければ見出しも出ない', async ({
