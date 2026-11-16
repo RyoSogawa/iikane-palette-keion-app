@@ -56,7 +56,7 @@ export const sort = protectedProcedure.input(inputSchema).mutation(async ({ inpu
       },
     });
 
-    revalidatePath(`/members/${data.userId}/my-best-songs`);
+    revalidatePath(`/members/${data.userId}/profile`);
 
     return newData;
   });
