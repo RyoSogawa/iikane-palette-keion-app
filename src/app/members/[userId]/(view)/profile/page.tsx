@@ -5,7 +5,6 @@ import { IconHeart } from '@tabler/icons-react';
 
 import MyBestSongs from '@/features/my-best-songs/components/MyBestSongs';
 import UserIntroduction from '@/features/user/components/UserIntroduction';
-import { hasIntroductionText } from '@/features/user/components/UserIntroduction/logics';
 import UserProfileSection from '@/features/user/components/UserProfileSection';
 import { api } from '@/trpc/server';
 
@@ -45,7 +44,7 @@ export default async function MemberProfilePage({ params }: Props) {
 
   return (
     <Stack gap={48} mt="xl" mx={{ base: 0, sm: 32 }}>
-      {hasIntroductionText(user.introduction) && <UserIntroduction value={user.introduction} />}
+      <UserIntroduction value={user.introduction} />
       <Suspense
         fallback={
           <Flex justify="center">
