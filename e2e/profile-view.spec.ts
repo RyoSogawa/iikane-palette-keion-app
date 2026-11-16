@@ -48,18 +48,20 @@ test.describe('プロフィールの閲覧', () => {
     await page.goto(`/members/${PROFILE_SHORT_USER.id}/profile`);
 
     await expect(page.getByText(SHORT_INTRO)).toBeVisible();
+    await expect(page.locator('.ProseMirror')).toHaveCount(1);
     // 「無いこと」の確認は表示途中でも通ってしまうので、My Best Songs の読み込みが終わるまで待つ
     await expect(page.getByLabel('My Best Songs を読み込み中')).toHaveCount(0);
     await expect(page.getByRole('button', { name: '続きを読む' })).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'My Best Songs' })).toHaveCount(0);
   });
 
-  test('プロフィール文も My Best Songs も無ければ、どちらの見出しも出ない', async ({ page }) => {
+  test('プロフィール文も My Best Songs も無ければ、どちらも表示しない', async ({ page }) => {
     await page.goto(`/members/${PROFILE_EMPTY_USER.id}/profile`);
 
     await expect(page.getByRole('heading', { name: PROFILE_EMPTY_USER.name })).toBeVisible();
     await expect(page.getByLabel('My Best Songs を読み込み中')).toHaveCount(0);
-    await expect(page.getByRole('heading', { name: 'Profile' })).toHaveCount(0);
+    // 空の段落だけのプロフィール文でもエディタを描画しない。短文ユーザーでは 1 件あることを確かめているので、セレクタが外れれば気づける
+    await expect(page.locator('.ProseMirror')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'My Best Songs' })).toHaveCount(0);
   });
 
