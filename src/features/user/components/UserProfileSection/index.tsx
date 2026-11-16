@@ -8,7 +8,7 @@ export type UserProfileSectionProps = {
   children: React.ReactNode;
 };
 
-/** プロフィールページ（閲覧側）の 1 区画。プロフィール文と My Best Songs を見出しで区切る */
+/** プロフィールページ（閲覧側）の見出し付きの 1 区画。プロフィール文は SNS の自己紹介のように見出しを付けないので包まない */
 const UserProfileSection: React.FC<UserProfileSectionProps> = ({ title, icon, children }) => {
   const titleId = useId();
 
