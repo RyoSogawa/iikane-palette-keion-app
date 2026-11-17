@@ -4,6 +4,7 @@ import { TRPCError } from '@trpc/server';
 import { protectedProcedure } from '@/server/api/trpc';
 import { SpotifyApiService } from '@/server/applications/services/spotify-api.service';
 
+import { toEntryRows } from './entry-rows';
 import { assertActiveParticipant } from './guards';
 import { createSessionSongInputSchema } from './schemas';
 
@@ -38,11 +39,7 @@ export const createSong = protectedProcedure
           proposerId: userId,
           ...song,
           entries: {
-            create: input.parts.map((part) => ({
-              userId,
-              part,
-              partNote: part === 'other' ? input.partNote : null,
-            })),
+            create: toEntryRows(userId, input.parts, input.partNote),
           },
         },
         select: { id: true },

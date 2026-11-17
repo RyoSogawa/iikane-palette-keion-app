@@ -1,5 +1,6 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
+import { toEntryRows } from './entry-rows';
 import { assertActiveParticipant, findSongOrThrow } from './guards';
 import { setMyPartsInputSchema } from './schemas';
 
@@ -14,11 +15,9 @@ export const setMyParts = protectedProcedure
     await ctx.db.$transaction([
       ctx.db.jamSessionEntry.deleteMany({ where: { songId: input.songId, userId } }),
       ctx.db.jamSessionEntry.createMany({
-        data: input.parts.map((part) => ({
+        data: toEntryRows(userId, input.parts, input.partNote).map((row) => ({
+          ...row,
           songId: input.songId,
-          userId,
-          part,
-          partNote: part === 'other' ? input.partNote : null,
         })),
         // 同じ人が 2 台から同時に保存しても、一意制約で失敗させない
         skipDuplicates: true,
