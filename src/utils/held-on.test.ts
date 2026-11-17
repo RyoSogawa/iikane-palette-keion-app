@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatHeldOn, fromHeldOn, todayInJst, toHeldOn } from './held-on';
+import { formatHeldOn, fromHeldOn, todayInJst, toHeldOn } from '@/utils/held-on';
 
 describe('セッションの日付', () => {
   it('YYYY-MM-DD を UTC の 0 時の Date にし、元に戻せる', () => {

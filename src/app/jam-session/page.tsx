@@ -3,9 +3,9 @@ import React from 'react';
 import { redirect } from 'next/navigation';
 
 import SessionList from '@/features/jam-session/components/SessionList';
-import { todayInJst } from '@/server/api/routers/jam-session/held-on';
 import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
+import { todayInJst } from '@/utils/held-on';
 
 import type { Metadata } from 'next';
 

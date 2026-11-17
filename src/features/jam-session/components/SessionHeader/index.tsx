@@ -5,8 +5,8 @@ import { IconChevronLeft, IconDots, IconPencil, IconTrash } from '@tabler/icons-
 
 import ConfirmDialog from '@/features/jam-session/components/ConfirmDialog';
 import SessionFormModal from '@/features/jam-session/components/SessionFormModal';
-import { formatHeldOn, fromHeldOn } from '@/server/api/routers/jam-session/held-on';
 import LinkComponent from '@/ui/components/common/LinkComponent';
+import { formatHeldOn, fromHeldOn } from '@/utils/held-on';
 
 import type { JamSessionSummary } from '@/features/jam-session/types';
 import type { SessionInput } from '@/server/api/routers/jam-session/schemas';

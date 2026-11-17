@@ -1,8 +1,7 @@
 import { z } from 'zod';
 
 import { JamSessionPartSchema } from '@/types/generated/zod';
-
-import { fromHeldOn, HELD_ON_PATTERN, toHeldOn } from './held-on';
+import { fromHeldOn, HELD_ON_PATTERN, toHeldOn } from '@/utils/held-on';
 
 const blankToNull = (value: string) => {
   const trimmed = value.trim();

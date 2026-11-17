@@ -10,9 +10,9 @@ import { useRouter } from 'next/navigation';
 import { NotificationOptions } from '@/constants/notification';
 import SessionFormModal from '@/features/jam-session/components/SessionFormModal';
 import { sortSessions } from '@/features/jam-session/logics/session-list';
-import { formatHeldOn, fromHeldOn } from '@/server/api/routers/jam-session/held-on';
 import { api } from '@/trpc/react';
 import LinkComponent from '@/ui/components/common/LinkComponent';
+import { formatHeldOn, fromHeldOn } from '@/utils/held-on';
 
 import type { JamSessionListItem } from '@/features/jam-session/types';
 
