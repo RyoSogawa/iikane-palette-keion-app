@@ -96,7 +96,7 @@ model JamSessionParticipant {
 }
 ```
 - 曲を挙げた人の担当パートも `JamSessionEntry` として持つ。「挙げた人」と「手を挙げた人」を同じ形で集計できる
-- 退会したとき: その人の Entry と Participant は消す（`Cascade`）。挙げた曲はほかの人の Entry が付いているので残し、`proposerId` を null にする（`SetNull`）。提案者がいない曲は管理者だけが消せる
+- 退会したとき: その人の Entry と Participant は消す（`Cascade`）。挙げた曲はほかの人の Entry が付いているので残し、`proposerId` を null にする（`SetNull`）。提案者がいない曲は、セッションを作った人と管理者だけが消せる
 - `spotifyId` は自由入力なら null。Postgres の unique は null どうしを重複と見なさないので、同じセッションの中で Spotify の曲だけ 1 件に絞れる
 - 曲名とアーティスト名は `MyBestSong` と同じく DB に持つ。自由入力は曲名とアーティスト名のどちらか一方があればよく、両方空は zod で弾く。曲名が無い曲は「<アーティスト名> の曲なにか」と表示する
 - `playedAt` が入っている曲が「演奏済み」。状態は未演奏と演奏済みの 2 つだけなので、enum のステータスにはしない
@@ -127,7 +127,7 @@ model JamSessionParticipant {
 | `jamSession.leave` | `userId` を省けば自分が退出する。指定すればその人を退出させる（呼ぶ側が参加中のときだけ） |
 | `jamSession.setPlayed` | 曲を演奏済みにする・戻す（参加中のメンバーなら誰でも） |
 | `jamSession.createSong` | 曲と自分の Entry（1 件以上）を 1 トランザクションで作る。`spotifyId` が既にあれば `CONFLICT` |
-| `jamSession.deleteSong` | 提案者本人か管理者だけ。それ以外は `FORBIDDEN` |
+| `jamSession.deleteSong` | 提案者本人か、セッションを作った人か、管理者だけ。それ以外は `FORBIDDEN` |
 | `jamSession.setMyParts` | ある曲について自分のパート一式を置き換える（空なら取り下げ） |
 - `createSong` は Spotify の曲なら `spotifyId` だけを受け取り、曲名とアーティスト名はサーバーが Spotify から取り直す。クライアントが送った値を使うと、偽の曲名で本物の `spotifyId` を先取りできてしまう
 - 入力の上限: 曲名 100 文字、アーティスト名 100 文字、`partNote` 30 文字

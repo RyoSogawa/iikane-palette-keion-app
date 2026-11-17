@@ -74,7 +74,6 @@ export const board = protectedProcedure
       songs,
       viewer: {
         userId: user.id,
-        isAdmin: user.isAdmin,
         isActive: isActiveParticipant(me?.joinedAt, now),
         canManageSession: canManageSession(session, user),
         profile,

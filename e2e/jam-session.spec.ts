@@ -258,27 +258,35 @@ test.describe('セッションページ', () => {
     await expect(row).toHaveAccessibleName(/、1 人$/);
   });
 
-  test('ほかの人の曲は消せず、管理者は消せる', async ({ page, browser }) => {
-    await joinByDb(LOGIN_USER.id, ['vocal']);
+  test('ほかの人の曲は消せず、セッションを作った人と管理者は消せる', async ({ page, browser }) => {
+    await createSongByDb('作った人の曲', LOGIN_USER.id, [{ userId: LOGIN_USER.id, part: 'vocal' }]);
     await createSongByDb('別ユーザーの曲', OTHER_USER.id, [
       { userId: OTHER_USER.id, part: 'vocal' },
     ]);
+    const deleteButton = (target: Page) =>
+      target.getByRole('dialog').getByRole('button', { name: 'この曲を削除する' });
+    const deleteSong = async (target: Page, title: string) => {
+      await songRow(target, title).click();
+      await deleteButton(target).click();
+      await target.getByRole('button', { name: '消す', exact: true }).click();
+      await expect(songRow(target, title)).toHaveCount(0);
+    };
 
+    const otherContext = await browser.newContext({ storageState: OTHER_STORAGE_STATE });
+    const otherPage = await otherContext.newPage();
+    await otherPage.goto(boardPath());
+    await songRow(otherPage, '作った人の曲').click();
+    await expect(deleteButton(otherPage)).toHaveCount(0);
+    await otherContext.close();
+
+    // セッションを作った人は、ほかの人が挙げた曲も片付けられる
     await page.goto(boardPath());
-    await songRow(page, '別ユーザーの曲').click();
-    await expect(
-      page.getByRole('dialog').getByRole('button', { name: 'この曲を削除する' }),
-    ).toHaveCount(0);
+    await deleteSong(page, '別ユーザーの曲');
 
     const adminContext = await browser.newContext({ storageState: ADMIN_STORAGE_STATE });
     const adminPage = await adminContext.newPage();
     await adminPage.goto(boardPath());
-    await songRow(adminPage, '別ユーザーの曲').click();
-    const dialog = adminPage.getByRole('dialog');
-    await dialog.getByRole('button', { name: 'この曲を削除する' }).click();
-    await adminPage.getByRole('button', { name: '消す', exact: true }).click();
-
-    await expect(songRow(adminPage, '別ユーザーの曲')).toHaveCount(0);
+    await deleteSong(adminPage, '作った人の曲');
     await adminContext.close();
   });
 

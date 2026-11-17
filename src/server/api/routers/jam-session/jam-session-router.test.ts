@@ -335,7 +335,6 @@ describe('jamSession.board', () => {
     expect(result.session).toEqual(SESSION);
     expect(result.viewer).toEqual({
       userId: 'admin',
-      isAdmin: true,
       isActive: false,
       canManageSession: true,
       profile: { parts: ['guitar'], partNote: null, roots: ['ロック'] },
@@ -549,7 +548,23 @@ describe('jamSession.deleteSong', () => {
     expect(db.jamSessionSong.deleteMany).toHaveBeenCalled();
   });
 
-  it('提案者が退会した曲は管理者だけが消せる', async () => {
+  it('セッションを作った人は、ほかの人が挙げた曲も消せる', async () => {
+    const db = createDb();
+    db.jamSessionSong.findUnique.mockResolvedValue({
+      id: 'song-1',
+      sessionId: 'session-1',
+      proposerId: 'user-2',
+    });
+
+    await callerFor(db).jamSession.deleteSong({ songId: 'song-1' });
+
+    expect(db.jamSession.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'session-1' } }),
+    );
+    expect(db.jamSessionSong.deleteMany).toHaveBeenCalledWith({ where: { id: 'song-1' } });
+  });
+
+  it('提案者が退会した曲は、セッションを作った人と管理者だけが消せる', async () => {
     const db = createDb();
     db.jamSessionSong.findUnique.mockResolvedValue({
       id: 'song-1',
@@ -557,16 +572,17 @@ describe('jamSession.deleteSong', () => {
       proposerId: null,
     });
 
-    await expect(callerFor(db).jamSession.deleteSong({ songId: 'song-1' })).rejects.toMatchObject({
-      code: 'FORBIDDEN',
-    });
+    await expect(
+      callerFor(db, sessionOf('user-2')).jamSession.deleteSong({ songId: 'song-1' }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
     expect(db.jamSessionSong.deleteMany).not.toHaveBeenCalled();
 
+    await callerFor(db).jamSession.deleteSong({ songId: 'song-1' });
     await callerFor(db, sessionOf('admin', true)).jamSession.deleteSong({ songId: 'song-1' });
-    expect(db.jamSessionSong.deleteMany).toHaveBeenCalledWith({ where: { id: 'song-1' } });
+    expect(db.jamSessionSong.deleteMany).toHaveBeenCalledTimes(2);
   });
 
-  it('ほかのメンバーは FORBIDDEN', async () => {
+  it('挙げた本人でもセッションを作った人でも管理者でもなければ FORBIDDEN', async () => {
     const db = createDb();
 
     await expect(

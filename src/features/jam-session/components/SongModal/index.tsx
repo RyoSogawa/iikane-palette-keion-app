@@ -95,7 +95,7 @@ const SongForm: React.FC<SongModalProps & { song: JamSessionSongView }> = ({
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const isPlayed = song.playedAt !== null;
-  const canDelete = song.proposerId === viewer.userId || viewer.isAdmin;
+  const canDelete = song.proposerId === viewer.userId || viewer.canManageSession;
   const recruiting = summarizeParts(song.entries)
     .filter(({ userIds }) => userIds.length === 0)
     .map(({ label }) => label);
