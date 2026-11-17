@@ -2,7 +2,7 @@
 いいかねパレット軽音部アプリ
 
 ## Environment
-- Node.js v24.22.1
+- Node.js v24.22.3
 - pnpm v10.34.7
 - Next.js
 - tRPC
