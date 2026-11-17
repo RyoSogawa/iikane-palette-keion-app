@@ -143,17 +143,32 @@ describe('jamSession の認可', () => {
     ['jamSession.setPlayed', { songId: 'song-1', played: true }],
   ];
 
+  // 判定より前に書き込んでいれば FORBIDDEN を返しても手遅れなので、書き込み先が呼ばれていないことも見る
+  const writesOf = (db: Db, path: string) =>
+    ({
+      'jamSession.createSong': [db.jamSessionSong.create, mocks.getSeveralTracks],
+      'jamSession.setMyParts': [
+        db.$transaction,
+        db.jamSessionEntry.deleteMany,
+        db.jamSessionEntry.createMany,
+      ],
+      'jamSession.setPlayed': [db.jamSessionSong.update],
+    })[path] ?? [];
+
   it.each(activeOnly)('参加していなければ %s は FORBIDDEN', async (path, input) => {
     const db = createDb(null);
     await expect(callByPath(callerFor(db), path, input)).rejects.toMatchObject({
       code: 'FORBIDDEN',
     });
+    writesOf(db, path).forEach((write) => expect(write).not.toHaveBeenCalled());
   });
 
   it.each(activeOnly)('参加から 24 時間たっていれば %s は FORBIDDEN', async (path, input) => {
-    await expect(
-      callByPath(callerFor(createDb(JOINED_YESTERDAY)), path, input),
-    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
+    const db = createDb(JOINED_YESTERDAY);
+    await expect(callByPath(callerFor(db), path, input)).rejects.toMatchObject({
+      code: 'FORBIDDEN',
+    });
+    writesOf(db, path).forEach((write) => expect(write).not.toHaveBeenCalled());
   });
 
   it('曲の操作は、その曲のセッションに参加しているかで判定する', async () => {
@@ -366,6 +381,16 @@ describe('jamSession.join', () => {
     );
   });
 
+  it('参加から 24 時間たっていれば、参加し直すと今の時刻にする', async () => {
+    const db = createDb(JOINED_YESTERDAY);
+
+    await callerFor(db).jamSession.join(input());
+
+    expect(db.jamSessionParticipant.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({ update: { joinedAt: NOW } }),
+    );
+  });
+
   it('無いセッションには参加できない', async () => {
     const db = createDb(null);
     db.jamSession.findUnique.mockResolvedValue(null);
@@ -526,11 +551,19 @@ describe('jamSession.deleteSong', () => {
 
   it('提案者が退会した曲は管理者だけが消せる', async () => {
     const db = createDb();
-    db.jamSessionSong.findUnique.mockResolvedValue({ id: 'song-1', proposerId: null });
+    db.jamSessionSong.findUnique.mockResolvedValue({
+      id: 'song-1',
+      sessionId: 'session-1',
+      proposerId: null,
+    });
 
     await expect(callerFor(db).jamSession.deleteSong({ songId: 'song-1' })).rejects.toMatchObject({
       code: 'FORBIDDEN',
     });
+    expect(db.jamSessionSong.deleteMany).not.toHaveBeenCalled();
+
+    await callerFor(db, sessionOf('admin', true)).jamSession.deleteSong({ songId: 'song-1' });
+    expect(db.jamSessionSong.deleteMany).toHaveBeenCalledWith({ where: { id: 'song-1' } });
   });
 
   it('ほかのメンバーは FORBIDDEN', async () => {
@@ -571,6 +604,17 @@ describe('jamSession.setMyParts', () => {
         { songId: 'song-1', userId: 'user-1', part: 'bass', partNote: null },
       ],
     });
+  });
+
+  it('パートを空にすると、自分の挙手を消すだけになる', async () => {
+    const db = createDb();
+
+    await callerFor(db).jamSession.setMyParts({ songId: 'song-1', parts: [] });
+
+    expect(db.jamSessionEntry.deleteMany).toHaveBeenCalledWith({
+      where: { songId: 'song-1', userId: 'user-1' },
+    });
+    expect(db.jamSessionEntry.createMany).toHaveBeenCalledWith({ data: [] });
   });
 
   it('入れ直す前に曲の行をロックする', async () => {
