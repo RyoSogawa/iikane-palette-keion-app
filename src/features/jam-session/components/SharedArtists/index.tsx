@@ -4,8 +4,8 @@ import { Avatar, Group, Stack, Text, Title, UnstyledButton } from '@mantine/core
 import { IconCheck } from '@tabler/icons-react';
 
 import { displayName } from '@/features/jam-session/components/PresenceSection';
-import { artistKey } from '@/server/api/routers/jam-session/shared-artists';
 import { api } from '@/trpc/react';
+import { artistKey } from '@/utils/artist-key';
 
 import type { JamSessionParticipantView } from '@/features/jam-session/types';
 

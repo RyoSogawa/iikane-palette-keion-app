@@ -1,9 +1,8 @@
+import { artistKey } from '@/utils/artist-key';
+
 export type SharedArtist = { artist: string; userIds: string[] };
 
 const DEFAULT_LIMIT = 10;
-
-/** 全角・半角と大文字・小文字の違いを同じアーティストとみなすためのキー。画面の照合でも使う */
-export const artistKey = (artist: string) => artist.normalize('NFKC').trim().toLowerCase();
 
 /**
  * 2 人以上が My Best Songs に登録しているアーティストを、人数の多い順に返す。

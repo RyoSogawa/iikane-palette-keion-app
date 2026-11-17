@@ -16,8 +16,8 @@ import SongList from '@/features/jam-session/components/SongList';
 import SongModal from '@/features/jam-session/components/SongModal';
 import { useJamSessionBoard } from '@/features/jam-session/hooks/useJamSessionBoard';
 import { useJamSessionMutations } from '@/features/jam-session/hooks/useJamSessionMutations';
-import { artistKey } from '@/server/api/routers/jam-session/shared-artists';
 import StickyBottomButton from '@/ui/components/button/StickyBottomButton';
+import { artistKey } from '@/utils/artist-key';
 
 import type { JamSessionBoard as Board } from '@/features/jam-session/types';
 
