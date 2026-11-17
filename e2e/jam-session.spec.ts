@@ -330,4 +330,14 @@ test.describe('セッションページ', () => {
     await expect(page).toHaveURL('/jam-session');
     await expect(page.getByRole('link', { name: /^E2E セッション/ })).toHaveCount(0);
   });
+
+  test('ほかの人がセッションを消すと、一覧へ戻される', async ({ page }) => {
+    await page.goto(boardPath());
+    await expect(page.getByRole('heading', { name: 'E2E セッション' })).toBeVisible();
+
+    await db.jamSession.delete({ where: { id: sessionId } });
+
+    await expect(page).toHaveURL('/jam-session', POLLING_TIMEOUT);
+    await expect(page.getByText('このセッションは削除されました')).toBeVisible();
+  });
 });
