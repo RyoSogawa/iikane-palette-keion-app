@@ -617,15 +617,30 @@ describe('jamSession.setMyParts', () => {
     expect(db.jamSessionEntry.createMany).toHaveBeenCalledWith({ data: [] });
   });
 
-  it('入れ直す前に曲の行をロックする', async () => {
+  it('曲の行のロックと入れ直しを、同じトランザクションの中で行う', async () => {
     const db = createDb();
+    // ロックがトランザクションの外に出るとすぐ外れるので、db とは別の tx で受けて区別する
+    const tx = {
+      $queryRaw: vi.fn().mockResolvedValue([]),
+      jamSessionEntry: {
+        deleteMany: vi.fn().mockResolvedValue({}),
+        createMany: vi.fn().mockResolvedValue({}),
+      },
+    };
+    db.$transaction.mockImplementation((fn: (client: typeof tx) => Promise<unknown>) => fn(tx));
 
     await callerFor(db).jamSession.setMyParts({ songId: 'song-1', parts: ['bass'] });
 
-    expect(db.$queryRaw).toHaveBeenCalled();
-    expect(db.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
-      db.jamSessionEntry.deleteMany.mock.invocationCallOrder[0]!,
+    const [strings, ...values] = tx.$queryRaw.mock.calls[0] as [TemplateStringsArray, ...unknown[]];
+    expect(strings.join('?')).toContain('FOR UPDATE');
+    expect(values).toEqual(['song-1']);
+    expect(tx.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
+      tx.jamSessionEntry.deleteMany.mock.invocationCallOrder[0]!,
     );
+    expect(tx.jamSessionEntry.createMany).toHaveBeenCalled();
+    expect(db.$queryRaw).not.toHaveBeenCalled();
+    expect(db.jamSessionEntry.deleteMany).not.toHaveBeenCalled();
+    expect(db.jamSessionEntry.createMany).not.toHaveBeenCalled();
   });
 
   it('無い曲は NOT_FOUND', async () => {
