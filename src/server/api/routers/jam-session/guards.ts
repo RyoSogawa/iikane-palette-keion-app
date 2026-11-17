@@ -47,3 +47,15 @@ export const canManageSession = (
   session: { creatorId: string | null },
   user: { id: string; isAdmin: boolean },
 ) => session.creatorId === user.id || user.isAdmin;
+
+/** セッションの変更と削除は、作った人と管理者だけに許す */
+export const assertCanManageSession = async (
+  db: Db,
+  sessionId: string,
+  user: { id: string; isAdmin: boolean },
+) => {
+  const session = await findSessionOrThrow(db, sessionId);
+  if (!canManageSession(session, user)) {
+    throw new TRPCError({ code: 'FORBIDDEN' });
+  }
+};

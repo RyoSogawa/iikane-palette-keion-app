@@ -1,6 +1,6 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
-import { assertActiveParticipant, findSongOrThrow } from './procedures';
+import { assertActiveParticipant, findSongOrThrow } from './guards';
 import { setPlayedInputSchema } from './schemas';
 
 /** 曲を演奏済みにする・戻す。その曲のセッションに参加中なら誰でもできる */

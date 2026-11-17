@@ -1,6 +1,6 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
-import { assertActiveParticipant } from './procedures';
+import { assertActiveParticipant } from './guards';
 import { leaveInputSchema } from './schemas';
 
 /**

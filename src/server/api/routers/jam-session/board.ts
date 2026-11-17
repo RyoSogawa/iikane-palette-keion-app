@@ -1,7 +1,7 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
 import { activeSince, isActiveParticipant } from './active-participant';
-import { canManageSession, findParticipation, findSessionOrThrow } from './procedures';
+import { canManageSession, findParticipation, findSessionOrThrow } from './guards';
 import { sessionIdInputSchema } from './schemas';
 
 /**

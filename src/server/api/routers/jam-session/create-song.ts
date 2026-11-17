@@ -4,7 +4,7 @@ import { TRPCError } from '@trpc/server';
 import { protectedProcedure } from '@/server/api/trpc';
 import { SpotifyApiService } from '@/server/applications/services/spotify-api.service';
 
-import { assertActiveParticipant } from './procedures';
+import { assertActiveParticipant } from './guards';
 import { createSessionSongInputSchema } from './schemas';
 
 // SpotifyApiService は失敗しても例外を投げず void を返すので、ここで曲が取れたかを見る

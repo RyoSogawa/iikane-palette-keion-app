@@ -1,7 +1,7 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
 import { activeSince } from './active-participant';
-import { findSessionOrThrow } from './procedures';
+import { findSessionOrThrow } from './guards';
 import { sessionIdInputSchema } from './schemas';
 import { findSharedArtists } from './shared-artists';
 

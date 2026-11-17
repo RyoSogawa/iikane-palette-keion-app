@@ -1,7 +1,7 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
 import { isActiveParticipant } from './active-participant';
-import { findParticipation, findSessionOrThrow } from './procedures';
+import { findParticipation, findSessionOrThrow } from './guards';
 import { joinSessionInputSchema } from './schemas';
 
 /**

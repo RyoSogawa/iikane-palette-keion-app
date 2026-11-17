@@ -1,6 +1,6 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
-import { assertActiveParticipant, findSongOrThrow } from './procedures';
+import { assertActiveParticipant, findSongOrThrow } from './guards';
 import { setMyPartsInputSchema } from './schemas';
 
 /** ある曲の自分のパート一式を置き換える。空なら取り下げ。ほかの人の挙手には触らない */
