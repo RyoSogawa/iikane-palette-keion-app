@@ -65,8 +65,12 @@ const createDb = (myJoinedAt: Date | null = JOINED_RECENTLY) => {
       deleteMany: vi.fn().mockResolvedValue({}),
       createMany: vi.fn().mockResolvedValue({}),
     },
-    $transaction: vi.fn((operations: unknown[]) => Promise.all(operations)),
+    $queryRaw: vi.fn().mockResolvedValue([]),
+    $transaction: vi.fn(),
   };
+  db.$transaction.mockImplementation((arg: ((tx: typeof db) => Promise<unknown>) | unknown[]) =>
+    typeof arg === 'function' ? arg(db) : Promise.all(arg),
+  );
   return db;
 };
 
@@ -566,8 +570,18 @@ describe('jamSession.setMyParts', () => {
         { songId: 'song-1', userId: 'user-1', part: 'other', partNote: 'ハーモニカ' },
         { songId: 'song-1', userId: 'user-1', part: 'bass', partNote: null },
       ],
-      skipDuplicates: true,
     });
+  });
+
+  it('入れ直す前に曲の行をロックする', async () => {
+    const db = createDb();
+
+    await callerFor(db).jamSession.setMyParts({ songId: 'song-1', parts: ['bass'] });
+
+    expect(db.$queryRaw).toHaveBeenCalled();
+    expect(db.$queryRaw.mock.invocationCallOrder[0]).toBeLessThan(
+      db.jamSessionEntry.deleteMany.mock.invocationCallOrder[0]!,
+    );
   });
 
   it('無い曲は NOT_FOUND', async () => {

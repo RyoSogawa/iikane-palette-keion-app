@@ -12,15 +12,16 @@ export const setMyParts = protectedProcedure
     const song = await findSongOrThrow(ctx.db, input.songId);
     await assertActiveParticipant(ctx.db, song.sessionId, userId);
 
-    await ctx.db.$transaction([
-      ctx.db.jamSessionEntry.deleteMany({ where: { songId: input.songId, userId } }),
-      ctx.db.jamSessionEntry.createMany({
+    // 同じ人が 2 台から同時に保存したとき、パートが足し合わされず後の保存がそのまま残るよう、
+    // 曲の行をロックして同じ曲への保存を 1 本ずつ流す
+    await ctx.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT 1 FROM "JamSessionSong" WHERE id = ${input.songId} FOR UPDATE`;
+      await tx.jamSessionEntry.deleteMany({ where: { songId: input.songId, userId } });
+      await tx.jamSessionEntry.createMany({
         data: toEntryRows(userId, input.parts, input.partNote).map((row) => ({
           ...row,
           songId: input.songId,
         })),
-        // 同じ人が 2 台から同時に保存しても、一意制約で失敗させない
-        skipDuplicates: true,
-      }),
-    ]);
+      });
+    });
   });
