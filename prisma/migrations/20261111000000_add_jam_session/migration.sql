@@ -1,0 +1,105 @@
+-- CreateEnum
+CREATE TYPE "JamSessionPart" AS ENUM ('vocal', 'guitar', 'bass', 'drums', 'keyboard', 'wind', 'strings', 'percussion', 'other');
+
+-- CreateTable
+CREATE TABLE "JamSession" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "name" TEXT NOT NULL,
+    "heldOn" DATE NOT NULL,
+    "creatorId" TEXT,
+
+    CONSTRAINT "JamSession_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "JamSessionSong" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "sessionId" TEXT NOT NULL,
+    "proposerId" TEXT,
+    "spotifyId" TEXT,
+    "name" TEXT,
+    "artist" TEXT,
+    "playedAt" TIMESTAMP(3),
+
+    CONSTRAINT "JamSessionSong_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "JamSessionEntry" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "songId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "part" "JamSessionPart" NOT NULL,
+    "partNote" TEXT,
+
+    CONSTRAINT "JamSessionEntry_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "JamSessionProfile" (
+    "userId" TEXT NOT NULL,
+    "parts" "JamSessionPart"[],
+    "partNote" TEXT,
+    "roots" TEXT[],
+
+    CONSTRAINT "JamSessionProfile_pkey" PRIMARY KEY ("userId")
+);
+
+-- CreateTable
+CREATE TABLE "JamSessionParticipant" (
+    "sessionId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "joinedAt" TIMESTAMP(3),
+
+    CONSTRAINT "JamSessionParticipant_pkey" PRIMARY KEY ("sessionId","userId")
+);
+
+-- CreateIndex
+CREATE INDEX "JamSession_heldOn_idx" ON "JamSession"("heldOn");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "JamSessionSong_sessionId_spotifyId_key" ON "JamSessionSong"("sessionId", "spotifyId");
+
+-- CreateIndex
+CREATE INDEX "JamSessionEntry_userId_idx" ON "JamSessionEntry"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "JamSessionEntry_songId_userId_part_key" ON "JamSessionEntry"("songId", "userId", "part");
+
+-- CreateIndex
+CREATE INDEX "JamSessionParticipant_userId_idx" ON "JamSessionParticipant"("userId");
+
+-- AddForeignKey
+ALTER TABLE "JamSession" ADD CONSTRAINT "JamSession_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JamSessionSong" ADD CONSTRAINT "JamSessionSong_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "JamSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JamSessionSong" ADD CONSTRAINT "JamSessionSong_proposerId_fkey" FOREIGN KEY ("proposerId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JamSessionEntry" ADD CONSTRAINT "JamSessionEntry_songId_fkey" FOREIGN KEY ("songId") REFERENCES "JamSessionSong"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JamSessionEntry" ADD CONSTRAINT "JamSessionEntry_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JamSessionProfile" ADD CONSTRAINT "JamSessionProfile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JamSessionParticipant" ADD CONSTRAINT "JamSessionParticipant_sessionId_fkey" FOREIGN KEY ("sessionId") REFERENCES "JamSession"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "JamSessionParticipant" ADD CONSTRAINT "JamSessionParticipant_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+-- 本番の既存テーブルと同じく RLS を有効にし、ポリシーは置かない（アクセスはサーバーの Prisma からだけ）
+ALTER TABLE "JamSession" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "JamSessionSong" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "JamSessionEntry" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "JamSessionProfile" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "JamSessionParticipant" ENABLE ROW LEVEL SECURITY;

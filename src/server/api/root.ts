@@ -1,5 +1,6 @@
 import { adminRouter } from '@/server/api/routers/admin';
 import { eventRouter } from '@/server/api/routers/event';
+import { jamSessionRouter } from '@/server/api/routers/jam-session';
 import { myBestSongsRouter } from '@/server/api/routers/my-best-songs';
 import { onboardingRouter } from '@/server/api/routers/onboarding';
 import { userRouter } from '@/server/api/routers/user';
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   myBestSongs: myBestSongsRouter,
   event: eventRouter,
   admin: adminRouter,
+  jamSession: jamSessionRouter,
 });
 
 // export type definition of API

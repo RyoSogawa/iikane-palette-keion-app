@@ -38,7 +38,9 @@ const MyBestSongsGridForEdit: React.FC<MyBestSongsGridForEditProps> = ({ userId 
           spacing={{ base: 'xs', sm: 'sm' }}
           verticalSpacing={{ base: 'xs', sm: 'sm' }}
         >
-          {data?.map((song) => <SortableMusicImage key={song.id} song={song} />)}
+          {data?.map((song) => (
+            <SortableMusicImage key={song.id} song={song} />
+          ))}
         </SimpleGrid>
       </SortableContext>
     </DnDContext>

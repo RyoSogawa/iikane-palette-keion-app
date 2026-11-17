@@ -5,7 +5,6 @@ import React, { useEffect, useRef } from 'react';
 import { Avatar, Button, Group, Modal, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-
 import { api } from '@/trpc/react';
 import { type User } from '@/types/generated/zod';
 import LinkComponent from '@/ui/components/common/LinkComponent';

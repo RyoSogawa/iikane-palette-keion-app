@@ -8,7 +8,6 @@ import { IconChevronRight } from '@tabler/icons-react';
 import RecreationKingBadge from '@/features/event/components/RecreationKingBadge';
 import LinkComponent from '@/ui/components/common/LinkComponent';
 
-
 import type { UserTag, Event } from '@/types/generated/zod';
 import type { User } from '@prisma/client';
 

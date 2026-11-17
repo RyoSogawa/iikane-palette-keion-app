@@ -7,6 +7,7 @@ import {
   ADMIN_STORAGE_STATE,
   ADMIN_USER,
   LOGIN_USER,
+  OTHER_STORAGE_STATE,
   OTHER_USER,
   STORAGE_STATE,
 } from './fixtures/test-users';
@@ -68,6 +69,11 @@ export default async function globalSetup(config: FullConfig) {
       update: { userId: LOGIN_USER.id, expires },
     });
     await db.session.upsert({
+      where: { sessionToken: OTHER_USER.sessionToken },
+      create: { sessionToken: OTHER_USER.sessionToken, userId: OTHER_USER.id, expires },
+      update: { userId: OTHER_USER.id, expires },
+    });
+    await db.session.upsert({
       where: { sessionToken: ADMIN_USER.sessionToken },
       create: { sessionToken: ADMIN_USER.sessionToken, userId: ADMIN_USER.id, expires },
       update: { userId: ADMIN_USER.id, expires },
@@ -98,6 +104,10 @@ export default async function globalSetup(config: FullConfig) {
   });
   mkdirSync(dirname(STORAGE_STATE), { recursive: true });
   writeFileSync(STORAGE_STATE, JSON.stringify(storageStateOf(LOGIN_USER.sessionToken), null, 2));
+  writeFileSync(
+    OTHER_STORAGE_STATE,
+    JSON.stringify(storageStateOf(OTHER_USER.sessionToken), null, 2),
+  );
   writeFileSync(
     ADMIN_STORAGE_STATE,
     JSON.stringify(storageStateOf(ADMIN_USER.sessionToken), null, 2),

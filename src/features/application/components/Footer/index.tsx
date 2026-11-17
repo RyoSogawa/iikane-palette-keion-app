@@ -3,7 +3,6 @@ import React from 'react';
 import { Box, Container, Flex, Image, Text, VisuallyHidden } from '@mantine/core';
 import { IconBrandDiscordFilled, IconBrandGithubFilled } from '@tabler/icons-react';
 
-
 import { LINK } from '@/constants/external-service';
 import IconLink from '@/features/application/components/Footer/parts/IconLink';
 import ImageLink from '@/features/application/components/Footer/parts/ImageLink';
