@@ -55,7 +55,7 @@ export default async function MemberSingleLayout({ params, children }: Props) {
       <Title size="h2" mt={24}>
         プロフィール編集
       </Title>
-      <UserProfileTab userId={userId} isEdit />
+      <UserProfileTab userId={userId} />
       {children}
     </Container>
   );

@@ -18,7 +18,7 @@ const inputSchema = z.intersection(
 );
 
 export const create = protectedProcedure.input(inputSchema).mutation(async ({ input, ctx }) => {
-  revalidatePath(`/members/${input.userId}/my-best-songs`);
+  revalidatePath(`/members/${input.userId}/profile`);
 
   const max = await ctx.db.myBestSong.aggregate({
     where: {

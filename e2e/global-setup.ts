@@ -3,6 +3,7 @@ import { dirname } from 'node:path';
 
 import { PrismaClient } from '@prisma/client';
 
+import { seedProfileViewUsers } from './fixtures/profile-view';
 import {
   ADMIN_STORAGE_STATE,
   ADMIN_USER,
@@ -78,6 +79,8 @@ export default async function globalSetup(config: FullConfig) {
       create: { sessionToken: ADMIN_USER.sessionToken, userId: ADMIN_USER.id, expires },
       update: { userId: ADMIN_USER.id, expires },
     });
+
+    await seedProfileViewUsers(db);
   } finally {
     await db.$disconnect();
   }

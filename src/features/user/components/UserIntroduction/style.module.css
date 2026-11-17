@@ -1,0 +1,12 @@
+/* エディタの内側の余白をなくして、「続きを読む」と本文の左端を揃える。Mantine の .m_xxx .ProseMirror より強くするためにクラスを 3 つ重ねる */
+.body :global(.mantine-RichTextEditor-content) :global(.ProseMirror) {
+  padding: 0;
+}
+
+/* 段落をまたいでも 5 行目の末尾に「…」を付けて畳む */
+.clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}

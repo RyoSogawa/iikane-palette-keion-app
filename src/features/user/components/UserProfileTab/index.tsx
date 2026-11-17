@@ -10,10 +10,10 @@ import s from './style.module.css';
 
 export type UserProfileTabProps = {
   userId: string;
-  isEdit?: boolean;
 };
 
-const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId, isEdit }) => {
+/** プロフィール編集画面の「Profile」と「My Best Songs」を切り替えるタブ。閲覧側は 1 ページなので使わない */
+const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId }) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -26,13 +26,9 @@ const UserProfileTab: React.FC<UserProfileTabProps> = ({ userId, isEdit }) => {
 
   const handleChange = useCallback(
     (newValue: string | null) => {
-      if (isEdit) {
-        router.push(`/members/${userId}/edit/${newValue}`);
-        return;
-      }
-      router.replace(`/members/${userId}/${newValue}`);
+      router.push(`/members/${userId}/edit/${newValue}`);
     },
-    [isEdit, router, userId],
+    [router, userId],
   );
 
   return (

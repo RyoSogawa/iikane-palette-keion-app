@@ -16,7 +16,13 @@ export class FetchSongImageService {
     const hasValidIds = trackIds.length > 0 || albumIdsChunks.some((chunk) => chunk.length > 0);
     if (!hasValidIds) return songs;
 
-    const { tracks, albums } = await this.fetchSongImages(trackIds, albumIdsChunks);
+    // ジャケット画像は飾りなので、Spotify が落ちていても曲の一覧は返す
+    const images = await this.fetchSongImages(trackIds, albumIdsChunks).catch((error: unknown) => {
+      console.error('Spotify からジャケット画像を取得できませんでした', error);
+      return null;
+    });
+    if (!images) return songs;
+    const { tracks, albums } = images;
 
     return songs.map((song) => {
       if (song.type === 'track') {

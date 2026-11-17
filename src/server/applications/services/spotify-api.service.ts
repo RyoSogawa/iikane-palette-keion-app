@@ -11,6 +11,9 @@ const SpotifyAccessTokenSchema = z.object({
 export class SpotifyApiService {
   private static readonly baseUrl = 'https://api.spotify.com/v1';
 
+  // プロフィールページを開くたびに呼ばれるので、Spotify が応答しなくても読み込み表示が回り続けないよう打ち切る
+  private static readonly timeoutMs = 5000;
+
   private accessToken = '';
 
   public async setAccessToken() {
@@ -31,6 +34,7 @@ export class SpotifyApiService {
         method: 'POST',
         headers,
         body,
+        signal: AbortSignal.timeout(SpotifyApiService.timeoutMs),
       });
 
       if (!response.ok) {
@@ -61,6 +65,7 @@ export class SpotifyApiService {
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
         },
+        signal: AbortSignal.timeout(SpotifyApiService.timeoutMs),
       });
 
       if (!response.ok) {
@@ -87,6 +92,7 @@ export class SpotifyApiService {
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
         },
+        signal: AbortSignal.timeout(SpotifyApiService.timeoutMs),
       });
 
       if (!response.ok) {
@@ -113,6 +119,7 @@ export class SpotifyApiService {
         headers: {
           Authorization: `Bearer ${this.accessToken}`,
         },
+        signal: AbortSignal.timeout(SpotifyApiService.timeoutMs),
       });
 
       if (!response.ok) {

@@ -26,7 +26,7 @@ export const deleteSong = protectedProcedure.input(inputSchema).mutation(async (
     throw new Error('Forbidden');
   }
 
-  revalidatePath(`/members/${data.userId}/my-best-songs`);
+  revalidatePath(`/members/${data.userId}/profile`);
 
   return ctx.db.$transaction(async (tx) => {
     await Promise.all([

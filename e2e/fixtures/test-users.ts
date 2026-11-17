@@ -27,3 +27,24 @@ export const ADMIN_USER = {
   email: 'e2e-admin-user@example.com',
   sessionToken: 'e2e-admin-user-session-token',
 } as const;
+
+/** プロフィールの閲覧側を確かめるユーザー。長いプロフィール文と My Best Songs を持たせる。ログインはしない */
+export const PROFILE_FULL_USER = {
+  id: 'e2e-profile-full-user',
+  name: 'E2E プロフィール長文ユーザー',
+  email: 'e2e-profile-full-user@example.com',
+} as const;
+
+/** プロフィールの閲覧側を確かめるユーザー。短いプロフィール文だけで My Best Songs は持たない。ログインはしない */
+export const PROFILE_SHORT_USER = {
+  id: 'e2e-profile-short-user',
+  name: 'E2E プロフィール短文ユーザー',
+  email: 'e2e-profile-short-user@example.com',
+} as const;
+
+/** プロフィールの閲覧側を確かめるユーザー。エディタで入力して消したあとの空のプロフィール文だけを持つ。ログインはしない */
+export const PROFILE_EMPTY_USER = {
+  id: 'e2e-profile-empty-user',
+  name: 'E2E プロフィール空ユーザー',
+  email: 'e2e-profile-empty-user@example.com',
+} as const;
