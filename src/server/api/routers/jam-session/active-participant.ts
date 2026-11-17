@@ -8,3 +8,9 @@ export const activeSince = (now: Date) => new Date(now.getTime() - ACTIVE_DURATI
 
 export const isActiveParticipant = (joinedAt: Date | null | undefined, now: Date) =>
   joinedAt != null && joinedAt > activeSince(now);
+
+/** そのセッションに参加中の人に絞る Prisma の where */
+export const activeParticipantWhere = (sessionId: string, now: Date) => ({
+  sessionId,
+  joinedAt: { gt: activeSince(now) },
+});

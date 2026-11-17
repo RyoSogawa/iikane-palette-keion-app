@@ -1,6 +1,6 @@
 import { protectedProcedure } from '@/server/api/trpc';
 
-import { activeSince, isActiveParticipant } from './active-participant';
+import { activeParticipantWhere, isActiveParticipant } from './active-participant';
 import { canManageSession, findParticipation, findSessionOrThrow } from './guards';
 import { sessionIdInputSchema } from './schemas';
 
@@ -13,7 +13,7 @@ export const board = protectedProcedure
   .query(async ({ ctx, input }) => {
     const now = new Date();
     const { sessionId } = input;
-    const active = { sessionId, joinedAt: { gt: activeSince(now) } };
+    const active = activeParticipantWhere(sessionId, now);
     const user = ctx.session.user;
 
     const session = await findSessionOrThrow(ctx.db, sessionId);
