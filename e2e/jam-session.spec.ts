@@ -230,6 +230,34 @@ test.describe('セッションページ', () => {
     await expect.poll(() => isAbove('誰もいない曲', '人が多い曲')).toBe(true);
   });
 
+  test('ほかの人の曲に手を挙げると人数に入り、取り下げると外れる', async ({ page }) => {
+    await joinByDb(LOGIN_USER.id, ['guitar']);
+    await joinByDb(OTHER_USER.id, ['vocal']);
+    await createSongByDb('挙手テストの曲', OTHER_USER.id, [
+      { userId: OTHER_USER.id, part: 'vocal' },
+    ]);
+
+    await page.goto(boardPath());
+    const row = songRow(page, '挙手テストの曲');
+    await expect(row).toHaveAccessibleName(/、1 人$/);
+
+    const dialog = page.getByRole('dialog');
+    const handToggle = dialog.getByRole('button', { name: '挙手' });
+    await row.click();
+    await expect(handToggle).toHaveAttribute('aria-pressed', 'false');
+    await handToggle.click();
+    await expect(handToggle).toHaveAttribute('aria-pressed', 'true');
+    await dialog.getByRole('button', { name: '閉じる' }).click();
+    await expect(row).toHaveAccessibleName(/、2 人$/);
+    await expect(row).toContainText(LOGIN_USER.name);
+
+    await row.click();
+    await handToggle.click();
+    await expect(handToggle).toHaveAttribute('aria-pressed', 'false');
+    await dialog.getByRole('button', { name: '閉じる' }).click();
+    await expect(row).toHaveAccessibleName(/、1 人$/);
+  });
+
   test('ほかの人の曲は消せず、管理者は消せる', async ({ page, browser }) => {
     await joinByDb(LOGIN_USER.id, ['vocal']);
     await createSongByDb('別ユーザーの曲', OTHER_USER.id, [
